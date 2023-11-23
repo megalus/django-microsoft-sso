@@ -6,7 +6,7 @@ package which you need to install and configure:
 * [Django Google SSO](https://github.com/megalus/django-google-sso)
 * [Django Microsoft SSO](https://github.com/megalus/django-microsoft-sso)
 
-### Install the Packages
+## Install the Packages
 Install the packages you need:
 
 ```bash
@@ -15,6 +15,23 @@ pip install django-google-sso django-microsoft-sso
 # Optionally install Stela to handle .env files
 pip install stela
 ```
+
+## Add Package to Django Project
+To add this package in your Django Project, please modify the `INSTALLED_APPS` in your `settings.py`:
+
+```python
+# settings.py
+
+INSTALLED_APPS = [
+    # other django apps
+    "django.contrib.messages",  # Need for Auth messages
+    "django_microsoft_sso",  # First button in login page
+    "django_google_sso",  # Second button in login page
+]
+```
+
+!!! tip "Order matters"
+    The first package on list will be the first button in the login page.
 
 ## Add secrets to env file
 
@@ -67,6 +84,10 @@ GOOGLE_SSO_PROJECT_ID = env.GOOGLE_SSO_PROJECT_ID
 GOOGLE_SSO_CLIENT_SECRET = env.GOOGLE_SSO_CLIENT_SECRET
 GOOGLE_SSO_ALLOWABLE_DOMAINS = ["contoso.net"]
 ```
+
+The login page will look like this:
+
+![Django Login Page with Google and Microsoft SSO](../images/django_multiple_sso.png)
 
 ### The Django E003/W003 Warning
 If you are using both **Django Google SSO** and **Django Microsoft SSO**, you will get the following warning:

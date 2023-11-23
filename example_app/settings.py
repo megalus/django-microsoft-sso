@@ -50,8 +50,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",  # Need for Auth messages
     "django.contrib.staticfiles",
     "django.contrib.sites",  # Optional: Add Sites framework
-    "django_google_sso",  # Add django_microsoft_sso
     "django_microsoft_sso",  # Add django_microsoft_sso
+    "django_google_sso",  # Add django_microsoft_sso
 ]
 
 MIDDLEWARE = [
@@ -252,7 +252,12 @@ GOOGLE_SSO_AUTHENTICATION_BACKEND = "backend.MyBackend"
 # GOOGLE_SSO_PRE_LOGIN_CALLBACK = "backend.pre_login_callback"
 
 # Uncomment to disable SSO login
-GOOGLE_SSO_ENABLED = False  # default: True
+GOOGLE_SSO_ENABLED = True  # default: True
+
+GOOGLE_SSO_LOGO_URL = (
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/"
+    "Google_%22G%22_logo.svg/1280px-Google_%22G%22_logo.svg.png"
+)
 
 # Uncomment to disable user auto-creation
 # GOOGLE_SSO_AUTO_CREATE_USERS = False  # default: True

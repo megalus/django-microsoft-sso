@@ -59,7 +59,7 @@ created automatically. If the email is not in the allowed domains, the user will
 ```python
 # settings.py
 
-MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["your-domain.com"]
+MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["contoso.com"]
 ```
 
 ## Setup Django URLs

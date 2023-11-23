@@ -54,14 +54,13 @@ INSTALLED_APPS = [
 ```
 
 2. In [Microsoft Entra Administration Center](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM) at _Application Register_, retrieve your
-   Project Credentials and add them in your `settings.py`:
+   Application ID. Navigate to **Certificate & secrets** link, and get the **Client Secret Value**. Add both in your `settings.py`:
 
 ```python
 # settings.py
 
-MICROSOFT_SSO_TENANT_ID = "your tenant id here"  # Directory (tenant) ID
-MICROSOFT_SSO_APPLICATION_ID = "your client id here"  # Application (client) ID
-MICROSOFT_SSO_CLIENT_SECRET = "your client secret here"  # Application Client Secret Value
+MICROSOFT_SSO_APPLICATION_ID = "your Application ID here"
+MICROSOFT_SSO_CLIENT_SECRET = "your Client Secret Value here"
 ```
 
 3. Add the callback uri `http://localhost:8000/microsoft_sso/callback/` in your Microsoft Console, on the "Authorized Redirect
@@ -72,7 +71,7 @@ MICROSOFT_SSO_CLIENT_SECRET = "your client secret here"  # Application Client Se
 ```python
 # settings.py
 
-MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["example.com"]
+MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["contoso.com"]
 ```
 
 5. In `urls.py` please add the **Django-Microsoft-SSO** views:
