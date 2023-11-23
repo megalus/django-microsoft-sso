@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
-site_name: Django Google SSO
-site_description: Easily add Google SSO login to Django Admin
-repo_url: https://github.com/megalus/django-google-sso
-repo_name: megalus/django-google-sso
+site_name: Django Microsoft SSO
+site_description: Easily add Microsoft SSO login to Django Admin
+repo_url: https://github.com/megalus/django-microsoft-sso
+repo_name: megalus/django-microsoft-sso
 
 theme:
   name: material
@@ -13,14 +13,14 @@ theme:
     # Palette toggle for light mode
     - scheme: default
       media: "(prefers-color-scheme: light)"
-      primary: teal
+      primary: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     # Palette toggle for dark mode
     - scheme: slate
       media: "(prefers-color-scheme: dark)"
-      primary: teal
+      primary: indigo
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -80,6 +80,8 @@ nav:
   - admin.md
   - customize.md
   - how.md
+  - advanced.md
+  - multiple.md
   - settings.md
   - troubleshooting.md
   - thanks.md

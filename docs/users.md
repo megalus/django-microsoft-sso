@@ -1,50 +1,50 @@
 # Auto Creating Users
 
-**Django Google SSO** can automatically create users from Google SSO authentication. To enable this feature, you need to
-set the `GOOGLE_SSO_ALLOWABLE_DOMAINS` setting in your `settings.py`, with a list of domains that will be allowed to create.
+**Django Microsoft SSO** can automatically create users from Microsoft SSO authentication. To enable this feature, you need to
+set the `MICROSOFT_SSO_ALLOWABLE_DOMAINS` setting in your `settings.py`, with a list of domains that will be allowed to create.
 For example, if any user with a gmail account can sign in, you can set:
 
 ```python
 # settings.py
-GOOGLE_SSO_ALLOWABLE_DOMAINS = ["gmail.com"]
+MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["contoso.com"]
 ```
 
 ## Disabling the auto-create users
 
-You can disable the auto-create users feature by setting the `GOOGLE_SSO_AUTO_CREATE_USERS` setting to `False`:
+You can disable the auto-create users feature by setting the `MICROSOFT_SSO_AUTO_CREATE_USERS` setting to `False`:
 
 ```python
-GOOGLE_SSO_AUTO_CREATE_USERS = False
+MICROSOFT_SSO_AUTO_CREATE_USERS = False
 ```
 
 You can also disable the plugin completely:
 
 ```python
-GOOGLE_SSO_ENABLED = False
+MICROSOFT_SSO_ENABLED = False
 ```
 
 ## Giving Permissions to Auto-Created Users
 
 If you are using the auto-create users feature, you can give permissions to the users that are created automatically. To do
-this you can set the following options in your `settings.py`:
+this, you can set the following options in your `settings.py`:
 
 ```python
 # List of emails that will be created as staff
-GOOGLE_SSO_STAFF_LIST = ["my-email@my-domain.com"]
+MICROSOFT_SSO_STAFF_LIST = ["my-email@contoso.com"]
 
 # List of emails that will be created as superuser
-GOOGLE_SSO_SUPERUSER_LIST = ["another-email@my-domain.com"]
+MICROSOFT_SSO_SUPERUSER_LIST = ["another-email@contoso.com"]
 
-# If True, the first user that logs in will be created as superuser
+# If True, the first user that checks in will be created as superuser
 # if no superuser exists in the database at all
-GOOGLE_SSO_AUTO_CREATE_FIRST_SUPERUSER = True
+MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = True
 ```
 
 ## Fine-tuning users before login
 
 If you need to do some processing _after_ user is created or retrieved,
 but _before_ the user is logged in, you can set the
-`GOOGLE_SSO_PRE_LOGIN_CALLBACK` setting to import a custom function that will be called before the user is logged in.
+`MICROSOFT_SSO_PRE_LOGIN_CALLBACK` setting to import a custom function that will be called before the user is logged in.
 This function will receive two arguments: the `user` and `request` objects.
 
 ```python
@@ -54,10 +54,10 @@ def pre_login_user(user, request):
     pass
 
 # settings.py
-GOOGLE_SSO_PRE_LOGIN_CALLBACK = "myapp.hooks.pre_login_user"
+MICROSOFT_SSO_PRE_LOGIN_CALLBACK = "myapp.hooks.pre_login_user"
 ```
 
-Please remember this function will be invoked only if user exists, and if it is active.
+Please remember this function will be invoked only if a user exists, and if it is active.
 In other words, if the user is eligible for login.
 
 

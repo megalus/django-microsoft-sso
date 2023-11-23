@@ -1,27 +1,27 @@
 <p align="center">
-  <img src="docs/images/django-google-sso.png" alt="Django Google SSO"/>
+  <img src="docs/images/django-microsoft-sso.png" alt="Django Microsoft SSO"/>
 </p>
 <p align="center">
-<em>Easily integrate Google Authentication into your Django projects</em>
+<em>Easily integrate Microsoft Authentication into your Django projects</em>
 </p>
 
 <p align="center">
-<a href="https://pypi.org/project/django-google-sso/" target="_blank">
-<img alt="PyPI" src="https://img.shields.io/pypi/v/django-google-sso"/></a>
-<a href="https://github.com/megalus/django-google-sso/actions" target="_blank">
-<img alt="Build" src="https://github.com/megalus/django-google-sso/workflows/tests/badge.svg"/>
+<a href="https://pypi.org/project/django-microsoft-sso/" target="_blank">
+<img alt="PyPI" src="https://img.shields.io/pypi/v/django-microsoft-sso"/></a>
+<a href="https://github.com/megalus/django-microsoft-sso/actions" target="_blank">
+<img alt="Build" src="https://github.com/megalus/django-microsoft-sso/workflows/tests/badge.svg"/>
 </a>
 <a href="https://www.python.org" target="_blank">
-<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/django-google-sso"/>
+<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/django-microsoft-sso"/>
 </a>
 <a href="https://www.djangoproject.com/" target="_blank">
-<img alt="PyPI - Django Version" src="https://img.shields.io/pypi/djversions/django-google-sso"/>
+<img alt="PyPI - Django Version" src="https://img.shields.io/pypi/djversions/django-microsoft-sso"/>
 </a>
 </p>
 
-## Welcome to Django Google SSO
+## Welcome to Django Microsoft SSO
 
-This library aims to simplify the process of authenticating users with Google in Django Admin pages,
+This library aims to simplify the process of authenticating users with Microsoft in Django Admin pages,
 inspired by libraries like [django_microsoft_auth](https://github.com/AngellusMortis/django_microsoft_auth)
 and [django-admin-sso](https://github.com/matthiask/django-admin-sso/)
 
@@ -29,14 +29,14 @@ and [django-admin-sso](https://github.com/matthiask/django-admin-sso/)
 
 ### Documentation
 
-* Docs: https://megalus.github.io/django-google-sso/
+* Docs: https://megalus.github.io/django-microsoft-sso/
 
 ---
 
 ### Install
 
 ```shell
-$ pip install django-google-sso
+$ pip install django-microsoft-sso
 ```
 
 ### Configure
@@ -49,33 +49,33 @@ $ pip install django-google-sso
 INSTALLED_APPS = [
     # other django apps
     "django.contrib.messages",  # Need for Auth messages
-    "django_google_sso",  # Add django_google_sso
+    "django_microsoft_sso",  # Add django_microsoft_sso
 ]
 ```
 
-2. In [Google Console](https://console.cloud.google.com/apis/credentials) at _Api -> Credentials_, retrieve your
+2. In [Microsoft Entra Administration Center](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM) at _Application Register_, retrieve your
    Project Credentials and add them in your `settings.py`:
 
 ```python
 # settings.py
 
-GOOGLE_SSO_CLIENT_ID = "your client id here"
-GOOGLE_SSO_PROJECT_ID = "your project id here"
-GOOGLE_SSO_CLIENT_SECRET = "your client secret here"
+MICROSOFT_SSO_TENANT_ID = "your tenant id here"  # Directory (tenant) ID
+MICROSOFT_SSO_APPLICATION_ID = "your client id here"  # Application (client) ID
+MICROSOFT_SSO_CLIENT_SECRET = "your client secret here"  # Application Client Secret Value
 ```
 
-3. Add the callback uri `http://localhost:8000/google_sso/callback/` in your Google Console, on the "Authorized Redirect
+3. Add the callback uri `http://localhost:8000/microsoft_sso/callback/` in your Microsoft Console, on the "Authorized Redirect
    URL".
 
-4. Let Django Google SSO auto create users for allowable domains:
+4. Let Django Microsoft SSO auto create users for allowable domains:
 
 ```python
 # settings.py
 
-GOOGLE_SSO_ALLOWABLE_DOMAINS = ["example.com"]
+MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["example.com"]
 ```
 
-5. In `urls.py` please add the **Django-Google-SSO** views:
+5. In `urls.py` please add the **Django-Microsoft-SSO** views:
 
 ```python
 # urls.py
@@ -85,7 +85,7 @@ from django.urls import include, path
 urlpatterns = [
     # other urlpatterns...
     path(
-        "google_sso/", include("django_google_sso.urls", namespace="django_google_sso")
+        "microsoft_sso/", include("django_microsoft_sso.urls", namespace="django_microsoft_sso")
     ),
 ]
 ```
@@ -97,10 +97,10 @@ $ python manage.py migrate
 ```
 
 That's it. Start django on port 8000 and open your browser in `http://localhost:8000/admin/login` and you should see the
-Google SSO button.
+Microsoft SSO button.
 
 <p align="center">
-   <img src="docs/images/django_login_with_google_light.png"/>
+   <img src="docs/images/django_login_with_microsoft_light.png"/>
 </p>
 
 ---

@@ -1,10 +1,10 @@
-![](images/django-google-sso.png)
+![](images/django-microsoft-sso.png)
 
-# Welcome to Django Google SSO
+# Welcome to Django Microsoft SSO
 
 ## Motivation
 
-This library aims to simplify the process of authenticating users with Google in Django Admin pages,
+This library aims to simplify the process of authenticating users with Microsoft in Django Admin pages,
 inspired by libraries like [django_microsoft_auth](https://github.com/AngellusMortis/django_microsoft_auth)
 and [django-admin-sso](https://github.com/matthiask/django-admin-sso/)
 
@@ -12,27 +12,28 @@ and [django-admin-sso](https://github.com/matthiask/django-admin-sso/)
 
 * This library aims for _simplicity_ and ease of use. [django-allauth](https://github.com/pennersr/django-allauth) is
   _de facto_ solution for Authentication in Django, but add lots of boilerplate, specially the html templates.
-  **Django-Google-SSO** just add a fully customizable "Login with Google" button in the default login page.
+  **Django-Microsoft-SSO** just add the "Login with Google" button in the default login page.
 
     === "Light Mode"
-        ![](images/django_login_with_google_light.png)
+        ![](images/django_login_with_microsoft_light.png)
 
     === "Dark Mode"
-        ![](images/django_login_with_google_dark.png)
+        ![](images/django_login_with_microsoft_dark.png)
 
-* [django-admin-sso](https://github.com/matthiask/django-admin-sso/) is a good solution, but it uses a deprecated
-  google `auth2client` version.
+* [django_microsoft_auth](https://github.com/AngellusMortis/django_microsoft_auth) is a bit outated but you can use it for old python and
+  django versions.
+* Microsoft provides a complete tutorial
+  here: https://learn.microsoft.com/en-us/training/modules/msid-django-web-app-sign-in/, with very good insights,
+  but it's a bit outdated and doesn't provide the social button.
 
 ---
 
 ## Install
 
 ```shell
-pip install django-google-sso
+pip install django-microsoft-sso
 ```
 
 !!! info "Currently this project supports:"
-    * Python 3.9, 3.10 and 3.11
-    * Django 4.0, 4.1 and 4.2
-
-    For python 3.8 please use version 2.4.1
+* Python 3.10, 3.11 and 3.12
+* Django 4.0, 4.1 and 4.2

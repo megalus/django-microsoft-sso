@@ -1,0 +1,46 @@
+/*
+  login-btn
+  ---------------------------------
+  | --------------                 |
+  | | btn-logo   |    btn-label    |
+  | --------------                 |
+  ----------------------------------
+*/
+
+/* Microsoft Login Button */
+.microsoft-login-btn {
+    background-color: darkcyan;
+    border: 1px solid #a7a7a7;
+    padding: 1px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+/* Microsoft Login Button Hover */
+.microsoft-login-btn:hover {
+    background-color: #0f46c0;
+    border: 1px solid #0f46c0;
+
+}
+
+/* Microsoft Login Button Remove Decoration */
+.microsoft-login-btn a {
+    text-decoration: none;
+}
+
+/* Microsoft Login Button Logo Area */
+.microsoft-btn-logo {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding: 4px;
+}
+
+/* Microsoft Login Button Label Area */
+.microsoft-btn-label {
+    color: white;
+    margin-top: -1px;
+    width: 100%;
+    text-align: center;
+    padding: 0 10px;
+}

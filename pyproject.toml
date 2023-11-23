@@ -31,7 +31,7 @@ ensure_newline_before_comments = true
 
 [tool.semantic_release]
 version_variable = [
-    "django_google_sso/__init__.py:__version__",
+    "django_microsoft_sso/__init__.py:__version__",
     "pyproject.toml:version"
 ]
 branch = "main"
@@ -40,13 +40,13 @@ upload_to_release = true
 build_command = "python -m pip install -U twine poetry && poetry build"
 
 [tool.poetry]
-name = "django-google-sso"
-version = "3.3.0"
-description = "Easily add Google Authentication to your Django Projects"
-authors = ["Chris Maillefaud <chrismaille@megalus.com.br>"]
+name = "django-microsoft-sso"
+version = "0.1.0"
+description = "Easily add Microsoft Authentication to your Django Projects"
+authors = ["Chris Maillefaud <chrismaille@users.noreply.github.com>"]
 readme = "README.md"
-repository = "https://github.com/megalus/django-google-sso"
-keywords = ["google", "django", "sso"]
+repository = "https://github.com/megalus/django-microsoft-sso"
+keywords = ["microsoft", "django", "sso"]
 license = "MIT"
 classifiers = [
     "Framework :: Django",
@@ -59,12 +59,11 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9, <4.0"
+python = ">=3.10, <4.0"
 django = ">=4.0"
 loguru = "*"
-google-auth = "*"
-google-auth-httplib2 = "*"
-google-auth-oauthlib = "*"
+identity = "*"
+httpx = "*"
 
 [tool.poetry.dev-dependencies]
 auto-changelog = "*"
@@ -85,6 +84,8 @@ click = ">8"
 bandit = "*"
 flake8 = "*"
 stela = "*"
+django-google-sso = "*"
+# django-google-sso = {path = "../django-google-sso", develop = true}
 httpx = "*"
 
 [tool.stela]

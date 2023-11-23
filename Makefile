@@ -3,10 +3,10 @@ install:
 	@poetry run pre-commit install -f
 
 test:
-	@poetry run pytest -v -x -p no:warnings --cov-report term-missing --cov=./django_google_sso
+	@poetry run pytest -v -x -p no:warnings --cov-report term-missing --cov=./django_microsoft_sso
 
 ci:
-	@poetry run pytest --cov=./django_google_sso
+	@poetry run pytest --cov=./django_microsoft_sso
 
 format:
 	@poetry run black .

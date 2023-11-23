@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",  # Need for Auth messages
     "django.contrib.staticfiles",
     "django.contrib.sites",  # Optional: Add Sites framework
-    "django_google_sso",  # Add django_google_sso
+    "django_google_sso",  # Add django_microsoft_sso
+    "django_microsoft_sso",  # Add django_microsoft_sso
 ]
 
 MIDDLEWARE = [
@@ -59,7 +60,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "example_app.backend.GoogleSLOMiddlewareExample",  # Must be after Authentication
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -77,7 +77,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "django.template.context_processors.static",
             ],
         },
     },
@@ -151,19 +150,73 @@ if "jet" in INSTALLED_APPS:
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "example_app" / "static"]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTHENTICATION_BACKENDS = ["backend.MyBackend"]
+AUTHENTICATION_BACKENDS = ["example_app.backend.MyBackend"]
+
+
+SITE_ID = 1
+
+###############################
+#                             #
+# Test Microsoft              #
+#                             #
+###############################
+
+# Uncomment MICROSOFT_SSO_CALLBACK_DOMAIN to use Sites Framework site domain
+# Or comment both and use domain retrieved from accounts/login/ request
+MICROSOFT_SSO_CALLBACK_DOMAIN = env.MICROSOFT_SSO_CALLBACK_DOMAIN
+
+MICROSOFT_SSO_APPLICATION_ID = env.MICROSOFT_SSO_APPLICATION_ID
+MICROSOFT_SSO_CLIENT_SECRET = env.MICROSOFT_SSO_CLIENT_SECRET
+
+MICROSOFT_SSO_ALLOWABLE_DOMAINS = env.get_or_default(
+    "MICROSOFT_SSO_ALLOWABLE_DOMAINS", ""
+).split(",")
+MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = (
+    False  # Mark as True, to create superuser on first eligible user login
+)
+MICROSOFT_SSO_STAFF_LIST = env.get_or_default("MICROSOFT_SSO_STAFF_LIST", "").split(",")
+
+MICROSOFT_SSO_SUPERUSER_LIST = env.get_or_default(
+    "MICROSOFT_SSO_SUPERUSER_LIST", ""
+).split(",")
+
+# Optional: You can save access token to session
+MICROSOFT_SSO_SAVE_ACCESS_TOKEN = True
+
+# Optional: Add if you want to use custom authentication backend
+# MICROSOFT_SSO_AUTHENTICATION_BACKEND = "backend.MyBackend"
+
+# Optional: Change Scopes
+MICROSOFT_SSO_SCOPES = [
+    # "User.ReadBasic.All"  # default scope
+    "User.Read.All",  # additional scope
+]
+# Optional: Add pre-login logic
+# MICROSOFT_SSO_PRE_LOGIN_CALLBACK = "backend.pre_login_callback"
+
+# Optional: Always update user data
+MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA = True
+
+# Optional: Customize Button Text
+# MICROSOFT_SSO_TEXT = "Login using Microsoft 365 Account"
+
+###############################
+#                             #
+# Test Google                 #
+#                             #
+###############################
 
 # Uncomment GOOGLE_SSO_CALLBACK_DOMAIN to use Sites Framework site domain
 # Or comment both and use domain retrieved from accounts/login/ request
-SITE_ID = 1
 GOOGLE_SSO_CALLBACK_DOMAIN = env.GOOGLE_SSO_CALLBACK_DOMAIN
 
 GOOGLE_SSO_SESSION_COOKIE_AGE = 3600  # default value
@@ -182,7 +235,7 @@ GOOGLE_SSO_SUPERUSER_LIST = env.get_or_default("GOOGLE_SSO_SUPERUSER_LIST", "").
     ","
 )
 GOOGLE_SSO_TIMEOUT = 10  # default value
-GOOGLE_SSO_SCOPES = [
+GOOGLE_SSO_SCOPES = [  # default values
     "openid",
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",
@@ -193,19 +246,24 @@ GOOGLE_SSO_SCOPES = [
 GOOGLE_SSO_AUTHENTICATION_BACKEND = "backend.MyBackend"
 
 # Optional: You can save access token to session
-GOOGLE_SSO_SAVE_ACCESS_TOKEN = True
-
-# Optional: Change default login text
-# GOOGLE_SSO_TEXT = "Login using Google Account"
+# GOOGLE_SSO_SAVE_ACCESS_TOKEN = True
 
 # Optional: Add pre-login logic
-GOOGLE_SSO_PRE_LOGIN_CALLBACK = "backend.pre_login_callback"
+# GOOGLE_SSO_PRE_LOGIN_CALLBACK = "backend.pre_login_callback"
 
 # Uncomment to disable SSO login
-# GOOGLE_SSO_ENABLED = False  # default: True
+GOOGLE_SSO_ENABLED = False  # default: True
 
 # Uncomment to disable user auto-creation
 # GOOGLE_SSO_AUTO_CREATE_USERS = False  # default: True
 
 # Uncomment to hide login form on admin page
-# GOOGLE_SSO_SHOW_FORM_ON_ADMIN_PAGE = False  # default: True
+# SSO_SHOW_FORM_ON_ADMIN_PAGE = False  # default: True
+
+# If you're using more than one SSO provider,
+# you can full disable django's E003/W003 check, uncomment the
+# SILENCED_SYSTEM_CHECKS option
+# To use an alternate version for this check,
+# which filters SSO templates, uncomment both options:
+# SILENCED_SYSTEM_CHECKS = ["templates.E003"]
+# SSO_USE_ALTERNATE_W003 = True  # default: False

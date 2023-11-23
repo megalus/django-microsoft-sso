@@ -1,0 +1,85 @@
+/*
+  login-btn
+  ---------------------------------
+  | --------------                 |
+  | | btn-logo   |    btn-label    |
+  | --------------                 |
+  ----------------------------------
+*/
+
+/* Microsoft Login Button */
+.microsoft-login-btn {
+    background-color: #ffffff;
+    border: 1px solid #a7a7a7;
+    padding: 1px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+/* Microsoft Login Button Hover */
+.microsoft-login-btn:hover {
+    background-color: rgba(167, 167, 167, 0.56);
+    border: 1px solid rgba(167, 167, 167, 0.56);
+
+}
+
+/* Microsoft Login Button Remove Decoration */
+.microsoft-login-btn a {
+    text-decoration: none;
+}
+
+/* Microsoft Login Button Logo Area */
+.microsoft-btn-logo {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding: 4px;
+}
+
+/* Microsoft Login Button Label Area */
+.microsoft-btn-label {
+    color: rgba(95, 95, 106, 0.66);
+    margin-top: -1px;
+    width: 100%;
+    text-align: center;
+    padding: 0 10px;
+}
+/* Button black in dark mode */
+@media (prefers-color-scheme: dark) {
+    .microsoft-login-btn {
+        background-color: #212121;
+        border: 1px solid #212121;
+        padding: 1px;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    /* Microsoft Login Button Hover */
+    .microsoft-login-btn:hover {
+        background-color: rgba(167, 167, 167, 0.56);
+        border: 1px solid rgba(167, 167, 167, 0.56);
+
+    }
+
+    /* Microsoft Login Button Remove Decoration */
+    .microsoft-login-btn a {
+        text-decoration: none;
+    }
+
+    /* Microsoft Login Button Logo Area */
+    .microsoft-btn-logo {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        padding: 4px;
+    }
+
+    /* Microsoft Login Button Label Area */
+    .microsoft-btn-label {
+        color: white;
+        margin-top: -1px;
+        width: 100%;
+        text-align: center;
+        padding: 0 10px;
+    }
+}

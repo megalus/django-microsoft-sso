@@ -7,6 +7,7 @@ I really hope this project can make your life a little easier.
 Please feel free to check our other projects:
 
 * [stela](https://github.com/megalus/stela): Easily manage project settings and secrets in any python project.
+* [django-google-sso](https://github.com/megalus/django-google-sso): A Django app to enable Single Sign-On with Google Accounts.
 
 ## Donating
 

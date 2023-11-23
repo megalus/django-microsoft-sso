@@ -19,8 +19,9 @@ from django.contrib import admin
 from django.contrib.auth.views import LoginView
 from django.urls import include, path
 
+from django_microsoft_sso.views import microsoft_slo_view
 from example_app.settings import INSTALLED_APPS
-from example_app.views import secret_page, single_logout_view
+from example_app.views import secret_page
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -31,10 +32,10 @@ urlpatterns += [
     path(
         "accounts/login/",
         LoginView.as_view(
-            template_name="google_sso/login.html"
-        ),  # The modified form with google button
+            template_name="microsoft_sso/login.html"
+        ),  # The modified form with microsoft button
     ),
-    path("accounts/logout/", single_logout_view, name="logout"),
+    path("accounts/logout/", microsoft_slo_view, name="logout"),
 ]
 
 if "grappelli" in INSTALLED_APPS:
@@ -48,6 +49,11 @@ if "jet" in INSTALLED_APPS:
 
 urlpatterns += [
     path(
-        "google_sso/", include("django_google_sso.urls", namespace="django_google_sso")
+        "microsoft_sso/",
+        include("django_google_sso.urls", namespace="django_google_sso"),
+    ),
+    path(
+        "microsoft_sso/",
+        include("django_microsoft_sso.urls", namespace="django_microsoft_sso"),
     ),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

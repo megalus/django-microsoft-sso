@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Example App" type="Python.DjangoServer" factoryName="Django server">
-    <module name="django-google-sso" />
+    <module name="django-microsoft-sso" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
@@ -18,10 +18,10 @@
       <option name="useCurrentConnection" value="false" />
     </EXTENSION>
     <option name="launchJavascriptDebuger" value="false" />
-    <option name="port" value="8001" />
+    <option name="port" value="8002" />
     <option name="host" value="localhost" />
     <option name="additionalOptions" value="" />
-    <option name="browserUrl" value="http://127.0.0.1:8001/secret" />
+    <option name="browserUrl" value="http://localhost:8002/secret" />
     <option name="runTestServer" value="false" />
     <option name="runNoReload" value="false" />
     <option name="useCustomRunCommand" value="false" />
