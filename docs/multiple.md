@@ -87,7 +87,7 @@ GOOGLE_SSO_ALLOWABLE_DOMAINS = ["contoso.net"]
 
 The login page will look like this:
 
-![Django Login Page with Google and Microsoft SSO](../images/django_multiple_sso.png)
+![Django Login Page with Google and Microsoft SSO](images/django_multiple_sso.png)
 
 ### The Django E003/W003 Warning
 If you are using both **Django Google SSO** and **Django Microsoft SSO**, you will get the following warning:
