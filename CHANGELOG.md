@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.0 (2023-11-23)
+
+### Feature
+
+* V1.0 ([`838b62a`](https://github.com/megalus/django-microsoft-sso/commit/838b62ae74e85309a25ef7eab44a06e928951e83))
+
+### Breaking
+
+* This is the first public release ([`838b62a`](https://github.com/megalus/django-microsoft-sso/commit/838b62ae74e85309a25ef7eab44a06e928951e83))
+
 ## v3.3.0 (2023-09-27)
 
 ### Feature
