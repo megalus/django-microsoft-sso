@@ -2,6 +2,20 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.0 (2023-12-20)
+
+### Feature
+
+* New version ([`e4ef9cb`](https://github.com/megalus/django-microsoft-sso/commit/e4ef9cb1385d3aa0f0dc97d0c6137d6167c58d3b))
+
+### Breaking
+
+* * Remove Django 4.1 support * Add Django 5.0 support * Fix `SSO_USE_ALTERNATE_W003` bug * Fix several CSS issues with custom logo images * Update docs ([`e4ef9cb`](https://github.com/megalus/django-microsoft-sso/commit/e4ef9cb1385d3aa0f0dc97d0c6137d6167c58d3b))
+
+### Documentation
+
+* Small fix ([`53992c8`](https://github.com/megalus/django-microsoft-sso/commit/53992c82181f500546e7a08a131286914d1c6c23))
+
 ## v1.0.0 (2023-11-23)
 
 ### Feature
