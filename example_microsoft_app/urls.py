@@ -1,4 +1,4 @@
-"""example_app URL Configuration
+"""example_microsoft_app URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -20,8 +20,8 @@ from django.contrib.auth.views import LoginView
 from django.urls import include, path
 
 from django_microsoft_sso.views import microsoft_slo_view
-from example_app.settings import INSTALLED_APPS
-from example_app.views import secret_page
+from example_microsoft_app.settings import INSTALLED_APPS
+from example_microsoft_app.views import secret_page
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -49,7 +49,7 @@ if "jet" in INSTALLED_APPS:
 
 urlpatterns += [
     path(
-        "microsoft_sso/",
+        "google_sso/",
         include("django_google_sso.urls", namespace="django_google_sso"),
     ),
     path(

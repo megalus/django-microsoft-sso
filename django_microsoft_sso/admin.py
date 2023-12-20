@@ -36,6 +36,9 @@ class MicrosoftSSOInlineAdmin(admin.StackedInline):
     readonly_fields = ("microsoft_id", "picture")
     extra = 0
 
+    def has_add_permission(self, request, obj):
+        return False
+
 
 CurrentUserModel, last_admin, LastUserAdmin = get_current_user_and_admin()
 

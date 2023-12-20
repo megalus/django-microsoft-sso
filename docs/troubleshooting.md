@@ -8,7 +8,7 @@
 
 ### Example App
 
-To test this library please check the `Example App` provided [here](https://github.com/megalus/django-microsoft-sso/tree/main/example_app).
+To test this library please check the `Example App` provided [here](https://github.com/megalus/django-microsoft-sso/tree/main/example_microsoft_app).
 
 ### Not working?
 
