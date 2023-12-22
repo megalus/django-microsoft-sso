@@ -67,19 +67,13 @@ class MicrosoftAuth:
         response.raise_for_status()
 
         # Get Email Verified Flag
-        graph_url = (
-            "https://graph.microsoft.com/v1.0/users/{}?$select=mailVerified".format(
-                user_info["id"]
-            )
+        graph_url = "https://graph.microsoft.com/v1.0/users/{}?$select=mailVerified".format(
+            user_info["id"]
         )
         response = httpx.get(graph_url, headers=headers)
-        logger.debug(response.json())
         if response.status_code == 200:
-            user_info.update(
-                {"email_verified": response.json().get("mailVerified", False)}
-            )
+            user_info.update({"email_verified": response.json().get("mailVerified", False)})
 
-        logger.debug(user_info)
         # Get Picture Data
         graph_url = "https://graph.microsoft.com/v1.0/me/photo/$value"
         response = httpx.get(graph_url, headers=headers)
