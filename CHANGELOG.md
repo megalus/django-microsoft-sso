@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.1 (2023-12-22)
+
+### Fix
+
+* Remove debug logging ([`9c9e5de`](https://github.com/megalus/django-microsoft-sso/commit/9c9e5dea5d75a018fad679390318bf6b6b46d37e))
+
 ## v2.0.0 (2023-12-20)
 
 ### Feature
