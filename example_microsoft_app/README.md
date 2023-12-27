@@ -5,11 +5,9 @@
 Please create a `.env` file with the following information:
 
 ```dotenv
-GOOGLE_SSO_ALLOWABLE_DOMAINS=gmail.com
-GOOGLE_SSO_CLIENT_ID=<your web app client id>
-GOOGLE_SSO_CLIENT_SECRET=<your web app client secret>
-GOOGLE_SSO_PROJECT_ID=<your google project id>
-GOOGLE_SSO_CALLBACK_DOMAIN=localhost:8000
+MICROSOFT_SSO_ALLOWABLE_DOMAINS=["<your email domain>"]
+MICROSOFT_SSO_APPLICATION_ID=<your registered app id>
+MICROSOFT_SSO_CLIENT_SECRET=<your client secret>
 ```
 
 Then run the following commands:

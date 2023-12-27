@@ -177,17 +177,13 @@ MICROSOFT_SSO_CALLBACK_DOMAIN = env.MICROSOFT_SSO_CALLBACK_DOMAIN
 MICROSOFT_SSO_APPLICATION_ID = env.MICROSOFT_SSO_APPLICATION_ID
 MICROSOFT_SSO_CLIENT_SECRET = env.MICROSOFT_SSO_CLIENT_SECRET
 
-MICROSOFT_SSO_ALLOWABLE_DOMAINS = env.get_or_default(
-    "MICROSOFT_SSO_ALLOWABLE_DOMAINS", ""
-).split(",")
+MICROSOFT_SSO_ALLOWABLE_DOMAINS = env.get_or_default("MICROSOFT_SSO_ALLOWABLE_DOMAINS", [])
 MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = (
     False  # Mark as True, to create superuser on first eligible user login
 )
-MICROSOFT_SSO_STAFF_LIST = env.get_or_default("MICROSOFT_SSO_STAFF_LIST", "").split(",")
+MICROSOFT_SSO_STAFF_LIST = env.get_or_default("MICROSOFT_SSO_STAFF_LIST", [])
 
-MICROSOFT_SSO_SUPERUSER_LIST = env.get_or_default("MICROSOFT_SSO_SUPERUSER_LIST", "").split(
-    ","
-)
+MICROSOFT_SSO_SUPERUSER_LIST = env.get_or_default("MICROSOFT_SSO_SUPERUSER_LIST", [])
 
 # Optional: You can save access token to session
 MICROSOFT_SSO_SAVE_ACCESS_TOKEN = True
@@ -224,14 +220,12 @@ GOOGLE_SSO_CLIENT_ID = env.GOOGLE_SSO_CLIENT_ID
 GOOGLE_SSO_PROJECT_ID = env.GOOGLE_SSO_PROJECT_ID
 GOOGLE_SSO_CLIENT_SECRET = env.GOOGLE_SSO_CLIENT_SECRET
 
-GOOGLE_SSO_ALLOWABLE_DOMAINS = env.get_or_default("GOOGLE_SSO_ALLOWABLE_DOMAINS", "").split(
-    ","
-)
+GOOGLE_SSO_ALLOWABLE_DOMAINS = env.get_or_default("GOOGLE_SSO_ALLOWABLE_DOMAINS", [])
 GOOGLE_SSO_AUTO_CREATE_FIRST_SUPERUSER = (
     False  # Mark as True, to create superuser on first eligible user login
 )
-GOOGLE_SSO_STAFF_LIST = env.get_or_default("GOOGLE_SSO_STAFF_LIST", "").split(",")
-GOOGLE_SSO_SUPERUSER_LIST = env.get_or_default("GOOGLE_SSO_SUPERUSER_LIST", "").split(",")
+GOOGLE_SSO_STAFF_LIST = env.get_or_default("GOOGLE_SSO_STAFF_LIST", [])
+GOOGLE_SSO_SUPERUSER_LIST = env.get_or_default("GOOGLE_SSO_SUPERUSER_LIST", [])
 GOOGLE_SSO_TIMEOUT = 10  # default value
 GOOGLE_SSO_SCOPES = [  # default values
     "openid",
@@ -268,5 +262,5 @@ GOOGLE_SSO_LOGO_URL = (
 # SILENCED_SYSTEM_CHECKS option
 # To use an alternate version for this check,
 # which filters SSO templates, uncomment both options:
-# SILENCED_SYSTEM_CHECKS = ["templates.E003"]
-# SSO_USE_ALTERNATE_W003 = True  # default: False
+SILENCED_SYSTEM_CHECKS = ["templates.E003"]
+SSO_USE_ALTERNATE_W003 = True  # default: False
