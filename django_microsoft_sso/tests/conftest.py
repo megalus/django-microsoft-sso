@@ -94,7 +94,7 @@ def callback_request_from_reverse_proxy(rf, query_string):
 @pytest.fixture
 def callback_request_with_state(callback_request):
     request = deepcopy(callback_request)
-    request.session["sso_state"] = "foo"
+    request.session["msal_graph_info"] = {"state": "foo"}
     request.session["sso_next_url"] = "/secret/"
     return request
 
@@ -105,11 +105,12 @@ def client_with_session(client, settings, mocker, microsoft_response):
     settings.MICROSOFT_SSO_PRE_LOGIN_CALLBACK = "django_google_sso.hooks.pre_login_user"
     importlib.reload(conf)
     session = client.session
-    session.update({"_auth_flow": {"state": "foo"}, "sso_next_url": SECRET_PATH})
+    session.update({"msal_graph_info": {"state": "foo"}, "sso_next_url": SECRET_PATH})
     session.save()
-    auth_mock = mocker.patch.object(MicrosoftAuth, "auth")
-    auth_mock.log_in.complete_log_in.return_value = {"auth_result": True}
-    auth_mock.get_token_for_user.return_value = {"access_token": "foo"}
+    m = mocker.patch("django_microsoft_sso.main.ConfidentialClientApplication")
+    m.acquire_token_by_auth_code_flow.return_value = {"access_token": "foo"}
+    m.initiate_auth_code_flow.return_value = {"state": "foo"}
+    mocker.patch.object(MicrosoftAuth, "auth", return_value=m)
     mocker.patch.object(MicrosoftAuth, "get_user_info", return_value=microsoft_response)
     yield client
 

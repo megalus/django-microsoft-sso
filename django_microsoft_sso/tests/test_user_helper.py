@@ -77,9 +77,7 @@ def test_update_existing_user_record(
     user = helper.get_or_create_user()
 
     # Assert
-    assert (
-        user.first_name == microsoft_response_update["givenName"]
-    ) == expected_is_equal
+    assert (user.first_name == microsoft_response_update["givenName"]) == expected_is_equal
     assert (user.last_name == microsoft_response_update["surname"]) == expected_is_equal
     assert user.email == microsoft_response_update["mail"]
 

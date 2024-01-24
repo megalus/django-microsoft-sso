@@ -32,12 +32,8 @@ def define_sso_providers():
                         "name": provider,
                         "logo_url": getattr(conf, f"{provider.upper()}_SSO_LOGO_URL"),
                         "text": gettext(getattr(conf, f"{provider.upper()}_SSO_TEXT")),
-                        "login_url": reverse(
-                            f"django_{provider}_sso:oauth_start_login"
-                        ),
-                        "css_url": static(
-                            f"django_{provider}_sso/{provider}_button.css"
-                        ),
+                        "login_url": reverse(f"django_{provider}_sso:oauth_start_login"),
+                        "css_url": static(f"django_{provider}_sso/{provider}_button.css"),
                     }
                 )
         except Exception as e:

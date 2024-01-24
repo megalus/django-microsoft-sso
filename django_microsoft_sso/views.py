@@ -29,14 +29,16 @@ def start_login(request: HttpRequest) -> HttpResponseRedirect:
         clean_param = reverse(conf.MICROSOFT_SSO_NEXT_URL)
     next_path = urlparse(clean_param).path
 
+    ms_auth = MicrosoftAuth(request)
+    ms_auth.initiate()
+
     # Save data on Session
     if not request.session.session_key:
         request.session.create()
     request.session.set_expiry(conf.MICROSOFT_SSO_TIMEOUT * 60)
+    request.session["msal_graph_info"] = ms_auth.result
     request.session["sso_next_url"] = next_path
     request.session.save()
-
-    ms_auth = MicrosoftAuth(request)
 
     # Redirect User
     return HttpResponseRedirect(ms_auth.get_auth_uri())
@@ -61,17 +63,16 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
         )
         return HttpResponseRedirect(login_failed_url)
 
-    # Then, check state.
-    request_state = request.session.get("_auth_flow", {}).get("state")
+    # Then, check the state.
+    request_state = request.session.get("msal_graph_info", {}).get("state")
     next_url = request.session.get("sso_next_url")
 
     if not request_state or state != request_state:
-        messages.add_message(
-            request, messages.ERROR, _("State Mismatch. Time expired?")
-        )
+        messages.add_message(request, messages.ERROR, _("State Mismatch. Time expired?"))
         return HttpResponseRedirect(login_failed_url)
 
-    auth_result = microsoft.auth.complete_log_in(request.GET)
+    # Get Access Token from Microsoft Graph
+    auth_result = microsoft.get_user_token()
     if not auth_result:
         messages.add_message(
             request, messages.ERROR, _("Authorization Data not received from SSO.")
@@ -91,7 +92,6 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
             )
         return HttpResponseRedirect(login_failed_url)
 
-    # Get Access Token from Microsoft Graph
     try:
         user_result = microsoft.get_user_info()
     except Exception as error:
@@ -123,8 +123,7 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
 
     # Add Access Token in Session
     if conf.MICROSOFT_SSO_SAVE_ACCESS_TOKEN:
-        token_response = microsoft.auth.get_token_for_user(microsoft.scopes)
-        request.session["microsoft_sso_access_token"] = token_response["access_token"]
+        request.session["microsoft_sso_access_token"] = microsoft.token_info["access_token"]
 
     # Save Session
     request.session.save()
@@ -142,9 +141,7 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
     return HttpResponseRedirect(next_url or reverse(conf.MICROSOFT_SSO_NEXT_URL))
 
 
-@require_http_methods(
-    ["GET", "HEAD", "POST", "OPTIONS"]
-)  # Remove get and head in Django 5.0
+@require_http_methods(["POST", "OPTIONS"])
 def microsoft_slo_view(request: HttpRequest) -> TemplateResponse:
     """
     Logout the User from Microsoft SSO and Django.
@@ -160,6 +157,6 @@ def microsoft_slo_view(request: HttpRequest) -> TemplateResponse:
         )  # Default: "admin:index"
         if not homepage.startswith("http"):
             homepage = request.build_absolute_uri(homepage)
-        next_page = microsoft.auth.log_out(homepage=homepage)
+        next_page = microsoft.get_logout_url(homepage=homepage)
         return LogoutView.as_view(next_page=next_page)(request)
     return LogoutView.as_view()(request)

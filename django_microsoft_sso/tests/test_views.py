@@ -26,7 +26,10 @@ class MyBackend(ModelBackend):
 def test_start_login(client, mocker):
     # Arrange
     flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
-    flow_mock.log_in.return_value = {"auth_uri": "https://foo/bar"}
+    flow_mock.initiate_auth_code_flow.return_value = {
+        "state": "foo",
+        "auth_uri": "https://foo/bar",
+    }
 
     # Act
     url = reverse("django_microsoft_sso:oauth_start_login") + "?next=/secret/"
@@ -40,7 +43,10 @@ def test_start_login(client, mocker):
 def test_start_login_none_next_param(client, mocker):
     # Arrange
     flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
-    flow_mock.log_in.return_value = {"auth_uri": "https://foo/bar"}
+    flow_mock.initiate_auth_code_flow.return_value = {
+        "state": "foo",
+        "auth_uri": "https://foo/bar",
+    }
 
     # Act
     url = reverse("django_microsoft_sso:oauth_start_login")
@@ -64,7 +70,10 @@ def test_start_login_none_next_param(client, mocker):
 def test_exploit_redirect(client, mocker, test_parameter):
     # Arrange
     flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
-    flow_mock.log_in.return_value = {"auth_uri": "https://foo/bar"}
+    flow_mock.initiate_auth_code_flow.return_value = {
+        "state": "foo",
+        "auth_uri": "https://foo/bar",
+    }
 
     # Act
     url = reverse("django_microsoft_sso:oauth_start_login") + f"?next={test_parameter}"
@@ -165,8 +174,10 @@ def test_inactive_user(client_with_session, callback_url, microsoft_response):
     assert User.objects.get(email=microsoft_response["mail"]).is_active is False
 
 
-def test_new_user_login(client_with_session, callback_url, settings):
+def test_new_user_login(client_with_session, callback_url, settings, mocker):
     # Arrange
+    flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
+    flow_mock.acquire_token_by_auth_code_flow.return_value = {"access_token": "foo"}
     User.objects.all().delete()
     assert User.objects.count() == 0
     settings.MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["dailyplanet.com"]
@@ -183,10 +194,13 @@ def test_new_user_login(client_with_session, callback_url, settings):
 
 
 def test_existing_user_login(
-    client_with_session, settings, microsoft_response, callback_url
+    client_with_session, settings, microsoft_response, callback_url, mocker
 ):
     # Arrange
     from django_microsoft_sso import conf
+
+    flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
+    flow_mock.acquire_token_by_auth_code_flow.return_value = {"access_token": "foo"}
 
     existing_user = User.objects.create(
         username=microsoft_response["mail"],

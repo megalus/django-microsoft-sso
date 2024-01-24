@@ -63,7 +63,7 @@ classifiers = [
 python = ">=3.10, <4.0"
 django = ">=4.1"
 loguru = "*"
-identity = "*"
+msal = "*"
 httpx = "*"
 
 [tool.poetry.dev-dependencies]

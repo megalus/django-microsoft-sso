@@ -28,26 +28,21 @@ def test_get_redirect_uri(fixture, expected_scheme, monkeypatch):
     current_site_domain = Site.objects.get_current().domain
 
     # Act
-    google = MicrosoftAuth(fixture)
+    ms = MicrosoftAuth(fixture)
 
     # Assert
     assert (
-        google.get_redirect_uri()
+        ms.get_redirect_uri()
         == f"{expected_scheme}://{current_site_domain}/microsoft_sso/callback/"
     )
 
 
-def test_redirect_uri_with_custom_domain(
-    callback_request_from_reverse_proxy, monkeypatch
-):
+def test_redirect_uri_with_custom_domain(callback_request_from_reverse_proxy, monkeypatch):
     # Arrange
     monkeypatch.setattr(conf, "MICROSOFT_SSO_CALLBACK_DOMAIN", "my-other-domain.com")
 
     # Act
-    google = MicrosoftAuth(callback_request_from_reverse_proxy)
+    ms = MicrosoftAuth(callback_request_from_reverse_proxy)
 
     # Assert
-    assert (
-        google.get_redirect_uri()
-        == "https://my-other-domain.com/microsoft_sso/callback/"
-    )
+    assert ms.get_redirect_uri() == "https://my-other-domain.com/microsoft_sso/callback/"

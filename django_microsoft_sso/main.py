@@ -1,25 +1,31 @@
+import uuid
 from dataclasses import dataclass
 from typing import Any
 
 import httpx
-import identity
+import msal
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from identity.web import Auth
 from loguru import logger
+from msal import ConfidentialClientApplication
 
 from django_microsoft_sso import conf
 from django_microsoft_sso.models import MicrosoftSSOUser
+
+STATE = str(uuid.uuid4())
 
 
 @dataclass
 class MicrosoftAuth:
     request: HttpRequest
-    _auth: Auth = None
+    _auth: ConfidentialClientApplication = None
+    result: dict[Any, Any] | None = None
+    token_info: dict[Any, Any] | None = None
 
     @property
     def scopes(self) -> list[str]:
@@ -46,21 +52,17 @@ class MicrosoftAuth:
         return callback_uri
 
     @property
-    def auth(self) -> Auth:
+    def auth(self) -> ConfidentialClientApplication:
         if not self._auth:
-            self._auth = identity.web.Auth(
-                session=self.request.session,
-                authority="https://login.microsoftonline.com/common",
+            self._auth = msal.ConfidentialClientApplication(
                 client_id=conf.MICROSOFT_SSO_APPLICATION_ID,
                 client_credential=conf.MICROSOFT_SSO_CLIENT_SECRET,
             )
-            self.request.session.save()
         return self._auth
 
     def get_user_info(self):
         graph_url = "https://graph.microsoft.com/v1.0/me"
-        token_response = self.auth.get_token_for_user(self.scopes)
-        token = token_response["access_token"]
+        token = self.token_info["access_token"]
         headers = {"Authorization": f"Bearer {token}"}
         response = httpx.get(graph_url, headers=headers)
         user_info = response.json()
@@ -83,14 +85,33 @@ class MicrosoftAuth:
         return user_info
 
     def get_auth_uri(self):
-        data = self.auth.log_in(
-            scopes=self.scopes,
-            redirect_uri=self.get_redirect_uri(),
-        )
-        return data["auth_uri"]
+        return self.result["auth_uri"]
 
     def get_user_token(self):
-        return self.flow.credentials.token
+        self.token_info = self.auth.acquire_token_by_auth_code_flow(
+            auth_code_flow=self.request.session["msal_graph_info"],
+            auth_response={
+                "code": self.request.GET.get("code"),
+                "state": self.request.GET.get("state"),
+                "session_state": self.request.GET.get("session_state"),
+            },
+        )
+        return self.token_info
+
+    def initiate(self) -> dict:
+        self.result = self.auth.initiate_auth_code_flow(
+            scopes=settings.MICROSOFT_SSO_SCOPES,
+            redirect_uri=self.get_redirect_uri(),
+            state=STATE,
+        )
+        return self.result
+
+    @staticmethod
+    def get_logout_url(homepage):
+        return (
+            f"https://login.microsoftonline.com/common/oauth2/v2.0/"
+            f"logout?post_logout_redirect_uri={homepage}"
+        )
 
 
 @dataclass
