@@ -98,10 +98,12 @@ class MicrosoftAuth:
         )
         return self.token_info
 
-    def initiate(self) -> dict:
+    def initiate(
+        self, custom_scopes: list[str] | None = None, redirect_uri: str | None = None
+    ) -> dict:
         self.result = self.auth.initiate_auth_code_flow(
-            scopes=settings.MICROSOFT_SSO_SCOPES,
-            redirect_uri=self.get_redirect_uri(),
+            scopes=custom_scopes or settings.MICROSOFT_SSO_SCOPES,
+            redirect_uri=redirect_uri or self.get_redirect_uri(),
             state=STATE,
         )
         return self.result
