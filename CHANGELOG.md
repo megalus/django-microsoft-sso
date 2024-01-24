@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.1 (2024-01-24)
+
+### Fix
+
+* Add missing optional args for initiate ([`5fc3c49`](https://github.com/megalus/django-microsoft-sso/commit/5fc3c497e318423d6479553bc63e465dc5a28dc6))
+
 ## v2.1.0 (2024-01-24)
 
 ### Feature
