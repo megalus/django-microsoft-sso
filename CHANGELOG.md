@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.0 (2024-01-24)
+
+### Feature
+
+* Use microsoft official library ([`a8eeb21`](https://github.com/megalus/django-microsoft-sso/commit/a8eeb21b9e071de3b744185a4ffd5103a9cb766b))
+
 ## v2.0.1 (2023-12-22)
 
 ### Fix

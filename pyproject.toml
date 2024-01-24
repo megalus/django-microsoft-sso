@@ -42,7 +42,7 @@ build_command = "python -m pip install -U twine poetry && poetry build"
 
 [tool.poetry]
 name = "django-microsoft-sso"
-version = "2.0.1"
+version = "2.1.0"
 description = "Easily add Microsoft Authentication to your Django Projects"
 authors = ["Chris Maillefaud <chrismaille@users.noreply.github.com>"]
 readme = "README.md"
