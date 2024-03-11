@@ -17,8 +17,14 @@ from msal import ConfidentialClientApplication
 from django_microsoft_sso import conf
 from django_microsoft_sso.models import MicrosoftSSOUser
 
+from msal.authority import (AuthorityBuilder, AZURE_PUBLIC)
+
 STATE = str(uuid.uuid4())
 
+if conf.MICROSOFT_SSO_AUTHORITY:
+    MY_AUTHORITY = AuthorityBuilder(AZURE_PUBLIC, conf.MICROSOFT_SSO_AUTHORITY)
+else:
+    MY_AUTHORITY = None
 
 @dataclass
 class MicrosoftAuth:
@@ -57,6 +63,7 @@ class MicrosoftAuth:
             self._auth = msal.ConfidentialClientApplication(
                 client_id=conf.MICROSOFT_SSO_APPLICATION_ID,
                 client_credential=conf.MICROSOFT_SSO_CLIENT_SECRET,
+                authority=MY_AUTHORITY,
             )
         return self._auth
 
