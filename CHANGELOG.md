@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.0 (2024-03-12)
+
+### Feature
+
+* Add basic support to custom login templates. ([`96ac7cf`](https://github.com/megalus/django-microsoft-sso/commit/96ac7cf3604fb24efc019780f0a8e5610b923660))
+
+### Breaking
+
+* Add basic support to custom login templates. ([`96ac7cf`](https://github.com/megalus/django-microsoft-sso/commit/96ac7cf3604fb24efc019780f0a8e5610b923660))
+
 ## v2.1.1 (2024-01-24)
 
 ### Fix
