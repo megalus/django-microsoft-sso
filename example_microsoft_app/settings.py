@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     # Uncomment for Jest
     # "jet.dashboard",
     # "jet",
+    # Uncomment for Unfold
+    # "unfold",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -244,7 +246,7 @@ GOOGLE_SSO_AUTHENTICATION_BACKEND = "backend.MyBackend"
 # GOOGLE_SSO_PRE_LOGIN_CALLBACK = "backend.pre_login_callback"
 
 # Uncomment to disable SSO login
-GOOGLE_SSO_ENABLED = True  # default: True
+# GOOGLE_SSO_ENABLED = False  # default: True
 
 GOOGLE_SSO_LOGO_URL = (
     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/"

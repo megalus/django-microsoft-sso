@@ -7,6 +7,15 @@
   ----------------------------------
 */
 
+/* Login Button Area */
+.login-btn-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 295px;
+}
+
 /* Microsoft Login Button */
 .microsoft-login-btn {
     background-color: #ffffff;

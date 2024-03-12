@@ -15,20 +15,32 @@ def test_scopes(callback_request):
     assert ms.scopes == conf.MICROSOFT_SSO_SCOPES
 
 
-@pytest.mark.parametrize(
-    "fixture, expected_scheme",
-    [
-        (pytest.lazy_fixture("callback_request"), "http"),
-        (pytest.lazy_fixture("callback_request_from_reverse_proxy"), "https"),
-    ],
-)
-def test_get_redirect_uri(fixture, expected_scheme, monkeypatch):
+def test_get_redirect_uri_with_http(callback_request, monkeypatch):
     # Arrange
+    expected_scheme = "http"
     monkeypatch.setattr(conf, "MICROSOFT_SSO_CALLBACK_DOMAIN", None)
     current_site_domain = Site.objects.get_current().domain
 
     # Act
-    ms = MicrosoftAuth(fixture)
+    ms = MicrosoftAuth(callback_request)
+
+    # Assert
+    assert (
+        ms.get_redirect_uri()
+        == f"{expected_scheme}://{current_site_domain}/microsoft_sso/callback/"
+    )
+
+
+def test_get_redirect_uri_with_reverse_proxy(
+    callback_request_from_reverse_proxy, monkeypatch
+):
+    # Arrange
+    expected_scheme = "https"
+    monkeypatch.setattr(conf, "MICROSOFT_SSO_CALLBACK_DOMAIN", None)
+    current_site_domain = Site.objects.get_current().domain
+
+    # Act
+    ms = MicrosoftAuth(callback_request_from_reverse_proxy)
 
     # Assert
     assert (

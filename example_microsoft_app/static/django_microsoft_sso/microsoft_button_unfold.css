@@ -1,0 +1,66 @@
+/*
+
+  Please rename this file to microsoft_button.css to override works.
+  This CSS is compatible with Django Unfold CSS
+
+  login-btn
+  ---------------------------------
+  | --------------                 |
+  | | btn-logo   |    btn-label    |
+  | --------------                 |
+  ----------------------------------
+*/
+
+/* Login Button Area */
+.login-btn-area {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 382px;
+}
+
+/* Microsoft Login Button */
+.microsoft-login-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #9233e7;
+    border-radius: 6px;
+    padding: 2px;
+    margin-bottom: 20px;
+    width: 100%;
+    height: 38px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Microsoft Login Button Hover */
+.microsoft-login-btn:hover {
+    background-color: rgba(167, 167, 167, 0.56);
+    border: 1px solid rgba(167, 167, 167, 0.56);
+}
+
+/* Microsoft Login Button Remove Decoration */
+.microsoft-login-btn a {
+    text-decoration: none;
+}
+
+/* Microsoft Login Button Logo Area */
+.microsoft-btn-logo {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding: 4px;
+}
+
+
+/* Microsoft Login Button Label Area */
+.microsoft-btn-label {
+    color: #ffffff;
+    margin-top: -1px;
+    width: 100%;
+    text-align: center;
+    padding: 0 10px;
+}

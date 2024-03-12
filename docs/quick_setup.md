@@ -107,7 +107,7 @@ Microsoft" button:
 [Django Admin Interface](https://github.com/fabiocaccamo/django-admin-interface)
 and [Django Jet Reboot](https://github.com/assem-ch/django-jet-reboot).
 
-If the skin uses his own login template, the "Login with Microsoft" button will not be displayed.
+    If the skin uses his own login template, you will need create your own `admin/login.html` template to add both HTML from custom login.html from the custom package and from this library.
 
 ---
 
