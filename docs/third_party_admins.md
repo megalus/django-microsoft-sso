@@ -79,8 +79,8 @@ For the Django Unfold we use this the code on our login template:
 --8<-- "django_microsoft_sso/templates/microsoft_sso/login.html"
 ```
 
-And this is the CSS you can use to customize your login button (you will need to create your custom `static/django_Microsoft_sso/microsoft_button.css/` to work):
+And this is the CSS you can use to customize your login button (you will need to create your custom `static/django_microsoft_sso/microsoft_button.css/` to work):
 
 ```css
---8<-- "example_Microsoft_app/static/django_Microsoft_sso/microsoft_button_unfold.css"
+--8<-- "example_microsoft_app/static/django_microsoft_sso/microsoft_button_unfold.css"
 ```

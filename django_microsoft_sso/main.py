@@ -120,6 +120,7 @@ class MicrosoftAuth:
 class UserHelper:
     user_info: dict[Any, Any]
     request: Any
+    user_changed: bool = False
 
     @property
     def user_email(self):
@@ -139,23 +140,33 @@ class UserHelper:
 
     def get_or_create_user(self):
         user_model = get_user_model()
-        user, created = user_model.objects.get_or_create(email=self.user_email)
+        user, created = user_model.objects.get_or_create(
+            email=self.user_email, defaults={"username": self.user_email}
+        )
         self.check_first_super_user(user, user_model)
+        self.check_for_update(created, user)
+        if self.user_changed:
+            user.save()
+
+        MicrosoftSSOUser.objects.update_or_create(
+            user=user,
+            defaults={
+                "microsoft_id": self.user_info["id"],
+                "picture_raw": self.user_info["picture_raw_data"],
+                "locale": self.user_info["preferredLanguage"],
+            },
+        )
+
+        return user
+
+    def check_for_update(self, created, user):
         if created or conf.MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA:
             self.check_for_permissions(user)
             user.first_name = self.user_info["givenName"]
             user.last_name = self.user_info["surname"]
             user.username = self.user_info["userPrincipalName"]
             user.set_unusable_password()
-        user.save()
-
-        microsoft_user, created = MicrosoftSSOUser.objects.get_or_create(user=user)
-        microsoft_user.microsoft_id = self.user_info["id"]
-        microsoft_user.picture_raw = self.user_info["picture_raw_data"]
-        microsoft_user.locale = self.user_info["preferredLanguage"]
-        microsoft_user.save()
-
-        return user
+            self.user_changed = True
 
     def check_first_super_user(self, user, user_model):
         if conf.MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER:
@@ -171,6 +182,7 @@ class UserHelper:
                 logger.warning(message_text)
                 user.is_superuser = True
                 user.is_staff = True
+                self.user_changed = True
 
     def check_for_permissions(self, user):
         if user.email in conf.MICROSOFT_SSO_STAFF_LIST:
