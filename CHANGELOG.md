@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.1 (2024-03-12)
+
+### Fix
+
+* Error when create a user with empty username when a user with no username already exists on database ([`a0cc158`](https://github.com/megalus/django-microsoft-sso/commit/a0cc158160b741cc4667f17351f24a9a6eed6046))
+
 ## v3.0.0 (2024-03-12)
 
 ### Feature
