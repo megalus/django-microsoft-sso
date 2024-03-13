@@ -58,3 +58,5 @@ SSO_USE_ALTERNATE_W003 = getattr(settings, "SSO_USE_ALTERNATE_W003", False)
 
 if SSO_USE_ALTERNATE_W003:
     from django_microsoft_sso.checks.warnings import register_sso_check  # noqa
+
+MICROSOFT_SSO_AUTHORITY = getattr(settings, "MICROSOFT_SSO_AUTHORITY", None)

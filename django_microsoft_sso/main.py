@@ -1,6 +1,7 @@
 import uuid
 from dataclasses import dataclass
 from typing import Any
+from urllib.parse import urlparse
 
 import httpx
 import msal
@@ -13,6 +14,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from loguru import logger
 from msal import ConfidentialClientApplication
+from msal.authority import AuthorityBuilder
 
 from django_microsoft_sso import conf
 from django_microsoft_sso.models import MicrosoftSSOUser
@@ -54,11 +56,35 @@ class MicrosoftAuth:
     @property
     def auth(self) -> ConfidentialClientApplication:
         if not self._auth:
+            authority = self.get_authority()
             self._auth = msal.ConfidentialClientApplication(
                 client_id=conf.MICROSOFT_SSO_APPLICATION_ID,
                 client_credential=conf.MICROSOFT_SSO_CLIENT_SECRET,
+                authority=authority,
             )
         return self._auth
+
+    @staticmethod
+    def get_authority():
+        if conf.MICROSOFT_SSO_AUTHORITY is None or isinstance(
+            conf.MICROSOFT_SSO_AUTHORITY, AuthorityBuilder
+        ):
+            return conf.MICROSOFT_SSO_AUTHORITY
+
+        authority_value = conf.MICROSOFT_SSO_AUTHORITY
+        if not isinstance(authority_value, str):
+            raise ValueError(
+                "MICROSOFT_SSO_AUTHORITY must be a valid URL or an AuthorityBuilder object"
+            )
+
+        if isinstance(authority_value, str):
+            data = urlparse(authority_value)
+            if not data.scheme or not data.netloc:
+                raise ValueError(
+                    "MICROSOFT_SSO_AUTHORITY must be a valid URL "
+                    "or an AuthorityBuilder object"
+                )
+        return authority_value
 
     def get_user_info(self):
         graph_url = "https://graph.microsoft.com/v1.0/me"

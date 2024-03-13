@@ -1,5 +1,6 @@
 import pytest
 from django.contrib.sites.models import Site
+from msal.authority import AZURE_PUBLIC, AuthorityBuilder
 
 from django_microsoft_sso import conf
 from django_microsoft_sso.main import MicrosoftAuth
@@ -58,3 +59,29 @@ def test_redirect_uri_with_custom_domain(callback_request_from_reverse_proxy, mo
 
     # Assert
     assert ms.get_redirect_uri() == "https://my-other-domain.com/microsoft_sso/callback/"
+
+
+@pytest.mark.parametrize(
+    "data, expect_raise",
+    [
+        ("https://login.microsoftonline.com/contoso", False),
+        (AuthorityBuilder(AZURE_PUBLIC, "contoso.onmicrosoft.com"), False),
+        (None, False),
+        ("contoso", True),
+    ],
+)
+def test_custom_authorities(
+    data, expect_raise, callback_request_from_reverse_proxy, monkeypatch
+):
+    # Arrange
+    monkeypatch.setattr(conf, "MICROSOFT_SSO_AUTHORITY", data)
+
+    # Act
+    ms = MicrosoftAuth(callback_request_from_reverse_proxy)
+
+    # Assert
+    if expect_raise:
+        with pytest.raises(ValueError):
+            ms.get_authority()
+    else:
+        assert ms.get_authority() == data
