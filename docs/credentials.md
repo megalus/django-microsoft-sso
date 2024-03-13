@@ -142,6 +142,41 @@ But in fact, you can use any library you want, like
 [django-environ](https://pypi.org/project/django-environ/), [django-constance](https://github.com/jazzband/django-constance),
 [python-dotenv](https://pypi.org/project/python-dotenv/), etc...
 
+## Customizing Token Authority
+By default, Django Microsoft SSO uses the default Token Authority from the `microsoft-authentication-library-for-python` library (msal).
+Currently, the default Token Authority is `https://login.microsoftonline.com/common`.
+
+If you need to define another authority, please set the `MICROSOFT_SSO_AUTHORITY` option with your full tenant URL or `AuthorityBuilder` instance.
+
+### Using a custom authority URL
+Please inform the full URL of your tenant, like `https://login.microsoftonline.com/your_tenant`.
+
+```python
+# settings.py
+
+MICROSOFT_SSO_AUTHORITY = "https://login.microsoftonline.com/your_tenant"
+```
+
+### Using a custom authority with AuthorityBuilder
+Use the `AuthorityBuilder` class to create a custom authority. This class is available in the `msal` library.
+
+```python
+# settings.py
+
+from msal.authority import (
+    AuthorityBuilder,
+    AZURE_US_GOVERNMENT, AZURE_CHINA, AZURE_PUBLIC
+)
+
+MICROSOFT_SSO_AUTHORITY = AuthorityBuilder(AZURE_PUBLIC, "your-tenant.onmicrosoft.com")
+```
+
+!!! info "To learn more:"
+    * [MSAL Client Application Configuration Options](https://learn.microsoft.com/en-us/entra/identity-platform/msal-client-application-configuration#authority)
+    * [Microsoft Authentication Library (MSAL) for Python](https://learn.microsoft.com/en-us/entra/msal/python/)
+
+
+
 ---
 
 In the next step, we need to configure the authorized callback URI for your Django project.
