@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.1.0 (2024-03-13)
+
+### Feature
+
+* Add support to custom token authorities ([`99a7e71`](https://github.com/megalus/django-microsoft-sso/commit/99a7e716304df271df2d8d0c372b0df424752667))
+
 ## v3.0.1 (2024-03-12)
 
 ### Fix
