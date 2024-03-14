@@ -149,8 +149,8 @@ class UserHelper:
     user_changed: bool = False
 
     @property
-    def user_email(self) -> None | str:
-        return self.user_info.get("mail")
+    def user_email(self) -> str:
+        return self.user_info.get("mail", "")
 
     @property
     def user_principal_name(self) -> str:
@@ -178,7 +178,7 @@ class UserHelper:
             )
         else:
             user, created = user_model.objects.get_or_create(
-                username=self.user_principal_name, defaults={"email": self.user_email or ""}
+                username=self.user_principal_name, defaults={"email": self.user_email}
             )
         self.check_first_super_user(user, user_model)
         self.check_for_update(created, user)
@@ -199,8 +199,9 @@ class UserHelper:
     def check_for_update(self, created, user):
         if created or conf.MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA:
             self.check_for_permissions(user)
-            user.first_name = self.user_info.get("givenName")
-            user.last_name = self.user_info.get("surname")
+            user.first_name = self.user_info.get("givenName", "")
+            user.last_name = self.user_info.get("surname", "")
+            user.email = self.user_email
             user.set_unusable_password()
             self.user_changed = True
 
