@@ -150,7 +150,7 @@ class UserHelper:
 
     @property
     def user_email(self) -> str:
-        return self.user_info.get("mail", "")
+        return self.user_info.get("mail") or ""
 
     @property
     def user_principal_name(self) -> str:
@@ -199,8 +199,8 @@ class UserHelper:
     def check_for_update(self, created, user):
         if created or conf.MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA:
             self.check_for_permissions(user)
-            user.first_name = self.user_info.get("givenName", "")
-            user.last_name = self.user_info.get("surname", "")
+            user.first_name = self.user_info.get("givenName") or ""
+            user.last_name = self.user_info.get("surname") or ""
             user.email = self.user_email
             user.set_unusable_password()
             self.user_changed = True

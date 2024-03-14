@@ -149,3 +149,26 @@ def test_create_user_without_email_address(
         # Assert
         assert user.email == ""
         assert user.username == microsoft_response_no_email["userPrincipalName"]
+
+
+def test_different_null_values(microsoft_response, callback_request, monkeypatch):
+    # Arrange
+    microsoft_response_no_key = deepcopy(microsoft_response)
+    del microsoft_response_no_key["mail"]
+    microsoft_response_key_none = deepcopy(microsoft_response)
+    microsoft_response_key_none["mail"] = None
+
+    # Act
+    no_key_helper = UserHelper(microsoft_response_no_key, callback_request)
+    no_key_helper.get_or_create_user()
+    user_one = no_key_helper.find_user()
+
+    none_key_helper = UserHelper(microsoft_response_key_none, callback_request)
+    none_key_helper.get_or_create_user()
+    user_two = none_key_helper.find_user()
+
+    # Assert
+    assert user_one.email == ""
+    assert user_one.username == microsoft_response_no_key["userPrincipalName"]
+    assert user_two.email == ""
+    assert user_two.username == microsoft_response_key_none["userPrincipalName"]
