@@ -149,8 +149,12 @@ class UserHelper:
     user_changed: bool = False
 
     @property
-    def user_email(self):
-        return self.user_info["mail"]
+    def user_email(self) -> str:
+        return self.user_info.get("mail") or ""
+
+    @property
+    def user_principal_name(self) -> str:
+        return self.user_info["userPrincipalName"]
 
     @property
     def email_is_valid(self) -> bool:
@@ -166,9 +170,16 @@ class UserHelper:
 
     def get_or_create_user(self):
         user_model = get_user_model()
-        user, created = user_model.objects.get_or_create(
-            email=self.user_email, defaults={"username": self.user_email}
-        )
+        if conf.MICROSOFT_SSO_UNIQUE_EMAIL:
+            if not self.user_email:
+                raise ValueError("User email not found in Tenant data.")
+            user, created = user_model.objects.get_or_create(
+                email=self.user_email, defaults={"username": self.user_principal_name}
+            )
+        else:
+            user, created = user_model.objects.get_or_create(
+                username=self.user_principal_name, defaults={"email": self.user_email}
+            )
         self.check_first_super_user(user, user_model)
         self.check_for_update(created, user)
         if self.user_changed:
@@ -178,8 +189,8 @@ class UserHelper:
             user=user,
             defaults={
                 "microsoft_id": self.user_info["id"],
-                "picture_raw": self.user_info["picture_raw_data"],
-                "locale": self.user_info["preferredLanguage"],
+                "picture_raw": self.user_info.get("picture_raw_data"),
+                "locale": self.user_info.get("preferredLanguage"),
             },
         )
 
@@ -188,21 +199,19 @@ class UserHelper:
     def check_for_update(self, created, user):
         if created or conf.MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA:
             self.check_for_permissions(user)
-            user.first_name = self.user_info["givenName"]
-            user.last_name = self.user_info["surname"]
-            user.username = self.user_info["userPrincipalName"]
+            user.first_name = self.user_info.get("givenName") or ""
+            user.last_name = self.user_info.get("surname") or ""
+            user.email = self.user_email
             user.set_unusable_password()
             self.user_changed = True
 
     def check_first_super_user(self, user, user_model):
         if conf.MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER:
-            superuser_exists = user_model.objects.filter(
-                is_superuser=True, email__contains=f"@{self.user_email.split('@')[-1]}"
-            ).exists()
+            superuser_exists = user_model.objects.filter(is_superuser=True).exists()
             if not superuser_exists:
                 message_text = _(
                     f"MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER is True. "
-                    f"Adding SuperUser status to email: {self.user_email}"
+                    f"Adding SuperUser status to email: {self.user_principal_name}"
                 )
                 messages.add_message(self.request, messages.INFO, message_text)
                 logger.warning(message_text)
@@ -211,17 +220,23 @@ class UserHelper:
                 self.user_changed = True
 
     def check_for_permissions(self, user):
-        if user.email in conf.MICROSOFT_SSO_STAFF_LIST:
+        if (
+            user.email in conf.MICROSOFT_SSO_STAFF_LIST
+            or user.username in conf.MICROSOFT_SSO_STAFF_LIST
+        ):
             message_text = _(
-                f"User email: {self.user_email} in MICROSOFT_SSO_STAFF_LIST. "
+                f"User: {self.user_principal_name} in MICROSOFT_SSO_STAFF_LIST. "
                 f"Added Staff Permission."
             )
             messages.add_message(self.request, messages.INFO, message_text)
             logger.debug(message_text)
             user.is_staff = True
-        if user.email in conf.MICROSOFT_SSO_SUPERUSER_LIST:
+        if (
+            user.email in conf.MICROSOFT_SSO_SUPERUSER_LIST
+            or user.username in conf.MICROSOFT_SSO_SUPERUSER_LIST
+        ):
             message_text = _(
-                f"User email: {self.user_email} in MICROSOFT_SSO_SUPERUSER_LIST. "
+                f"User: {self.user_principal_name} in MICROSOFT_SSO_SUPERUSER_LIST. "
                 f"Added SuperUser Permission."
             )
             messages.add_message(self.request, messages.INFO, message_text)
@@ -231,6 +246,9 @@ class UserHelper:
 
     def find_user(self):
         user_model = get_user_model()
-        query = user_model.objects.filter(email=self.user_email)
+        if conf.MICROSOFT_SSO_UNIQUE_EMAIL:
+            query = user_model.objects.filter(email=self.user_email)
+        else:
+            query = user_model.objects.filter(username=self.user_principal_name)
         if query.exists():
             return query.get()

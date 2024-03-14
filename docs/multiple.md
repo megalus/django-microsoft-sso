@@ -113,6 +113,10 @@ The login page will look like this:
     SSO_SHOW_FORM_ON_ADMIN_PAGE = False
     ```
 
+### Avoiding duplicated Users
+Both **Django GitHub SSO** and **Django Microsoft SSO** can create users without an email address, using the `username` field. This can cause duplicated users if you are using both packages.
+To avoid this, you can set the `MICROSOFT_SSO_UNIQUE_EMAIL` and `GITHUB_SSO_UNIQUE_EMAIL` settings to `True`, but make sure your Azure Tenant and GitHub Organization users have emails.
+
 ### The Django E003/W003 Warning
 If you are using both **Django Google SSO** and **Django Microsoft SSO**, you will get the following warning:
 

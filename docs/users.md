@@ -29,10 +29,10 @@ If you are using the auto-create users feature, you can give permissions to the 
 this, you can set the following options in your `settings.py`:
 
 ```python
-# List of emails that will be created as staff
+# List of emails or user principal names that will be created as staff
 MICROSOFT_SSO_STAFF_LIST = ["my-email@contoso.com"]
 
-# List of emails that will be created as superuser
+# List of emails or user principal names that will be created as superuser
 MICROSOFT_SSO_SUPERUSER_LIST = ["another-email@contoso.com"]
 
 # If True, the first user that checks in will be created as superuser

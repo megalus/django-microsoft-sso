@@ -1,4 +1,5 @@
 import importlib
+from copy import deepcopy
 
 import pytest
 
@@ -82,15 +83,24 @@ def test_update_existing_user_record(
     assert user.email == microsoft_response_update["mail"]
 
 
-def test_create_staff_from_list(microsoft_response, callback_request, settings):
+@pytest.mark.parametrize("use_email", [True, False])
+def test_create_staff_from_list(
+    microsoft_response, callback_request, settings, use_email, monkeypatch
+):
     # Arrange
-    settings.MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = False
+    monkeypatch.setattr(conf, "MICROSOFT_SSO_UNIQUE_EMAIL", use_email)
     settings.MICROSOFT_SSO_STAFF_LIST = [microsoft_response["mail"]]
+    ms_response = deepcopy(microsoft_response)
+    if not use_email:
+        del ms_response["mail"]
+        settings.MICROSOFT_SSO_STAFF_LIST = [microsoft_response["userPrincipalName"]]
+    settings.MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = False
     importlib.reload(conf)
 
     # Act
-    helper = UserHelper(microsoft_response, callback_request)
-    user = helper.get_or_create_user()
+    helper = UserHelper(ms_response, callback_request)
+    helper.get_or_create_user()
+    user = helper.find_user()
 
     # Assert
     assert user.is_active is True
@@ -112,3 +122,53 @@ def test_create_super_user_from_list(microsoft_response, callback_request, setti
     assert user.is_active is True
     assert user.is_staff is True
     assert user.is_superuser is True
+
+
+@pytest.mark.parametrize(
+    "unique_email",
+    [True, False],
+)
+def test_create_user_without_email_address(
+    microsoft_response, callback_request, unique_email, monkeypatch
+):
+    # Arrange
+    microsoft_response_no_email = deepcopy(microsoft_response)
+    del microsoft_response_no_email["mail"]
+    helper = UserHelper(microsoft_response_no_email, callback_request)
+    monkeypatch.setattr(conf, "MICROSOFT_SSO_UNIQUE_EMAIL", unique_email)
+
+    if unique_email:
+        # Act/Assert
+        with pytest.raises(ValueError):
+            helper.get_or_create_user()
+    else:
+        # Act
+        helper.get_or_create_user()
+        user = helper.find_user()
+
+        # Assert
+        assert user.email == ""
+        assert user.username == microsoft_response_no_email["userPrincipalName"]
+
+
+def test_different_null_values(microsoft_response, callback_request, monkeypatch):
+    # Arrange
+    microsoft_response_no_key = deepcopy(microsoft_response)
+    del microsoft_response_no_key["mail"]
+    microsoft_response_key_none = deepcopy(microsoft_response)
+    microsoft_response_key_none["mail"] = None
+
+    # Act
+    no_key_helper = UserHelper(microsoft_response_no_key, callback_request)
+    no_key_helper.get_or_create_user()
+    user_one = no_key_helper.find_user()
+
+    none_key_helper = UserHelper(microsoft_response_key_none, callback_request)
+    none_key_helper.get_or_create_user()
+    user_two = none_key_helper.find_user()
+
+    # Assert
+    assert user_one.email == ""
+    assert user_one.username == microsoft_response_no_key["userPrincipalName"]
+    assert user_two.email == ""
+    assert user_two.username == microsoft_response_key_none["userPrincipalName"]
