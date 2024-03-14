@@ -150,6 +150,8 @@ class UserHelper:
 
     @property
     def user_email(self):
+        if self.user_info["mail"] is None:
+            return self.user_info["userPrincipalName"]
         return self.user_info["mail"]
 
     @property
