@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.2.0 (2024-03-14)
+
+### Feature
+
+* Change User unique index from mail to userPrincipalName ([`13d39fb`](https://github.com/megalus/django-microsoft-sso/commit/13d39fb1f8d7a478c3371dbc2e5dbb9903df58ca))
+
 ## v3.1.0 (2024-03-13)
 
 ### Feature
