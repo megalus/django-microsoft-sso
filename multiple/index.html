@@ -585,6 +585,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#avoiding-duplicated-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      Avoiding duplicated Users
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#the-django-e003w003-warning" class="md-nav__link">
     <span class="md-ellipsis">
       The Django E003/W003 Warning
@@ -739,6 +748,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#avoiding-duplicated-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      Avoiding duplicated Users
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#the-django-e003w003-warning" class="md-nav__link">
     <span class="md-ellipsis">
       The Django E003/W003 Warning
@@ -867,6 +885,9 @@ package which you need to install and configure:</p>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">SSO_SHOW_FORM_ON_ADMIN_PAGE</span> <span class="o">=</span> <span class="kc">False</span>
 </span></code></pre></div>
 </div>
+<h3 id="avoiding-duplicated-users">Avoiding duplicated Users<a class="headerlink" href="#avoiding-duplicated-users" title="Permanent link">&para;</a></h3>
+<p>Both <strong>Django GitHub SSO</strong> and <strong>Django Microsoft SSO</strong> can create users without an email address, using the <code>username</code> field. This can cause duplicated users if you are using both packages.
+To avoid this, you can set the <code>MICROSOFT_SSO_UNIQUE_EMAIL</code> and <code>GITHUB_SSO_UNIQUE_EMAIL</code> settings to <code>True</code>, but make sure your Azure Tenant and GitHub Organization users have emails.</p>
 <h3 id="the-django-e003w003-warning">The Django E003/W003 Warning<a class="headerlink" href="#the-django-e003w003-warning" title="Permanent link">&para;</a></h3>
 <p>If you are using both <strong>Django Google SSO</strong> and <strong>Django Microsoft SSO</strong>, you will get the following warning:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>WARNINGS:
