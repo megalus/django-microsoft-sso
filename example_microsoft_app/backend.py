@@ -55,6 +55,16 @@ def pre_create_callback(ms_info, request) -> dict:
 
     username = f"{user_key}_{user_id}"
 
+    url = "https://graph.microsoft.com/v1.0/organization"
+    token = request.session.get("microsoft_sso_access_token")
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+    response = httpx.get(url, timeout=10, headers=headers)
+    response.raise_for_status()
+    data = response.json()
+    logger.debug(f"Organization Info: {data}")
+
     return {
         "username": username,
         "date_joined": arrow.utcnow().shift(days=-1).datetime,

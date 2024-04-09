@@ -112,6 +112,10 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
         )
         return HttpResponseRedirect(login_failed_url)
 
+    # Add Access Token in Session
+    if conf.MICROSOFT_SSO_SAVE_ACCESS_TOKEN:
+        request.session["microsoft_sso_access_token"] = microsoft.token_info["access_token"]
+
     # Run Pre-Create Callback
     module_path = ".".join(conf.MICROSOFT_SSO_PRE_CREATE_CALLBACK.split(".")[:-1])
     pre_login_fn = conf.MICROSOFT_SSO_PRE_CREATE_CALLBACK.split(".")[-1]
@@ -126,10 +130,6 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
 
     if not user or not user.is_active:
         return HttpResponseRedirect(login_failed_url)
-
-    # Add Access Token in Session
-    if conf.MICROSOFT_SSO_SAVE_ACCESS_TOKEN:
-        request.session["microsoft_sso_access_token"] = microsoft.token_info["access_token"]
 
     # Save Session
     request.session.save()
