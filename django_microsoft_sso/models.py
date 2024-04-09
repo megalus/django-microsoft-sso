@@ -10,6 +10,7 @@ User = get_user_model()
 
 class MicrosoftSSOUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_principal_name = models.CharField(max_length=255, null=True, blank=True)
     microsoft_id = models.CharField(max_length=255, blank=True, null=True)
     picture_raw = models.BinaryField(blank=True, null=True)
     locale = models.CharField(max_length=5, blank=True, null=True)

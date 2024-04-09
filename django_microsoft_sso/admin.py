@@ -33,7 +33,7 @@ def get_current_user_and_admin() -> (
 
 class MicrosoftSSOInlineAdmin(admin.StackedInline):
     model = MicrosoftSSOUser
-    readonly_fields = ("microsoft_id", "picture")
+    readonly_fields = ("microsoft_id", "picture", "user_principal_name")
     extra = 0
 
     def has_add_permission(self, request, obj):
@@ -50,7 +50,7 @@ if admin.site.is_registered(CurrentUserModel):
 @admin.register(MicrosoftSSOUser)
 class MicrosoftSSOAdmin(admin.ModelAdmin):
     list_display = ("user", "microsoft_id")
-    readonly_fields = ("microsoft_id", "picture")
+    readonly_fields = ("microsoft_id", "picture", "user_principal_name")
 
     def has_add_permission(self, request):
         return False

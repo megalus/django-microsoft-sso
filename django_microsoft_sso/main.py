@@ -9,6 +9,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import Q
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -168,18 +169,37 @@ class UserHelper:
             logger.debug(f"Email {self.user_email} is not verified.")
         return valid_domain
 
-    def get_or_create_user(self):
+    def get_or_create_user(self, extra_users_args: dict | None = None):
         user_model = get_user_model()
+        user_defaults = extra_users_args or {}
+
         if conf.MICROSOFT_SSO_UNIQUE_EMAIL:
             if not self.user_email:
                 raise ValueError("User email not found in Tenant data.")
+            if "username" not in user_defaults:
+                user_defaults["username"] = self.user_principal_name
+            if "email" in user_defaults:
+                del user_defaults["email"]
             user, created = user_model.objects.get_or_create(
-                email=self.user_email, defaults={"username": self.user_principal_name}
+                email=self.user_email, defaults=user_defaults
             )
         else:
-            user, created = user_model.objects.get_or_create(
-                username=self.user_principal_name, defaults={"email": self.user_email}
+            user_defaults["email"] = self.user_email
+
+            # Find searching User Principal Name in MicrosoftSSOUser
+            # For existing databases prior to this version, this field can be empty
+            query = user_model.objects.filter(
+                microsoftssouser__user_principal_name=self.user_principal_name
             )
+            if query.exists():
+                user = query.get()
+                created = False
+            else:
+                username = user_defaults.pop("username", self.user_principal_name)
+                user_defaults["email"] = self.user_email
+                user, created = user_model.objects.get_or_create(
+                    username=username, defaults=user_defaults
+                )
         self.check_first_super_user(user, user_model)
         self.check_for_update(created, user)
         if self.user_changed:
@@ -191,6 +211,7 @@ class UserHelper:
                 "microsoft_id": self.user_info["id"],
                 "picture_raw": self.user_info.get("picture_raw_data"),
                 "locale": self.user_info.get("preferredLanguage"),
+                "user_principal_name": self.user_principal_name,
             },
         )
 
@@ -249,6 +270,9 @@ class UserHelper:
         if conf.MICROSOFT_SSO_UNIQUE_EMAIL:
             query = user_model.objects.filter(email=self.user_email)
         else:
-            query = user_model.objects.filter(username=self.user_principal_name)
+            query = user_model.objects.filter(
+                Q(microsoftssouser__user_principal_name=self.user_principal_name)
+                | Q(username=self.user_principal_name)
+            )
         if query.exists():
             return query.get()

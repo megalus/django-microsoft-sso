@@ -112,9 +112,15 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
         )
         return HttpResponseRedirect(login_failed_url)
 
+    # Run Pre-Create Callback
+    module_path = ".".join(conf.MICROSOFT_SSO_PRE_CREATE_CALLBACK.split(".")[:-1])
+    pre_login_fn = conf.MICROSOFT_SSO_PRE_CREATE_CALLBACK.split(".")[-1]
+    module = importlib.import_module(module_path)
+    extra_users_args = getattr(module, pre_login_fn)(user_result, request)
+
     # Get or Create User
     if conf.MICROSOFT_SSO_AUTO_CREATE_USERS:
-        user = user_helper.get_or_create_user()
+        user = user_helper.get_or_create_user(extra_users_args)
     else:
         user = user_helper.find_user()
 

@@ -198,6 +198,10 @@ MICROSOFT_SSO_SCOPES = [
     # "User.ReadBasic.All"  # default scope
     "User.Read.All",  # additional scope
 ]
+
+# Optional: Add pre-create logic
+MICROSOFT_SSO_PRE_CREATE_CALLBACK = "backend.pre_create_callback"
+
 # Optional: Add pre-login logic
 # MICROSOFT_SSO_PRE_LOGIN_CALLBACK = "backend.pre_login_callback"
 

@@ -26,6 +26,12 @@ MICROSOFT_SSO_AUTHENTICATION_BACKEND = getattr(
     settings, "MICROSOFT_SSO_AUTHENTICATION_BACKEND", None
 )
 
+MICROSOFT_SSO_PRE_CREATE_CALLBACK = getattr(
+    settings,
+    "MICROSOFT_SSO_PRE_CREATE_CALLBACK",
+    "django_microsoft_sso.hooks.pre_create_user",
+)
+
 MICROSOFT_SSO_PRE_LOGIN_CALLBACK = getattr(
     settings,
     "MICROSOFT_SSO_PRE_LOGIN_CALLBACK",

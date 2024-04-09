@@ -1,3 +1,4 @@
+import arrow
 import httpx
 from django.contrib import messages
 from django.contrib.auth.backends import ModelBackend
@@ -12,7 +13,7 @@ class MyBackend(ModelBackend):
 
 
 def pre_login_callback(user, request):
-    """Callback function called after user is logged in."""
+    """Callback function called before user is logged in."""
 
     # Example 1: Add SuperUser status to user
     messages.info(request, f"Running Pre-Login callback for user: {user}.")
@@ -41,3 +42,20 @@ def pre_login_callback(user, request):
         user.last_name = user_data["surname"]
         user.email = user_data["mail"]
         user.save()
+
+
+def pre_create_callback(ms_info, request) -> dict:
+    """Callback function called before user is created.
+
+    return: dict content to be passed to User.objects.create() as `defaults` argument.
+    """
+
+    user_key = ms_info["mail"].split("@")[0]
+    user_id = ms_info["id"].replace("-", "")
+
+    username = f"{user_key}_{user_id}"
+
+    return {
+        "username": username,
+        "date_joined": arrow.utcnow().shift(days=-1).datetime,
+    }

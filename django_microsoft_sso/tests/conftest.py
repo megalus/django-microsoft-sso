@@ -102,7 +102,10 @@ def callback_request_with_state(callback_request):
 @pytest.fixture
 def client_with_session(client, settings, mocker, microsoft_response):
     settings.MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["example.com"]
-    settings.MICROSOFT_SSO_PRE_LOGIN_CALLBACK = "django_google_sso.hooks.pre_login_user"
+    settings.MICROSOFT_SSO_PRE_LOGIN_CALLBACK = "django_microsoft_sso.hooks.pre_login_user"
+    settings.MICROSOFT_SSO_PRE_CREATE_CALLBACK = (
+        "django_microsoft_sso.hooks.pre_create_user"
+    )
     importlib.reload(conf)
     session = client.session
     session.update({"msal_graph_info": {"state": "foo"}, "sso_next_url": SECRET_PATH})

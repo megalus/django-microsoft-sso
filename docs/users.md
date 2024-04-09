@@ -40,6 +40,47 @@ MICROSOFT_SSO_SUPERUSER_LIST = ["another-email@contoso.com"]
 MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = True
 ```
 
+## Fine-tuning users before creation
+
+If you need to do some processing _before_ user is created, you can set the
+`MICROSOFT_SSO_PRE_CREATE_CALLBACK` setting to import a custom function that will be called before the user is created.
+This function will receive two arguments: the `ms_user_info` dict from Graph User API and `request` objects.
+
+!!! tip "You can add custom fields to the user model here"
+
+    The `pre_create_callback` function can return a dictionary with the fields and values that will be passed to
+    `User.objects.create()` as the `defaults` argument. This means you can add custom fields to the user model here or
+    change default values for some fields, like `username`.
+
+    If not defined, the field `username` is always the User Principal Name.
+
+    You can't change the fields: `first_name`, `last_name`, `email` and `password` using this callback. These fields are
+    always passed to `User.objects.create()` with the values from Graph API and the password is always unusable.
+
+
+```python
+import arrow
+
+def pre_create_callback(ms_info, request) -> dict | None:
+    """Callback function called before user is created.
+
+    return: dict content to be passed to
+            User.objects.create() as `defaults` argument.
+            If not informed, field `username` is always
+            the user principal name.
+    """
+
+    user_key = ms_info["mail"].split("@")[0]
+    user_id = ms_info["id"].replace("-", "")
+
+    username = f"{user_key}_{user_id}"
+
+    return {
+        "username": username,
+        "date_joined": arrow.utcnow().shift(days=-1).datetime,
+    }
+```
+
 ## Fine-tuning users before login
 
 If you need to do some processing _after_ user is created or retrieved,
