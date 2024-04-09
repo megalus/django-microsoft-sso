@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.3.1 (2024-04-09)
+
+### Fix
+
+* Add token in request before call pre-create callback ([`e6d2bb8`](https://github.com/megalus/django-microsoft-sso/commit/e6d2bb8afcf51c0533e545fc58f21a292e30f2eb))
+
 ## v3.3.0 (2024-04-09)
 
 ### Feature
