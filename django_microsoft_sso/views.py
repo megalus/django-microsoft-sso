@@ -1,7 +1,6 @@
 import importlib
 from urllib.parse import urlparse
 
-from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.views import LogoutView
 from django.http import HttpRequest, HttpResponseRedirect
@@ -10,9 +9,11 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
+from loguru import logger
 
 from django_microsoft_sso import conf
 from django_microsoft_sso.main import MicrosoftAuth, UserHelper
+from django_microsoft_sso.utils import send_message, show_credential
 
 
 @require_http_methods(["GET"])
@@ -53,14 +54,12 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
 
     # Check if Microsoft SSO is enabled
     if not conf.MICROSOFT_SSO_ENABLED:
-        messages.add_message(request, messages.ERROR, _("Microsoft SSO not enabled."))
+        send_message(request, _("Microsoft SSO not enabled."))
         return HttpResponseRedirect(login_failed_url)
 
     # First, check for authorization code
     if not code:
-        messages.add_message(
-            request, messages.ERROR, _("Authorization Code not received from SSO.")
-        )
+        send_message(request, _("Authorization Code not received from SSO."))
         return HttpResponseRedirect(login_failed_url)
 
     # Then, check the state.
@@ -68,43 +67,44 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
     next_url = request.session.get("sso_next_url")
 
     if not request_state or state != request_state:
-        messages.add_message(request, messages.ERROR, _("State Mismatch. Time expired?"))
+        send_message(request, _("State Mismatch. Time expired?"))
         return HttpResponseRedirect(login_failed_url)
 
     # Get Access Token from Microsoft Graph
     auth_result = microsoft.get_user_token()
     if not auth_result:
-        messages.add_message(
-            request, messages.ERROR, _("Authorization Data not received from SSO.")
-        )
+        send_message(request, _("Access Token not received from SSO."))
         return HttpResponseRedirect(login_failed_url)
     if "error" in auth_result:
-        messages.add_message(
-            request,
-            messages.ERROR,
-            _(f"Authorization Error received from SSO: {auth_result['error']}."),
+        send_message(
+            request, _(f"Authorization Error received from SSO: {auth_result['error']}.")
         )
         if auth_result["error"] == "invalid_client":
-            messages.add_message(
-                request,
-                messages.ERROR,
-                _("Please check your Client Credentials for MS Entra App."),
+            send_message(
+                request, _("Please check your Client Credentials for MS Entra App.")
+            )
+            logger.debug(
+                f"MICROSOFT_SSO_APPLICATION_ID: "
+                f"{show_credential(conf.MICROSOFT_SSO_APPLICATION_ID)}"
+            )
+            logger.debug(
+                f"MICROSOFT_SSO_CLIENT_SECRET: "
+                f"{show_credential(conf.MICROSOFT_SSO_CLIENT_SECRET)}"
             )
         return HttpResponseRedirect(login_failed_url)
 
     try:
         user_result = microsoft.get_user_info()
     except Exception as error:
-        messages.add_message(request, messages.ERROR, str(error))
+        send_message(request, _(f"Error while processing callback from SSO: {error}."))
         return HttpResponseRedirect(login_failed_url)
 
     user_helper = UserHelper(user_result, request)
 
     # Check if User Info is valid to login
     if not user_helper.email_is_valid:
-        messages.add_message(
+        send_message(
             request,
-            messages.ERROR,
             _(
                 f"Email address not allowed: {user_helper.user_email}. "
                 f"Please contact your administrator."

@@ -211,6 +211,12 @@ MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA = True
 # Optional: Customize Button Text
 # MICROSOFT_SSO_TEXT = "Login using Microsoft 365 Account"
 
+# Optional: Disable Logs
+# MICROSOFT_SSO_ENABLE_LOGS = False
+
+# Optional: Disable Django Messages
+# MICROSOFT_SSO_ENABLE_MESSAGES = False
+
 ###############################
 #                             #
 # Test Google                 #

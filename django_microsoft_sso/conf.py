@@ -1,4 +1,5 @@
 from django.conf import settings
+from loguru import logger
 
 MICROSOFT_SSO_APPLICATION_ID = getattr(settings, "MICROSOFT_SSO_APPLICATION_ID", None)
 MICROSOFT_SSO_CLIENT_SECRET = getattr(settings, "MICROSOFT_SSO_CLIENT_SECRET", None)
@@ -67,3 +68,10 @@ if SSO_USE_ALTERNATE_W003:
 
 MICROSOFT_SSO_AUTHORITY = getattr(settings, "MICROSOFT_SSO_AUTHORITY", None)
 MICROSOFT_SSO_UNIQUE_EMAIL = getattr(settings, "MICROSOFT_SSO_UNIQUE_EMAIL", False)
+MICROSOFT_SSO_ENABLE_LOGS = getattr(settings, "MICROSOFT_SSO_ENABLE_LOGS", True)
+MICROSOFT_SSO_ENABLE_MESSAGES = getattr(settings, "MICROSOFT_SSO_ENABLE_MESSAGES", True)
+
+if MICROSOFT_SSO_ENABLE_LOGS:
+    logger.enable("django_microsoft_sso")
+else:
+    logger.disable("django_microsoft_sso")
