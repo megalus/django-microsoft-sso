@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.4.0 (2024-04-23)
+
+### Feature
+
+* Add more control on messaging ([`ff037c3`](https://github.com/megalus/django-microsoft-sso/commit/ff037c3e05fa7f27cf49266c6557359112217845))
+
 ## v3.3.1 (2024-04-09)
 
 ### Fix
