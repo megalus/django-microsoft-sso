@@ -8,8 +8,9 @@ import msal
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.contrib.sites.shortcuts import get_current_site
-from django.db.models import Q
+from django.db.models import Field, Model, Q
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -158,6 +159,14 @@ class UserHelper:
         return self.user_info["userPrincipalName"]
 
     @property
+    def user_model(self) -> AbstractUser | Model:
+        return get_user_model()
+
+    @property
+    def username_field(self) -> Field:
+        return self.user_model._meta.get_field(self.user_model.USERNAME_FIELD)
+
+    @property
     def email_is_valid(self) -> bool:
         user_email_domain = self.user_email.split("@")[-1]
         valid_domain = False
@@ -170,17 +179,16 @@ class UserHelper:
         return valid_domain
 
     def get_or_create_user(self, extra_users_args: dict | None = None):
-        user_model = get_user_model()
         user_defaults = extra_users_args or {}
 
         if conf.MICROSOFT_SSO_UNIQUE_EMAIL:
             if not self.user_email:
                 raise ValueError("User email not found in Tenant data.")
-            if "username" not in user_defaults:
-                user_defaults["username"] = self.user_principal_name
+            if self.username_field.name not in user_defaults:
+                user_defaults[self.username_field.name] = self.user_principal_name
             if "email" in user_defaults:
                 del user_defaults["email"]
-            user, created = user_model.objects.get_or_create(
+            user, created = self.user_model.objects.get_or_create(
                 email=self.user_email, defaults=user_defaults
             )
         else:
@@ -188,19 +196,20 @@ class UserHelper:
 
             # Find searching User Principal Name in MicrosoftSSOUser
             # For existing databases prior to this version, this field can be empty
-            query = user_model.objects.filter(
+            query = self.user_model.objects.filter(
                 microsoftssouser__user_principal_name=self.user_principal_name
             )
             if query.exists():
                 user = query.get()
                 created = False
             else:
-                username = user_defaults.pop("username", self.user_principal_name)
-                user_defaults["email"] = self.user_email
-                user, created = user_model.objects.get_or_create(
-                    username=username, defaults=user_defaults
+                username = user_defaults.pop(
+                    self.username_field.name, self.user_principal_name
                 )
-        self.check_first_super_user(user, user_model)
+                user_defaults["email"] = self.user_email
+                query = {self.username_field.attname: username, "defaults": user_defaults}
+                user, created = self.user_model.objects.get_or_create(**query)
+        self.check_first_super_user(user)
         self.check_for_update(created, user)
         if self.user_changed:
             user.save()
@@ -226,9 +235,9 @@ class UserHelper:
             user.set_unusable_password()
             self.user_changed = True
 
-    def check_first_super_user(self, user, user_model):
+    def check_first_super_user(self, user):
         if conf.MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER:
-            superuser_exists = user_model.objects.filter(is_superuser=True).exists()
+            superuser_exists = self.user_model.objects.filter(is_superuser=True).exists()
             if not superuser_exists:
                 message_text = _(
                     f"MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER is True. "
@@ -241,9 +250,10 @@ class UserHelper:
                 self.user_changed = True
 
     def check_for_permissions(self, user):
+        username = getattr(user, self.username_field.name, None)
         if (
             user.email in conf.MICROSOFT_SSO_STAFF_LIST
-            or user.username in conf.MICROSOFT_SSO_STAFF_LIST
+            or username in conf.MICROSOFT_SSO_STAFF_LIST
         ):
             message_text = _(
                 f"User: {self.user_principal_name} in MICROSOFT_SSO_STAFF_LIST. "
@@ -254,7 +264,7 @@ class UserHelper:
             user.is_staff = True
         if (
             user.email in conf.MICROSOFT_SSO_SUPERUSER_LIST
-            or user.username in conf.MICROSOFT_SSO_SUPERUSER_LIST
+            or username in conf.MICROSOFT_SSO_SUPERUSER_LIST
         ):
             message_text = _(
                 f"User: {self.user_principal_name} in MICROSOFT_SSO_SUPERUSER_LIST. "
@@ -266,13 +276,13 @@ class UserHelper:
             user.is_staff = True
 
     def find_user(self):
-        user_model = get_user_model()
         if conf.MICROSOFT_SSO_UNIQUE_EMAIL:
-            query = user_model.objects.filter(email=self.user_email)
+            query = self.user_model.objects.filter(email=self.user_email)
         else:
-            query = user_model.objects.filter(
+            username_query = {self.username_field.attname: self.user_principal_name}
+            query = self.user_model.objects.filter(
                 Q(microsoftssouser__user_principal_name=self.user_principal_name)
-                | Q(username=self.user_principal_name)
+                | Q(**username_query)
             )
         if query.exists():
             return query.get()
