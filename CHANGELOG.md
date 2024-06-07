@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.4.1 (2024-06-07)
+
+### Fix
+
+* Add support to Django USERNAME_FIELD ([`16e1a2f`](https://github.com/megalus/django-microsoft-sso/commit/16e1a2f4feacc0988f56b6bf5696eab895c112e6))
+
 ## v3.4.0 (2024-04-23)
 
 ### Feature
