@@ -13,6 +13,9 @@
 ??? question "There's too much information on logs and messages from this app."
     You can disable the logs using the `MICROSOFT_SSO_ENABLE_LOGS` setting and the messages using the `MICROSOFT_SSO_ENABLE_MESSAGES` setting.
 
+??? question "I am getting Authorization Code not received from SSO when attempting to login."
+    Ensure you have a multi-tenant app registration, or if you wish to keep single-tenant you can adjust `MICROSOFT_SSO_AUTHORITY` as noted [here](/docs/credentials.md)
+
 ### Example App
 
 To test this library please check the `Example App` provided [here](https://github.com/megalus/django-microsoft-sso/tree/main/example_microsoft_app).
