@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 ]
 ```
 
-2. In [Microsoft Entra Administration Center](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM) at _Application Register_, retrieve your
+2. In [Microsoft Entra Administration Center](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM) create a multi-tenant app registration and at _Application Register_, retrieve your
    Application ID. Navigate to **Certificate & secrets** link, and get the **Client Secret Value**. Add both in your `settings.py`:
 
 ```python
@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 
 MICROSOFT_SSO_APPLICATION_ID = "your Application ID here"
 MICROSOFT_SSO_CLIENT_SECRET = "your Client Secret Value here"
+MICROSOFT_SSO_SCOPES = "User.Read.All"
 ```
 
 3. Add the callback uri `http://localhost:8000/microsoft_sso/callback/` in your Microsoft Console, on the "Authorized Redirect
