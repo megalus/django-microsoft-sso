@@ -61,7 +61,7 @@ INSTALLED_APPS = [
 
 MICROSOFT_SSO_APPLICATION_ID = "your Application ID here"
 MICROSOFT_SSO_CLIENT_SECRET = "your Client Secret Value here"
-MICROSOFT_SSO_SCOPES = "User.Read.All"
+MICROSOFT_SSO_SCOPES = ["User.Read.All"]
 ```
 
 3. Add the callback uri `http://localhost:8000/microsoft_sso/callback/` in your Microsoft Console, on the "Authorized Redirect

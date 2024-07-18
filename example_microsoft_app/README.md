@@ -2,7 +2,7 @@
 
 ## Start the Project
 
-Please create a `.env` file with the following information:
+Please create a `.env.local` file with the following information:
 
 ```dotenv
 MICROSOFT_SSO_ALLOWABLE_DOMAINS=["<your email domain>"]
