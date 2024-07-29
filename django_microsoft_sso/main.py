@@ -254,6 +254,7 @@ class UserHelper:
         if (
             user.email in conf.MICROSOFT_SSO_STAFF_LIST
             or username in conf.MICROSOFT_SSO_STAFF_LIST
+            or '*' in conf.MICROSOFT_SSO_STAFF_LIST
         ):
             message_text = _(
                 f"User: {self.user_principal_name} in MICROSOFT_SSO_STAFF_LIST. "
