@@ -188,11 +188,14 @@ class UserHelper:
                 user_defaults[self.username_field.name] = self.user_principal_name
             if "email" in user_defaults:
                 del user_defaults["email"]
+
+            # Convert email to lowercase
+            email_lowercase = self.user_email.lower()
             user, created = self.user_model.objects.get_or_create(
-                email=self.user_email, defaults=user_defaults
+                email__iexact=email_lowercase, defaults=user_defaults
             )
         else:
-            user_defaults["email"] = self.user_email
+            user_defaults["email"] = self.user_email.lower()  # Ensure email is lowercase
 
             # Find searching User Principal Name in MicrosoftSSOUser
             # For existing databases prior to this version, this field can be empty
@@ -206,9 +209,10 @@ class UserHelper:
                 username = user_defaults.pop(
                     self.username_field.name, self.user_principal_name
                 )
-                user_defaults["email"] = self.user_email
+                user_defaults["email"] = self.user_email.lower()  # Ensure email is lowercase
                 query = {self.username_field.attname: username, "defaults": user_defaults}
                 user, created = self.user_model.objects.get_or_create(**query)
+
         self.check_first_super_user(user)
         self.check_for_update(created, user)
         if self.user_changed:
@@ -225,6 +229,7 @@ class UserHelper:
         )
 
         return user
+
 
     def check_for_update(self, created, user):
         if created or conf.MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA:
@@ -254,6 +259,7 @@ class UserHelper:
         if (
             user.email in conf.MICROSOFT_SSO_STAFF_LIST
             or username in conf.MICROSOFT_SSO_STAFF_LIST
+            or '*' in conf.MICROSOFT_SSO_STAFF_LIST
         ):
             message_text = _(
                 f"User: {self.user_principal_name} in MICROSOFT_SSO_STAFF_LIST. "
