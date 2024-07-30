@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.0 (2024-07-30)
+
+### Feature
+
+* Add option to add all created users as admin staff ([`567f5aa`](https://github.com/megalus/django-microsoft-sso/commit/567f5aa11e7e1c8b9138427a986ad9e0a0d86822))
+
+### Documentation
+
+* Update docs ([`1f4c224`](https://github.com/megalus/django-microsoft-sso/commit/1f4c22451b6a04af6ca3b58f51809b5c31640020))
+
 ## v3.4.1 (2024-06-07)
 
 ### Fix
