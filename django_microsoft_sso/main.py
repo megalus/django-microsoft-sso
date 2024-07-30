@@ -152,7 +152,8 @@ class UserHelper:
 
     @property
     def user_email(self) -> str:
-        return self.user_info.get("mail") or ""
+        user_email = self.user_info.get("mail") or ""
+        return user_email.lower()  # Ensure email is lowercase
 
     @property
     def user_principal_name(self) -> str:
@@ -188,8 +189,10 @@ class UserHelper:
                 user_defaults[self.username_field.name] = self.user_principal_name
             if "email" in user_defaults:
                 del user_defaults["email"]
+
+            # Convert email to lowercase
             user, created = self.user_model.objects.get_or_create(
-                email=self.user_email, defaults=user_defaults
+                email__iexact=self.user_email, defaults=user_defaults
             )
         else:
             user_defaults["email"] = self.user_email
@@ -209,6 +212,7 @@ class UserHelper:
                 user_defaults["email"] = self.user_email
                 query = {self.username_field.attname: username, "defaults": user_defaults}
                 user, created = self.user_model.objects.get_or_create(**query)
+
         self.check_first_super_user(user)
         self.check_for_update(created, user)
         if self.user_changed:
@@ -254,6 +258,7 @@ class UserHelper:
         if (
             user.email in conf.MICROSOFT_SSO_STAFF_LIST
             or username in conf.MICROSOFT_SSO_STAFF_LIST
+            or "*" in conf.MICROSOFT_SSO_STAFF_LIST
         ):
             message_text = _(
                 f"User: {self.user_principal_name} in MICROSOFT_SSO_STAFF_LIST. "
