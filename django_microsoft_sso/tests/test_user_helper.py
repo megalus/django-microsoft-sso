@@ -2,6 +2,7 @@ import importlib
 from copy import deepcopy
 
 import pytest
+from django.contrib.auth.models import User
 
 from django_microsoft_sso import conf
 from django_microsoft_sso.main import UserHelper
@@ -108,6 +109,23 @@ def test_create_staff_from_list(
     assert user.is_superuser is False
 
 
+def test_add_all_users_to_staff_list(microsoft_response, callback_request, settings):
+    # Arrange
+    settings.MICROSOFT_SSO_STAFF_LIST = ["*"]
+    settings.MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = False
+    importlib.reload(conf)
+
+    # Act
+    helper = UserHelper(microsoft_response, callback_request)
+    helper.get_or_create_user()
+    user = helper.find_user()
+
+    # Assert
+    assert user.is_active is True
+    assert user.is_staff is True
+    assert user.is_superuser is False
+
+
 def test_create_super_user_from_list(microsoft_response, callback_request, settings):
     # Arrange
     settings.MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = False
@@ -172,3 +190,25 @@ def test_different_null_values(microsoft_response, callback_request, monkeypatch
     assert user_one.username == microsoft_response_no_key["userPrincipalName"]
     assert user_two.email == ""
     assert user_two.username == microsoft_response_key_none["userPrincipalName"]
+
+
+def test_duplicated_emails(microsoft_response, callback_request, settings):
+    # Arrange
+    lowercase_email_response = deepcopy(microsoft_response)
+    lowercase_email_response["mail"] = lowercase_email_response["mail"].lower()
+    uppercase_email_response = deepcopy(microsoft_response)
+    uppercase_email_response["mail"] = uppercase_email_response["mail"].upper()
+
+    # Act
+    user_one_helper = UserHelper(uppercase_email_response, callback_request)
+    user_one_helper.get_or_create_user()
+    user_one = user_one_helper.find_user()
+
+    user_two_helper = UserHelper(lowercase_email_response, callback_request)
+    user_two_helper.get_or_create_user()
+    user_two = user_two_helper.find_user()
+
+    # Assert
+    assert user_one.id == user_two.id
+    assert user_one.email == user_two.email
+    assert User.objects.count() == 1

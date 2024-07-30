@@ -40,6 +40,13 @@ MICROSOFT_SSO_SUPERUSER_LIST = ["another-email@contoso.com"]
 MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = True
 ```
 
+For staff user creation _only_, you can add all users using "*" as the value:
+
+```python
+# Use "*" to add all users as staff
+MICROSOFT_SSO_STAFF_LIST = ["*"]
+```
+
 ## Fine-tuning users before creation
 
 If you need to do some processing _before_ user is created, you can set the
