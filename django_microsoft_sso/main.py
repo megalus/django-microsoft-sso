@@ -192,7 +192,7 @@ class UserHelper:
             # Convert email to lowercase
             email_lowercase = self.user_email.lower()
             user, created = self.user_model.objects.get_or_create(
-                email=email_lowercase, defaults=user_defaults
+                email__iexact=email_lowercase, defaults=user_defaults
             )
         else:
             user_defaults["email"] = self.user_email.lower()  # Ensure email is lowercase
