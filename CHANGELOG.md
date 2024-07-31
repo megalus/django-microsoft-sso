@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.1 (2024-07-31)
+
+### Fix
+
+* Bug when combining email and user principal names, for upper and lower cases scenarios, during user creation ([`4a4d258`](https://github.com/megalus/django-microsoft-sso/commit/4a4d2587067f89b36cb0d1849208b47513556a9d))
+
 ## v3.5.0 (2024-07-30)
 
 ### Feature
