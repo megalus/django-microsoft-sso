@@ -157,7 +157,7 @@ class UserHelper:
 
     @property
     def user_principal_name(self) -> str:
-        return self.user_info["userPrincipalName"]
+        return self.user_info["userPrincipalName"].lower()
 
     @property
     def user_model(self) -> AbstractUser | Model:
@@ -187,10 +187,7 @@ class UserHelper:
                 raise ValueError("User email not found in Tenant data.")
             if self.username_field.name not in user_defaults:
                 user_defaults[self.username_field.name] = self.user_principal_name
-            if "email" in user_defaults:
-                del user_defaults["email"]
 
-            # Convert email to lowercase
             user, created = self.user_model.objects.get_or_create(
                 email__iexact=self.user_email, defaults=user_defaults
             )
@@ -200,7 +197,7 @@ class UserHelper:
             # Find searching User Principal Name in MicrosoftSSOUser
             # For existing databases prior to this version, this field can be empty
             query = self.user_model.objects.filter(
-                microsoftssouser__user_principal_name=self.user_principal_name
+                microsoftssouser__user_principal_name__iexact=self.user_principal_name
             )
             if query.exists():
                 user = query.get()
@@ -209,8 +206,14 @@ class UserHelper:
                 username = user_defaults.pop(
                     self.username_field.name, self.user_principal_name
                 )
-                user_defaults["email"] = self.user_email
-                query = {self.username_field.attname: username, "defaults": user_defaults}
+                if "email" not in user_defaults:
+                    user_defaults["email"] = self.user_email
+                if self.username_field.attname not in user_defaults:
+                    user_defaults[self.username_field.attname] = username
+                query = {
+                    f"{self.username_field.attname}__iexact": username,
+                    "defaults": user_defaults,
+                }
                 user, created = self.user_model.objects.get_or_create(**query)
 
         self.check_first_super_user(user)
@@ -282,11 +285,13 @@ class UserHelper:
 
     def find_user(self):
         if conf.MICROSOFT_SSO_UNIQUE_EMAIL:
-            query = self.user_model.objects.filter(email=self.user_email)
+            query = self.user_model.objects.filter(email__iexact=self.user_email)
         else:
-            username_query = {self.username_field.attname: self.user_principal_name}
+            username_query = {
+                f"{self.username_field.attname}__iexact": self.user_principal_name
+            }
             query = self.user_model.objects.filter(
-                Q(microsoftssouser__user_principal_name=self.user_principal_name)
+                Q(microsoftssouser__user_principal_name__iexact=self.user_principal_name)
                 | Q(**username_query)
             )
         if query.exists():

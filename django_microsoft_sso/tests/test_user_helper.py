@@ -109,21 +109,29 @@ def test_create_staff_from_list(
     assert user.is_superuser is False
 
 
-def test_add_all_users_to_staff_list(microsoft_response, callback_request, settings):
+def test_add_all_users_to_staff_list(faker, microsoft_response, callback_request, settings):
     # Arrange
     settings.MICROSOFT_SSO_STAFF_LIST = ["*"]
     settings.MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = False
     importlib.reload(conf)
 
+    emails = [
+        faker.email(),
+        faker.email(),
+        faker.email(),
+    ]
+
     # Act
-    helper = UserHelper(microsoft_response, callback_request)
-    helper.get_or_create_user()
-    user = helper.find_user()
+    for email in emails:
+        response = deepcopy(microsoft_response)
+        response["mail"] = email
+        response["userPrincipalName"] = email
+        helper = UserHelper(response, callback_request)
+        helper.get_or_create_user()
+        helper.find_user()
 
     # Assert
-    assert user.is_active is True
-    assert user.is_staff is True
-    assert user.is_superuser is False
+    assert User.objects.filter(is_staff=True).count() == 3
 
 
 def test_create_super_user_from_list(microsoft_response, callback_request, settings):
@@ -194,10 +202,23 @@ def test_different_null_values(microsoft_response, callback_request, monkeypatch
 
 def test_duplicated_emails(microsoft_response, callback_request, settings):
     # Arrange
+    User.objects.create(
+        email=microsoft_response["mail"].upper(),
+        username=microsoft_response["userPrincipalName"].upper(),
+        first_name=microsoft_response["givenName"],
+        last_name=microsoft_response["surname"],
+    )
+
     lowercase_email_response = deepcopy(microsoft_response)
     lowercase_email_response["mail"] = lowercase_email_response["mail"].lower()
+    lowercase_email_response["userPrincipalName"] = lowercase_email_response[
+        "userPrincipalName"
+    ].lower()
     uppercase_email_response = deepcopy(microsoft_response)
     uppercase_email_response["mail"] = uppercase_email_response["mail"].upper()
+    uppercase_email_response["userPrincipalName"] = uppercase_email_response[
+        "userPrincipalName"
+    ].upper()
 
     # Act
     user_one_helper = UserHelper(uppercase_email_response, callback_request)
