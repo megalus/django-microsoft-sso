@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.30">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.33">
     
     
       
@@ -899,13 +899,13 @@ and GitHub Organization users have registered emails.</p>
 </span></code></pre></div>
 <p>This is because both packages use the same template tags. To silence this warning, you can set the <code>SILENCED_SYSTEM_CHECKS</code> as per Django documentation:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># settings.py</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">SILENCED_SYSTEM_CHECKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;templates.E003&quot;</span><span class="p">]</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">SILENCED_SYSTEM_CHECKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;templates.W003&quot;</span><span class="p">]</span>  <span class="c1"># Or &quot;templates.E003&quot; for Django &lt;=5.0</span>
 </span></code></pre></div>
 <p>But if you need to check the templates, you can use the <code>SSO_USE_ALTERNATE_W003</code> setting to use an alternate template tag. This alternate check will
 run the original check, but will not raise the warning for the Django SSO packages. To use this alternate check, you need to set both the Django Silence Check and <code>SSO_USE_ALTERNATE_W003</code>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># settings.py</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">SILENCED_SYSTEM_CHECKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;templates.E003&quot;</span><span class="p">]</span>  <span class="c1"># Will silence the original check</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">SILENCED_SYSTEM_CHECKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;templates.W003&quot;</span><span class="p">]</span>  <span class="c1"># Will silence the original check</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">SSO_USE_ALTERNATE_W003</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Will run alternate check</span>
 </span></code></pre></div>
 
@@ -1014,7 +1014,7 @@ run the original check, but will not raise the warning for the Django SSO packag
     <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      <script src="../assets/javascripts/bundle.af256bd8.min.js"></script>
       
     
   </body>

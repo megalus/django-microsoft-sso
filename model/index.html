@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.30">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.33">
     
     
       
@@ -776,6 +776,11 @@ relation attribute:</p>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">microsoft_info</span> <span class="o">=</span> <span class="n">MicrosoftSSOUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
 </span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">You can disable this model</p>
+<p>If you don't want to save this basic data in the database, you can disable the <code>MicrosoftSSOUser</code> model by setting the
+<code>MICROSOFT_SSO_SAVE_BASIC_MICROSOFT_INFO</code> configuration to <code>False</code> in your <code>settings.py</code> file.</p>
+</div>
 <h2 id="about-microsoft-scopes">About Microsoft Scopes<a class="headerlink" href="#about-microsoft-scopes" title="Permanent link">&para;</a></h2>
 <p>To retrieve this data, <strong>Django Microsoft SSO</strong> uses the following scope from <a href="https://learn.microsoft.com/en-us/graph/permissions-reference">Microsoft Graph reference</a>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">MICROSOFT_SSO_SCOPES</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># Microsoft default scope</span>
@@ -921,7 +926,7 @@ before enabling this option.</p>
     <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      <script src="../assets/javascripts/bundle.af256bd8.min.js"></script>
       
     
   </body>
