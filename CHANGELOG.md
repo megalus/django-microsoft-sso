@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v4.0.0 (2024-08-29)
+
+### Feature
+
+* Add new options and update versions ([`9250b51`](https://github.com/megalus/django-microsoft-sso/commit/9250b516094594d2730257ef5fa46ee65d349876))
+
+### Breaking
+
+* Add new options and update versions ([`9250b51`](https://github.com/megalus/django-microsoft-sso/commit/9250b516094594d2730257ef5fa46ee65d349876))
+
 ## v3.5.1 (2024-07-31)
 
 ### Fix
