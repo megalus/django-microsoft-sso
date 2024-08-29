@@ -20,3 +20,16 @@ def pre_create_user(ms_user_info: dict, request: HttpRequest) -> dict | None:
     return: dict content to be passed to User.objects.create() as `defaults` argument.
     """
     return {}
+
+
+def pre_validate_user(ms_user_info: dict, request: HttpRequest) -> bool:
+    """
+    Callback function called before user is validated.
+
+    Must return a boolean to indicate if user is valid to login.
+
+    params:
+        ms_user_info: dict containing user info received from Microsoft Graph.
+        request: HttpRequest object.
+    """
+    return True

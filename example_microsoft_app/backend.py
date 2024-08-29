@@ -69,3 +69,18 @@ def pre_create_callback(ms_info, request) -> dict:
         "username": username,
         "date_joined": arrow.utcnow().shift(days=-1).datetime,
     }
+
+
+def pre_validate_callback(ms_info, request) -> bool:
+    """Callback function called before user is validated.
+
+    Must return a boolean to indicate if user is valid to login.
+
+    params:
+        ms_info: dict containing user info received from User Graph API.
+        request: HttpRequest object.
+    """
+    messages.info(
+        request, f"Running Pre-Validate callback for email: {ms_info.get('mail')}."
+    )
+    return True

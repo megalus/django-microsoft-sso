@@ -101,8 +101,14 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
 
     user_helper = UserHelper(user_result, request)
 
+    # Run Pre-Validate Callback
+    module_path = ".".join(conf.MICROSOFT_SSO_PRE_VALIDATE_CALLBACK.split(".")[:-1])
+    pre_validate_fn = conf.MICROSOFT_SSO_PRE_VALIDATE_CALLBACK.split(".")[-1]
+    module = importlib.import_module(module_path)
+    user_is_valid = getattr(module, pre_validate_fn)(user_result, request)
+
     # Check if User Info is valid to login
-    if not user_helper.email_is_valid:
+    if not user_helper.email_is_valid or not user_is_valid:
         send_message(
             request,
             _(

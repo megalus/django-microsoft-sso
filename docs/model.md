@@ -64,6 +64,11 @@ from django_microsoft_sso.models import MicrosoftSSOUser
 microsoft_info = MicrosoftSSOUser.objects.get(user=user)
 ```
 
+!!! tip "You can disable this model"
+    If you don't want to save this basic data in the database, you can disable the `MicrosoftSSOUser` model by setting the
+    `MICROSOFT_SSO_SAVE_BASIC_MICROSOFT_INFO` configuration to `False` in your `settings.py` file.
+
+
 ## About Microsoft Scopes
 
 To retrieve this data, **Django Microsoft SSO** uses the following scope from [Microsoft Graph reference](https://learn.microsoft.com/en-us/graph/permissions-reference):

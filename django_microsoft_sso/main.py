@@ -221,15 +221,16 @@ class UserHelper:
         if self.user_changed:
             user.save()
 
-        MicrosoftSSOUser.objects.update_or_create(
-            user=user,
-            defaults={
-                "microsoft_id": self.user_info["id"],
-                "picture_raw": self.user_info.get("picture_raw_data"),
-                "locale": self.user_info.get("preferredLanguage"),
-                "user_principal_name": self.user_principal_name,
-            },
-        )
+        if conf.MICROSOFT_SSO_SAVE_BASIC_MICROSOFT_INFO:
+            MicrosoftSSOUser.objects.update_or_create(
+                user=user,
+                defaults={
+                    "microsoft_id": self.user_info["id"],
+                    "picture_raw": self.user_info.get("picture_raw_data"),
+                    "locale": self.user_info.get("preferredLanguage"),
+                    "user_principal_name": self.user_principal_name,
+                },
+            )
 
         return user
 

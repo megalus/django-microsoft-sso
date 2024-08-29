@@ -72,6 +72,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
+        "NAME": "default",
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -199,6 +200,9 @@ MICROSOFT_SSO_SCOPES = [
     "User.Read.All",  # additional scope
 ]
 
+# Optional: Add pre-validate logic
+MICROSOFT_SSO_PRE_VALIDATE_CALLBACK = "backend.pre_validate_callback"
+
 # Optional: Add pre-create logic
 MICROSOFT_SSO_PRE_CREATE_CALLBACK = "backend.pre_create_callback"
 
@@ -274,5 +278,5 @@ GOOGLE_SSO_LOGO_URL = (
 # SILENCED_SYSTEM_CHECKS option
 # To use an alternate version for this check,
 # which filters SSO templates, uncomment both options:
-SILENCED_SYSTEM_CHECKS = ["templates.E003"]
+SILENCED_SYSTEM_CHECKS = ["templates.W003"]
 SSO_USE_ALTERNATE_W003 = True  # default: False
