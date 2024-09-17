@@ -690,12 +690,20 @@
 <td>Callable for processing pre-login logic. Default: <code>django_microsoft_sso.hooks.pre_login_user</code></td>
 </tr>
 <tr>
+<td><code>MICROSOFT_SSO_PRE_VALIDATE_CALLBACK</code></td>
+<td>Callable for processing pre-validate logic. Default: <code>django_microsoft_sso.hooks.pre_validate_user</code></td>
+</tr>
+<tr>
 <td><code>MICROSOFT_SSO_PROJECT_ID</code></td>
 <td>The Microsoft OAuth 2.0 Project ID. Default: <code>None</code></td>
 </tr>
 <tr>
 <td><code>MICROSOFT_SSO_SAVE_ACCESS_TOKEN</code></td>
 <td>Save the access token in the session. Default: <code>False</code></td>
+</tr>
+<tr>
+<td><code>MICROSOFT_SSO_SAVE_BASIC_MICROSOFT_INFO</code></td>
+<td>Save basic Microsoft info on database. Default: <code>True</code></td>
 </tr>
 <tr>
 <td><code>MICROSOFT_SSO_SCOPES</code></td>
