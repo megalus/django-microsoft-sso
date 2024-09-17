@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v4.1.0 (2024-09-17)
+
+### Feature
+
+* Add new option MICROSOFT_SSO_SHOW_FAILED_LOGIN_MESSAGE ([`abbc1b4`](https://github.com/megalus/django-microsoft-sso/commit/abbc1b4f02a2ebf2c8b1da6b4e0ec81e88ca17b2))
+
 ## v4.0.0 (2024-08-29)
 
 ### Feature
