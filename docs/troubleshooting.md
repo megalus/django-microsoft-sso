@@ -16,6 +16,11 @@
 ??? question "I am getting Authorization Code not received from SSO when attempting to login."
     Ensure you have a multi-tenant app registration, or if you wish to keep single-tenant you can adjust `MICROSOFT_SSO_AUTHORITY` as noted [here](/docs/credentials.md)
 
+??? question "System goes looping to admin after login."
+    This is because the user data was received from Microsoft, but the user was not created in the database or is not active.
+    To see these errors please check the logs or enable the option `MICROSOFT_SSO_SHOW_FAILED_LOGIN_MESSAGE` to see failed
+    login messages on browser. Please, make note these messages can be used on exploit attacks.
+
 ### Example App
 
 To test this library please check the `Example App` provided [here](https://github.com/megalus/django-microsoft-sso/tree/main/example_microsoft_app).

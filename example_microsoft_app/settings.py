@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+
 from pathlib import Path
 
 from stela import env
@@ -190,6 +191,13 @@ MICROSOFT_SSO_SUPERUSER_LIST = env.get_or_default("MICROSOFT_SSO_SUPERUSER_LIST"
 
 # Optional: You can save access token to session
 MICROSOFT_SSO_SAVE_ACCESS_TOKEN = True
+
+# Optional: Start or Stop User auto-creation
+# MICROSOFT_SSO_AUTO_CREATE_USERS = True
+
+# Optional: Show failed login attempt message on browser.
+# This message can be used in exploit attempts.
+# MICROSOFT_SSO_SHOW_FAILED_LOGIN_MESSAGE = False
 
 # Optional: Add if you want to use custom authentication backend
 # MICROSOFT_SSO_AUTHENTICATION_BACKEND = "backend.MyBackend"
