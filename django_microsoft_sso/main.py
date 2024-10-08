@@ -92,7 +92,9 @@ class MicrosoftAuth:
         graph_url = "https://graph.microsoft.com/v1.0/me"
         token = self.token_info["access_token"]
         headers = {"Authorization": f"Bearer {token}"}
-        response = httpx.get(graph_url, headers=headers)
+        response = httpx.get(
+            graph_url, headers=headers, timeout=conf.MICROSOFT_SSO_GRAPH_TIMEOUT
+        )
         user_info = response.json()
         response.raise_for_status()
 
@@ -100,13 +102,17 @@ class MicrosoftAuth:
         graph_url = "https://graph.microsoft.com/v1.0/users/{}?$select=mailVerified".format(
             user_info["id"]
         )
-        response = httpx.get(graph_url, headers=headers)
+        response = httpx.get(
+            graph_url, headers=headers, timeout=conf.MICROSOFT_SSO_GRAPH_TIMEOUT
+        )
         if response.status_code == 200:
             user_info.update({"email_verified": response.json().get("mailVerified", False)})
 
         # Get Picture Data
         graph_url = "https://graph.microsoft.com/v1.0/me/photo/$value"
-        response = httpx.get(graph_url, headers=headers)
+        response = httpx.get(
+            graph_url, headers=headers, timeout=conf.MICROSOFT_SSO_GRAPH_TIMEOUT
+        )
         if response.status_code == 200:
             user_info.update({"picture_raw_data": response.content})
 
