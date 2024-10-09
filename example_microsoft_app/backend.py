@@ -34,7 +34,7 @@ def pre_login_callback(user, request):
         # To retrieve user's additional data, you need to add the respective scope
         # For example: "User.Read.All" in settings MICROSOFT_SSO_SCOPES
         url = "https://graph.microsoft.com/v1.0/me/"
-        response = httpx.get(url, headers=headers)
+        response = httpx.get(url, headers=headers, timeout=10)
         user_data = response.json()
         logger.debug(f"Updating User Data with Microsoft User Info: {user_data}")
 

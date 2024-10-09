@@ -15,7 +15,7 @@ This data will expire in 10 minutes. Then user will be redirected to Microsoft l
 
 3. On callback, **Django-Microsoft-SSO** will check `code` and `state` received. If they are valid,
 Microsoft's UserInfo will be retrieved. If the user is already registered in Django, the user
-will be logged in.
+will be logged in. The Graph request has a timeout of 10 seconds, defined in `MICROSOFT_SSO_GRAPH_TIMEOUT`.
 
 4. Otherwise, the user will be created and logged in, if his email domain,
 matches one of the `MICROSOFT_SSO_ALLOWABLE_DOMAINS`. You can disable the auto-creation setting `MICROSOFT_SSO_AUTO_CREATE_USERS`
