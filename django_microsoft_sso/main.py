@@ -176,7 +176,7 @@ class UserHelper:
     @property
     def email_is_valid(self) -> bool:
         user_email_domain = self.user_email.split("@")[-1]
-        valid_domain = False
+        valid_domain = conf.MICROSOFT_SSO_ALLOWABLE_DOMAINS == ["*"]
         for email_domain in conf.MICROSOFT_SSO_ALLOWABLE_DOMAINS:
             if user_email_domain in email_domain:
                 valid_domain = True
