@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v5.1.0 (2025-01-14)
+
+### Features
+
+* feat: add wildcard support to MICROSOFT_SSO_ALLOWABLE_DOMAINS
+
+Fixes #15 ([`7ecdac1`](https://github.com/megalus/django-microsoft-sso/commit/7ecdac1968cd165f7e5f332369e12792b68ae76e))
+
+
 ## v5.0.0 (2024-10-09)
 
 ### Breaking
