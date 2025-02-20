@@ -3,6 +3,39 @@
 **Django Microsoft SSO** integrates with Django Admin, adding an Inline Model Admin to the User model. This way, you can
 access the Microsoft SSO data for each user.
 
+## Blocking password authentication
+
+Setting `SSO_SHOW_FORM_ON_ADMIN_PAGE=False` doesn't block the default admin site's password login api. For that you
+would need to override the default admin site's login method. Here is an example:
+
+```python
+from typing import Any
+
+from django.conf import settings
+from django.contrib import admin
+from django.contrib.admin.apps import AdminConfig
+from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
+
+
+class MyAdminSite(admin.AdminSite):
+    ...
+    
+    def login(
+        self, request: HttpRequest, extra_context: dict[str, Any] | None = None
+    ) -> HttpResponse:
+       if request.method != "GET" and not settings.SSO_SHOW_FORM_ON_ADMIN_PAGE:
+            return HttpResponseNotAllowed(["GET"])
+        return super().login(request, extra_context)
+
+
+class MyAdminConfig(AdminConfig):
+    default_site = "path.to.MyAdminSite"
+```
+
+See [Django docs](https://docs.djangoproject.com/en/stable/ref/contrib/admin/#overriding-the-default-admin-site)
+for more information on how to override the default admin site.
+
+
 ## Using Custom User model
 
 If you are using a custom user model, you may need to add the `MicrosoftSSOInlineAdmin` inline model admin to your custom
