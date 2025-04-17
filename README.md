@@ -21,7 +21,7 @@
 
 ## Welcome to Django Microsoft SSO
 
-This library aims to simplify the process of authenticating users with Microsoft in Django Admin pages,
+This library aims to simplify the process of authenticating users with Microsoft 365 in Django Admin pages,
 inspired by libraries like [django_microsoft_auth](https://github.com/AngellusMortis/django_microsoft_auth)
 and [django-admin-sso](https://github.com/matthiask/django-admin-sso/)
 
