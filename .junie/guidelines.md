@@ -10,13 +10,27 @@ Always use dataclasses for objects.
 
 Always add docstrings in functions with more than seven lines of code. Use Google style.
 
-Linter packages are managed by [pre-commit](https://github.com/pre-commit/pre-commit) library. Use `make lint` to check for linter and format errors.
+Linter packages are managed by [pre-commit library](https://github.com/pre-commit/pre-commit). Use `make lint` to check for linter and format errors.
 
 Project python version is 3.11.10.
 
 This is a public python library hosted in PyPI. All configuration is inside `pyproject.toml` file.
 
-Use semantic versioning for commit messages. Use `fix:` if new code only changes or adds tests. Use `feat:` if the decorator is changed. Use `chore:` if the non-test code is changed but not the decorator. Use `docs:` if the documentation is changed. Use `refactor:` if the code is changed but not the decorator and not the tests.
+Use semantic versioning for commit messages. Create a one-line commit. Do not use "`".
+
+Use `feat:` if commit creates new code in both ./django_microsoft_sso and unit tests.
+
+Use `fix:` if commit only changes the code inside ./django_microsoft_sso.
+
+Use `chore:` if commit changes files outside ./django_microsoft_sso.
+
+Use `ci:` if commit changes files only in pyproject.toml.
+
+Use `docs:` if commit changes files only in ./docs or the README.
+
+Use `refactor:` if commit changes files in ./django_microsoft_sso but not in unit tests.
+
+Use `BREAKING CHANGE:` if commit changes the minimum version of Python or Django in pyproject.toml.
 
 Project versioning is done during GitHub actions `.github/publish.yml` workflow, using the [auto-changelog](https://github.com/KeNaCo/auto-changelog) library.
 
@@ -35,3 +49,5 @@ Always write the README for developers with no or low experience with Django, Mi
 The ./docs folder contains detailed instructions of how to use the library, including examples and diagrams. Reading order for the markdown files is located in mkdocs.yml at `nav` key. On these docs you can be very didactic.
 
 The folder `example_microsoft_app` contains a minimal Django app using the library. It can be used as a reference for the documentation. Use their README.md as a reference for how to use.
+
+Do not run terminal commands until Jetbrains fixes Junie support to WSL (JBAI-13074).
