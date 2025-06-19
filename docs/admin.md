@@ -19,7 +19,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 
 class MyAdminSite(admin.AdminSite):
     ...
-    
+
     def login(
         self, request: HttpRequest, extra_context: dict[str, Any] | None = None
     ) -> HttpResponse:
