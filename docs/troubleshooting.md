@@ -50,7 +50,7 @@
     existing user model](https://docs.djangoproject.com/en/5.1/topics/auth/customizing/#extending-the-existing-user-model)
     unregistering your current User Admin class and add manually the `MicrosoftSSOUserAdmin` in your custom class.
     You can use the `get_current_user_and_admin` helper as explained [here](admin.md) (the recommended action), or
-    alternately, you can add the `django-google-sso` at the end of your `INSTALLED_APPS` list.
+    alternately, you can add the `django-microsoft-sso` at the end of your `INSTALLED_APPS` list.
 
 
 ### Example App

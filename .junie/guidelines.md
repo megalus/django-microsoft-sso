@@ -36,6 +36,8 @@ Project versioning is done during GitHub actions `.github/publish.yml` workflow,
 
 Always update the README at the root of the project.
 
+README title is always: Welcome to `<Project Name>`
+
 README always contains [shields.io](https://shields.io/docs) badges for (when applicable): python versions, django versions, pypi version, license and build status.
 
 Prefer use mermaid diagrams on docs.

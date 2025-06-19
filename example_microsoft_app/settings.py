@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",  # Optional: Add Sites framework
     "django_microsoft_sso",  # Add django_microsoft_sso
-    "django_google_sso",  # Add django_microsoft_sso
+    "django_google_sso",  # Optional: Add django_google_sso
 ]
 
 MIDDLEWARE = [
