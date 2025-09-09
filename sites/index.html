@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../credentials/">
+        <link rel="prev" href="../advanced/">
       
       
-        <link rel="next" href="../users/">
+        <link rel="next" href="../pages/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Get your Callback URI - Django Microsoft SSO</title>
+        <title>Using Django Sites Framework - Django Microsoft SSO</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#get-your-callback-uri" class="md-skip">
+        <a href="#using-django-sites-framework" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Get your Callback URI
+              Using Django Sites Framework
             
           </span>
         </div>
@@ -319,32 +319,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Get your Callback URI
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../callback/" class="md-nav__link">
         
   
   
@@ -355,92 +333,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#the-callback-uri" class="md-nav__link">
-    <span class="md-ellipsis">
-      The Callback URI
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The Callback URI">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-scheme" class="md-nav__link">
-    <span class="md-ellipsis">
-      The scheme
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-netloc" class="md-nav__link">
-    <span class="md-ellipsis">
-      The NetLoc
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-path" class="md-nav__link">
-    <span class="md-ellipsis">
-      The Path
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#registering-the-uri" class="md-nav__link">
-    <span class="md-ellipsis">
-      Registering the URI
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Registering the URI">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#single-logout-from-microsoft" class="md-nav__link">
-    <span class="md-ellipsis">
-      Single Logout (from Microsoft)
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -625,10 +517,32 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../sites/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Using Django Sites Framework
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -639,6 +553,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-complete-site-specific-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Complete Site-Specific Configuration
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -780,68 +741,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-callback-uri" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
-      The Callback URI
+      How It Works
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="The Callback URI">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-scheme" class="md-nav__link">
-    <span class="md-ellipsis">
-      The scheme
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-netloc" class="md-nav__link">
-    <span class="md-ellipsis">
-      The NetLoc
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-path" class="md-nav__link">
-    <span class="md-ellipsis">
-      The Path
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#registering-the-uri" class="md-nav__link">
+  <a href="#setup" class="md-nav__link">
     <span class="md-ellipsis">
-      Registering the URI
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Registering the URI">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#single-logout-from-microsoft" class="md-nav__link">
-    <span class="md-ellipsis">
-      Single Logout (from Microsoft)
+      Setup
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#example-complete-site-specific-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Complete Site-Specific Configuration
+    </span>
+  </a>
   
 </li>
       
@@ -864,78 +786,106 @@
   
 
 
-<h1 id="get-your-callback-uri">Get your Callback URI<a class="headerlink" href="#get-your-callback-uri" title="Permanent link">&para;</a></h1>
-<p>The callback URL is the URL where your Microsoft Entra Registered Application will redirect the user after the
-authentication process. This URL must be registered in your Registered Application.</p>
-<hr />
-<h2 id="the-callback-uri">The Callback URI<a class="headerlink" href="#the-callback-uri" title="Permanent link">&para;</a></h2>
-<p>The callback URI is composed of <code>{scheme}://{netloc}/{path}/</code>, where the <em>netloc</em> is the domain name of your Django
-project, and the <em>path</em> is <code>/microsoft_sso/callback/</code>. For example, if your Django project is hosted on
-<code>https://myproject.com</code>, then the callback URL will be <code>https://myproject.com/microsoft_sso/callback/</code>.</p>
-<p>So, let's break each part of this URI:</p>
-<h3 id="the-scheme">The scheme<a class="headerlink" href="#the-scheme" title="Permanent link">&para;</a></h3>
-<p>The scheme is the protocol used to access the URL. It can be <code>http</code> or <code>https</code>. <strong>Django-Microsoft-SSO</strong> will select the
-same scheme used by the URL which shows to you the login page.</p>
-<p>For example, if you're running locally, like <code>http://localhost:8000/accounts/login</code>, then the callback URL scheme
-will be <code>http://</code>.</p>
-<details class="question">
-<summary>How about a Reverse-Proxy?</summary>
-<p>If you're running Django behind a reverse-proxy, please make sure you're passing the correct
-<code>X-Forwarded-Proto</code> header to the login request URL.</p>
-</details>
-<h3 id="the-netloc">The NetLoc<a class="headerlink" href="#the-netloc" title="Permanent link">&para;</a></h3>
-<p>The NetLoc is the domain of your Django project. It can be a dns name, or an IP address, including the Port, if
-needed. Some examples are: <code>example.com</code>, <code>localhost:8000</code>, <code>api.my-domain.com</code>, and so on. To find the correct netloc,
-<strong>Django-Microsoft-SSO</strong> will check, in that order:</p>
+<h1 id="using-django-sites-framework">Using Django Sites Framework<a class="headerlink" href="#using-django-sites-framework" title="Permanent link">&para;</a></h1>
+<p>Django Microsoft SSO now supports the <a href="https://docs.djangoproject.com/en/stable/ref/contrib/sites/">Django Sites Framework</a>, allowing you to have different SSO configurations for different sites in your Django project.</p>
+<h2 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<p>Most configuration settings in Django Microsoft SSO can now accept either a direct value or a callable function that receives the current request and returns the appropriate value for the current site.</p>
+<p>This means you can dynamically determine configuration values based on the current site being accessed, enabling scenarios like:</p>
 <ul>
-<li>If settings contain the variable <code>MICROSOFT_SSO_CALLBACK_DOMAIN</code>, it will use this value.</li>
-<li>If Sites Framework is active, it will use the domain field for the current site.</li>
-<li>The netloc found in the URL which shows you the login page.</li>
+<li>Different Microsoft OAuth credentials per site</li>
+<li>Different user creation policies per site</li>
+<li>Different session timeouts per site</li>
 </ul>
-<h3 id="the-path">The Path<a class="headerlink" href="#the-path" title="Permanent link">&para;</a></h3>
-<p>The path is the path to the callback view. It will be always <code>/&lt;path in urls.py&gt;/callback/</code>.</p>
-<p>Remember when you add this to the <code>urls.py</code>?</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">include</span><span class="p">,</span> <span class="n">path</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="c1"># other urlpatterns...</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">path</span><span class="p">(</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="s2">&quot;microsoft_sso/&quot;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>            <span class="s2">&quot;django_microsoft_sso.urls&quot;</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>            <span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;django_microsoft_sso&quot;</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="p">)</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">),</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">]</span>
+<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
+<ol>
+<li>First, ensure the Django Sites Framework is properly configured in your project:</li>
+</ol>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># settings.py</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="c1"># ...</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="s1">&#39;django.contrib.sites&#39;</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="s1">&#39;django_microsoft_sso&#39;</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="c1"># ...</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">]</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">SITE_ID</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Default site ID</span>
 </span></code></pre></div>
-<p>The path starts with the <code>microsoft_sso/</code> part. If you change this to <code>sso/</code> for example, your callback URL will change to
-<code>https://myproject.com/sso/callback/</code>.</p>
-<hr />
-<h2 id="registering-the-uri">Registering the URI<a class="headerlink" href="#registering-the-uri" title="Permanent link">&para;</a></h2>
-<p>Navigate to the <a href="https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade"><em><strong>App registrations</strong></em></a>
-page, select your Registered Application and navigate to <em><strong>Authentication</strong></em>.</p>
-<p>On <strong>Platform configurations</strong>, if you don't have any platform configured, click on <strong>Add a platform</strong> and select <strong>Web</strong>.</p>
-<p><img alt="" src="../images/add_new_platform.png" /></p>
-<p>To register the callback URL, add the callback URL in the
-<em><strong>Redirect URIs</strong></em> field, clicking on button <code>Add URI</code>. Then add your full URL and click on <code>Configure</code>.</p>
-<p><img alt="" src="../images/configure_web.png" /></p>
-<div class="admonition tip">
-<p class="admonition-title">Do not forget the trailing slash</p>
-<p>Many errors on this step are caused by forgetting the trailing slash:</p>
+<ol>
+<li>
+<p>Create your sites in the Django admin or via migrations.</p>
+</li>
+<li>
+<p>Configure Django Microsoft SSO settings as callables that return different values based on the current site:</p>
+</li>
+</ol>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># settings.py</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">django.contrib.sites.shortcuts</span> <span class="kn">import</span> <span class="n">get_current_site</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">def</span> <span class="nf">get_client_id</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return different client ID based on the current site.&quot;&quot;&quot;</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">site</span> <span class="o">=</span> <span class="n">get_current_site</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="c1"># Map site domains to client IDs</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">client_ids</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        <span class="s1">&#39;site.com&#39;</span><span class="p">:</span> <span class="s1">&#39;client-id-for-example-com&#39;</span><span class="p">,</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        <span class="s1">&#39;other-site.com&#39;</span><span class="p">:</span> <span class="s1">&#39;client-id-for-other-site&#39;</span><span class="p">,</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="p">}</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="k">return</span> <span class="n">client_ids</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="s1">&#39;default-client-id&#39;</span><span class="p">)</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="c1"># Configure settings as callables</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">MICROSOFT_SSO_CLIENT_ID</span> <span class="o">=</span> <span class="n">get_client_id</span>
+</span></code></pre></div>
+<h2 id="example-complete-site-specific-configuration">Example: Complete Site-Specific Configuration<a class="headerlink" href="#example-complete-site-specific-configuration" title="Permanent link">&para;</a></h2>
+<p>Here's a more comprehensive example showing how to configure multiple settings per site:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># settings.py</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">django.contrib.sites.shortcuts</span> <span class="kn">import</span> <span class="n">get_current_site</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">def</span> <span class="nf">get_site_config</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config_key</span><span class="p">):</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get site-specific configuration.&quot;&quot;&quot;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">site</span> <span class="o">=</span> <span class="n">get_current_site</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="c1"># Define configurations for each site</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">site_configs</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="s1">&#39;site.com&#39;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>            <span class="s1">&#39;client_id&#39;</span><span class="p">:</span> <span class="s1">&#39;client-id-for-example-com&#39;</span><span class="p">,</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>            <span class="s1">&#39;client_secret&#39;</span><span class="p">:</span> <span class="s1">&#39;secret-for-example-com&#39;</span><span class="p">,</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>            <span class="s1">&#39;project_id&#39;</span><span class="p">:</span> <span class="s1">&#39;project-id-for-example-com&#39;</span><span class="p">,</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>            <span class="s1">&#39;auto_create_users&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>            <span class="s1">&#39;session_cookie_age&#39;</span><span class="p">:</span> <span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 1 hour</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>            <span class="s1">&#39;allowable_domains&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;example.com&#39;</span><span class="p">,</span> <span class="s1">&#39;example.org&#39;</span><span class="p">],</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="p">},</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>        <span class="s1">&#39;other-site.com&#39;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>            <span class="s1">&#39;client_id&#39;</span><span class="p">:</span> <span class="s1">&#39;client-id-for-other-site&#39;</span><span class="p">,</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>            <span class="s1">&#39;client_secret&#39;</span><span class="p">:</span> <span class="s1">&#39;secret-for-other-site&#39;</span><span class="p">,</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>            <span class="s1">&#39;project_id&#39;</span><span class="p">:</span> <span class="s1">&#39;project-id-for-other-site&#39;</span><span class="p">,</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>            <span class="s1">&#39;auto_create_users&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>            <span class="s1">&#39;session_cookie_age&#39;</span><span class="p">:</span> <span class="mi">86400</span><span class="p">,</span>  <span class="c1"># 24 hours</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>            <span class="s1">&#39;allowable_domains&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;other-site.com&#39;</span><span class="p">],</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>        <span class="p">}</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>    <span class="p">}</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>    <span class="c1"># Get config for current site, or use defaults</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>    <span class="n">site_config</span> <span class="o">=</span> <span class="n">site_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="p">{})</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    <span class="k">return</span> <span class="n">site_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">config_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="c1"># Configure settings as callables</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="n">MICROSOFT_SSO_CLIENT_ID</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">request</span><span class="p">:</span> <span class="n">get_site_config</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;client_id&#39;</span><span class="p">)</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="n">MICROSOFT_SSO_CLIENT_SECRET</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">request</span><span class="p">:</span> <span class="n">get_site_config</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">)</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="n">MICROSOFT_SSO_PROJECT_ID</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">request</span><span class="p">:</span> <span class="n">get_site_config</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;project_id&#39;</span><span class="p">)</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="n">MICROSOFT_SSO_AUTO_CREATE_USERS</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">request</span><span class="p">:</span> <span class="n">get_site_config</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;auto_create_users&#39;</span><span class="p">)</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="n">MICROSOFT_SSO_SESSION_COOKIE_AGE</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">request</span><span class="p">:</span> <span class="n">get_site_config</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;session_cookie_age&#39;</span><span class="p">)</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="n">MICROSOFT_SSO_ALLOWABLE_DOMAINS</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">request</span><span class="p">:</span> <span class="n">get_site_config</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;allowable_domains&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Unsupported Settings for Callables</p>
+<p><strong>All</strong> settings support callable configuration, <strong>except</strong> the following:</p>
 <ul>
-<li>Good: <code>http://localhost:8000/microsoft_sso/callback/</code></li>
-<li>Bad: <code>http://localhost:8000/microsoft_sso/callback</code></li>
+<li><code>MICROSOFT_SSO_ENABLED</code></li>
+<li><code>MICROSOFT_SSO_ENABLE_LOGS</code></li>
+<li><code>SSO_USE_ALTERNATE_W003</code></li>
 </ul>
 </div>
-<h3 id="single-logout-from-microsoft">Single Logout (from Microsoft)<a class="headerlink" href="#single-logout-from-microsoft" title="Permanent link">&para;</a></h3>
-<p>To configure SLO (Single Logout), starting from Microsoft (logout from Microsoft first then logout from your Project) -
-you can optionally add Django logout URL in the Web Platform configurations. But you must inform a <strong>https</strong> address:</p>
-<p><img alt="" src="../images/configure_slo_ms.png" /></p>
-<div class="admonition tip">
-<p class="admonition-title">During development, use an instant ingress tunnel service for this</p>
-<p><a href="https://ngrok.com/">Ngrok</a> is an excellent service to redirect a https connection to your local development server.</p>
-</div>
-<hr />
-<p>In the next step, we will configure <strong>Django-Microsoft-SSO</strong> to auto create the Users.</p>
 
 
 
