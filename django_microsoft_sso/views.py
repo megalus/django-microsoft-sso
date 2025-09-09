@@ -55,7 +55,7 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
     state = request.GET.get("state")
 
     next_url_from_session = request.session.get("sso_next_url")
-    next_url_from_conf = reverse(microsoft.get_sso_value("next_url"))
+    next_url_from_conf = reverse(microsoft.get_sso_value("NEXT_URL"))
     next_url = next_url_from_session if next_url_from_session else next_url_from_conf
     logger.debug(f"Next URL after login: {next_url}")
 
@@ -221,7 +221,7 @@ def microsoft_slo_view(request: HttpRequest) -> HttpResponseBase:
 
     redirect_url = (
         reverse("admin:index")
-        if request.path.startswith("admin:index")
+        if request.path.startswith(reverse("admin:index"))
         else reverse("index")
     )
 
