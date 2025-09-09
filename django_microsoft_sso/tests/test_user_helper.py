@@ -15,7 +15,7 @@ def test_user_email(microsoft_response, callback_request):
     helper = UserHelper(microsoft_response, callback_request)
 
     # Assert
-    assert helper.user_email == "kalel@dailyplanet.com"
+    assert helper.user_info_email == "kalel@dailyplanet.com"
 
 
 @pytest.mark.parametrize(

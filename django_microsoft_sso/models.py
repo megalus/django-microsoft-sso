@@ -27,7 +27,8 @@ class MicrosoftSSOUser(models.Model):
         return None
 
     def __str__(self):
-        return f"{self.user.email} ({self.microsoft_id})"
+        user_email = getattr(self.user, User.get_email_field_name())
+        return f"{user_email} ({self.microsoft_id})"
 
     class Meta:
         db_table = "microsoft_sso_user"

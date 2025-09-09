@@ -22,14 +22,14 @@ from django.urls import include, path
 
 from django_microsoft_sso.views import microsoft_slo_view
 from example_microsoft_app.settings import INSTALLED_APPS
-from example_microsoft_app.views import secret_page
+from example_microsoft_app.views import index, secret_page
 
 urlpatterns = [
     path("admin/", admin.site.urls),
 ]
 
 urlpatterns += [
-    path("secret/", secret_page),
+    path("secret/", secret_page, name="secret"),
     path(
         "accounts/login/",
         LoginView.as_view(
@@ -37,6 +37,7 @@ urlpatterns += [
         ),  # The modified form with microsoft button
     ),
     path("accounts/logout/", microsoft_slo_view, name="logout"),
+    path("", index, name="index"),
 ]
 
 if "grappelli" in INSTALLED_APPS:

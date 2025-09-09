@@ -1,23 +1,23 @@
 import importlib
 from urllib.parse import urlparse
 
+import httpx
 from django.contrib.auth import login
 from django.contrib.auth.views import LogoutView
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseBase, HttpResponseRedirect
 from django.shortcuts import resolve_url
-from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 from loguru import logger
 
-from django_microsoft_sso import conf
 from django_microsoft_sso.main import MicrosoftAuth, UserHelper
 from django_microsoft_sso.utils import send_message, show_credential
 
 
 @require_http_methods(["GET"])
 def start_login(request: HttpRequest) -> HttpResponseRedirect:
+    auth = MicrosoftAuth(request)
     # Get the next url
     next_param = request.GET.get(key="next")
     if next_param:
@@ -27,7 +27,8 @@ def start_login(request: HttpRequest) -> HttpResponseRedirect:
             else f"//{next_param}"
         )
     else:
-        clean_param = reverse(conf.MICROSOFT_SSO_NEXT_URL)
+        next_url = auth.get_sso_value("NEXT_URL")
+        clean_param = reverse(next_url)
     next_path = urlparse(clean_param).path
 
     ms_auth = MicrosoftAuth(request)
@@ -36,7 +37,8 @@ def start_login(request: HttpRequest) -> HttpResponseRedirect:
     # Save data on Session
     if not request.session.session_key:
         request.session.create()
-    request.session.set_expiry(conf.MICROSOFT_SSO_TIMEOUT * 60)
+    timeout = auth.get_sso_value("TIMEOUT")
+    request.session.set_expiry(timeout * 60)
     request.session["msal_graph_info"] = ms_auth.result
     request.session["sso_next_url"] = next_path
     request.session.save()
@@ -47,14 +49,20 @@ def start_login(request: HttpRequest) -> HttpResponseRedirect:
 
 @require_http_methods(["GET"])
 def callback(request: HttpRequest) -> HttpResponseRedirect:
-    login_failed_url = reverse(conf.MICROSOFT_SSO_LOGIN_FAILED_URL)
     microsoft = MicrosoftAuth(request)
+    login_failed_url = reverse(microsoft.get_sso_value("LOGIN_FAILED_URL"))
     code = request.GET.get("code")
     state = request.GET.get("state")
 
+    next_url_from_session = request.session.get("sso_next_url")
+    next_url_from_conf = reverse(microsoft.get_sso_value("NEXT_URL"))
+    next_url = next_url_from_session if next_url_from_session else next_url_from_conf
+    logger.debug(f"Next URL after login: {next_url}")
+
     # Check if Microsoft SSO is enabled
-    if not conf.MICROSOFT_SSO_ENABLED:
-        send_message(request, _("Microsoft SSO not enabled."))
+    enabled, message = microsoft.check_enabled(next_url)
+    if not enabled:
+        send_message(request, _(message))
         return HttpResponseRedirect(login_failed_url)
 
     # First, check for authorization code
@@ -64,7 +72,6 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
 
     # Then, check the state.
     request_state = request.session.get("msal_graph_info", {}).get("state")
-    next_url = request.session.get("sso_next_url")
 
     if not request_state or state != request_state:
         send_message(request, _("State Mismatch. Time expired?"))
@@ -83,13 +90,13 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
             send_message(
                 request, _("Please check your Client Credentials for MS Entra App.")
             )
+            application_id = microsoft.get_sso_value("APPLICATION_ID")
+            client_secret = microsoft.get_sso_value("CLIENT_SECRET")
             logger.debug(
-                f"MICROSOFT_SSO_APPLICATION_ID: "
-                f"{show_credential(conf.MICROSOFT_SSO_APPLICATION_ID)}"
+                f"MICROSOFT_SSO_APPLICATION_ID: " f"{show_credential(application_id)}"
             )
             logger.debug(
-                f"MICROSOFT_SSO_CLIENT_SECRET: "
-                f"{show_credential(conf.MICROSOFT_SSO_CLIENT_SECRET)}"
+                f"MICROSOFT_SSO_CLIENT_SECRET: " f"{show_credential(client_secret)}"
             )
         return HttpResponseRedirect(login_failed_url)
 
@@ -102,8 +109,9 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
     user_helper = UserHelper(user_result, request)
 
     # Run Pre-Validate Callback
-    module_path = ".".join(conf.MICROSOFT_SSO_PRE_VALIDATE_CALLBACK.split(".")[:-1])
-    pre_validate_fn = conf.MICROSOFT_SSO_PRE_VALIDATE_CALLBACK.split(".")[-1]
+    pre_validate_callback = microsoft.get_sso_value("PRE_VALIDATE_CALLBACK")
+    module_path = ".".join(pre_validate_callback.split(".")[:-1])
+    pre_validate_fn = pre_validate_callback.split(".")[-1]
     module = importlib.import_module(module_path)
     user_is_valid = getattr(module, pre_validate_fn)(user_result, request)
 
@@ -112,24 +120,26 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
         send_message(
             request,
             _(
-                f"Email address not allowed: {user_helper.user_email}. "
+                f"Email address not allowed: {user_helper.user_info_email}. "
                 f"Please contact your administrator."
             ),
         )
         return HttpResponseRedirect(login_failed_url)
 
     # Add Access Token in Session
-    if conf.MICROSOFT_SSO_SAVE_ACCESS_TOKEN:
+    if microsoft.get_sso_value("SAVE_ACCESS_TOKEN"):
         request.session["microsoft_sso_access_token"] = microsoft.token_info["access_token"]
 
     # Run Pre-Create Callback
-    module_path = ".".join(conf.MICROSOFT_SSO_PRE_CREATE_CALLBACK.split(".")[:-1])
-    pre_login_fn = conf.MICROSOFT_SSO_PRE_CREATE_CALLBACK.split(".")[-1]
+    pre_create_callback = microsoft.get_sso_value("PRE_CREATE_CALLBACK")
+    module_path = ".".join(pre_create_callback.split(".")[:-1])
+    pre_login_fn = pre_create_callback.split(".")[-1]
     module = importlib.import_module(module_path)
     extra_users_args = getattr(module, pre_login_fn)(user_result, request)
 
     # Get or Create User
-    if conf.MICROSOFT_SSO_AUTO_CREATE_USERS:
+    auto_create_users = microsoft.get_sso_value("AUTO_CREATE_USERS")
+    if auto_create_users:
         user = user_helper.get_or_create_user(extra_users_args)
     else:
         user = user_helper.find_user()
@@ -139,7 +149,7 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
             f"User not found - UPN: '{user_result['userPrincipalName']}', "
             f"Email: '{user_result['mail']}'"
         )
-        if not user and not conf.MICROSOFT_SSO_AUTO_CREATE_USERS:
+        if not user and not auto_create_users:
             failed_login_message += ". Auto-Create is disabled."
 
         if user and not user.is_active:
@@ -147,7 +157,8 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
                 f"User is not active: '{user_result['userPrincipalName']}'"
             )
 
-        if conf.MICROSOFT_SSO_SHOW_FAILED_LOGIN_MESSAGE:
+        show_failed_login_message = microsoft.get_sso_value("SHOW_FAILED_LOGIN_MESSAGE")
+        if show_failed_login_message:
             send_message(request, _(failed_login_message), level="warning")
         else:
             logger.warning(failed_login_message)
@@ -158,34 +169,67 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
     request.session.save()
 
     # Run Pre-Login Callback
-    module_path = ".".join(conf.MICROSOFT_SSO_PRE_LOGIN_CALLBACK.split(".")[:-1])
-    pre_login_fn = conf.MICROSOFT_SSO_PRE_LOGIN_CALLBACK.split(".")[-1]
+    pre_login_callback = microsoft.get_sso_value("PRE_LOGIN_CALLBACK")
+    module_path = ".".join(pre_login_callback.split(".")[:-1])
+    pre_login_fn = pre_login_callback.split(".")[-1]
     module = importlib.import_module(module_path)
     getattr(module, pre_login_fn)(user, request)
 
-    # Login User
-    login(request, user, conf.MICROSOFT_SSO_AUTHENTICATION_BACKEND)
-    request.session.set_expiry(conf.MICROSOFT_SSO_SESSION_COOKIE_AGE)
+    # Get Authentication Backend
+    # If exists, let's make a sanity check on it
+    # Because Django does not raise errors if backend is wrong
+    auth_backend = microsoft.get_sso_value("AUTHENTICATION_BACKEND")
+    if auth_backend:
+        module_path = ".".join(auth_backend.split(".")[:-1])
+        backend_auth_class = auth_backend.split(".")[-1]
+        try:
+            module = importlib.import_module(module_path)
+            getattr(module, backend_auth_class)
+        except (ImportError, AttributeError) as error:
+            raise ImportError(f"Authentication Backend invalid: {auth_backend}") from error
 
-    return HttpResponseRedirect(next_url or reverse(conf.MICROSOFT_SSO_NEXT_URL))
+    # Login User
+    login(request, user, auth_backend)
+
+    session_cookie_age = microsoft.get_sso_value("SESSION_COOKIE_AGE")
+    request.session.set_expiry(session_cookie_age)
+
+    return HttpResponseRedirect(next_url)
 
 
 @require_http_methods(["POST", "OPTIONS"])
-def microsoft_slo_view(request: HttpRequest) -> TemplateResponse:
+def microsoft_slo_view(request: HttpRequest) -> HttpResponseBase:
     """
     Logout the User from Microsoft SSO and Django.
 
     Use this View for your logout URL.
 
     """
+    # Logout from Microsoft
+    auth = MicrosoftAuth(request)
+    slo_enabled = auth.get_sso_value("SLO_ENABLED")
+    sso_enabled = auth.get_sso_value("ENABLED")
 
-    if conf.MICROSOFT_SLO_ENABLED and conf.MICROSOFT_SSO_ENABLED:
+    if slo_enabled and sso_enabled:
         microsoft = MicrosoftAuth(request)
-        homepage = resolve_url(
-            conf.MICROSOFT_SSO_LOGOUT_REDIRECT_PATH
-        )  # Default: "admin:index"
+        logout_redirect_path = auth.get_sso_value("LOGOUT_REDIRECT_PATH")
+        homepage = resolve_url(logout_redirect_path)
         if not homepage.startswith("http"):
             homepage = request.build_absolute_uri(homepage)
         next_page = microsoft.get_logout_url(homepage=homepage)
         return LogoutView.as_view(next_page=next_page)(request)
-    return LogoutView.as_view()(request)
+
+    redirect_url = (
+        reverse("admin:index")
+        if request.path.startswith(reverse("admin:index"))
+        else reverse("index")
+    )
+
+    # Logout from Google (in case you're using both packages)
+    token = request.session.get("google_sso_access_token")
+    if token:
+        httpx.post(
+            "https://oauth2.googleapis.com/revoke", params={"token": token}, timeout=10
+        )
+
+    return LogoutView.as_view(next_page=redirect_url)(request)
