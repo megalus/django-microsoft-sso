@@ -1,6 +1,61 @@
 # CHANGELOG
 
 
+## v6.0.0 (2025-09-09)
+
+### Breaking
+
+* feat!: Version 6.0 - BREAKING CHANGE
+
+* Add support to Django 5.2
+* SSO configuration can be defined per request now
+* SSO Tags can be customized in views now.
+* Fix PEP 562 for django_microsoft_sso.conf
+* Use Django's EMAIL_FIELD to determine email field in User ([`5e1502c`](https://github.com/megalus/django-microsoft-sso/commit/5e1502c82f73692c1addb343d2fd46efca81a218))
+
+### Chores
+
+* chore: additional fixes after PR ([`cdd4f53`](https://github.com/megalus/django-microsoft-sso/commit/cdd4f534e0fd6ecc535a322861aa0a20bd68ec08))
+
+* chore: fixes from PR ([`484b675`](https://github.com/megalus/django-microsoft-sso/commit/484b6757b205385e0af37cb8b4c36ecc04f2e963))
+
+* chore: update Makefile, pre-commit config, and docs for project setup and guidelines ([`f6f56a7`](https://github.com/megalus/django-microsoft-sso/commit/f6f56a7fecb6425461fb50bac65ef987f04c5e60))
+
+### Continuous Integration
+
+* ci: fix lint ([`25b51e1`](https://github.com/megalus/django-microsoft-sso/commit/25b51e1a184995ed6370293e55c9d88d798034ef))
+
+### Documentation
+
+* docs: add coding guidelines and project instructions ([`b689bd0`](https://github.com/megalus/django-microsoft-sso/commit/b689bd0f720f65bbb72499b77cc84852824c9d74))
+
+* docs: expand and clarify coding guidelines across multiple sections ([`795ce78`](https://github.com/megalus/django-microsoft-sso/commit/795ce7865bd5f1919f087e8ce0ed799bd3f13808))
+
+* docs: Add section on blocking admin password authentication. ([`ce49593`](https://github.com/megalus/django-microsoft-sso/commit/ce495933331ef09dfa2d59e592fa49abbfc76d92))
+
+### Unknown
+
+* Merge pull request #20 from megalus/v6
+
+Version 6.0 ([`f3e5619`](https://github.com/megalus/django-microsoft-sso/commit/f3e561918e269c2f95a67256c7dda3eaea6200c0))
+
+* Merge pull request #19 from megalus/develop
+
+Develop ([`7344401`](https://github.com/megalus/django-microsoft-sso/commit/7344401f4ab8387ffb4d2a1166ebc61e57f717b8))
+
+* Merge pull request #18 from rajee-a/patch-1
+
+Update button name to Microsoft ([`67337d9`](https://github.com/megalus/django-microsoft-sso/commit/67337d9348f48323cf35dba66e92098d767d0cd7))
+
+* Update button name to Microsoft
+
+typo fixed ([`4751b8a`](https://github.com/megalus/django-microsoft-sso/commit/4751b8ad11839ba0e704af361207c381b2847c40))
+
+* Merge pull request #16 from noamkush/docs-admin-password
+
+docs: Add section on blocking admin password authentication. ([`dbb84ef`](https://github.com/megalus/django-microsoft-sso/commit/dbb84ef3fd2e32e9d2e836f94fbd1079cfe008fc))
+
+
 ## v5.1.0 (2025-01-14)
 
 ### Features
