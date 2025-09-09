@@ -1,5 +1,3 @@
-import importlib
-
 import pytest
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
@@ -40,8 +38,9 @@ def test_start_login(client, mocker):
     assert client.session["sso_next_url"] == SECRET_PATH
 
 
-def test_start_login_none_next_param(client, mocker):
+def test_start_login_none_next_param(client, mocker, settings):
     # Arrange
+    settings.MICROSOFT_SSO_NEXT_URL = "admin:login"
     flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
     flow_mock.initiate_auth_code_flow.return_value = {
         "state": "foo",
@@ -86,10 +85,7 @@ def test_exploit_redirect(client, mocker, test_parameter):
 
 def test_microsoft_sso_disabled(settings, client):
     # Arrange
-    from django_microsoft_sso import conf
-
     settings.MICROSOFT_SSO_ENABLED = False
-    importlib.reload(conf)
 
     # Act
     response = client.get(reverse(ROUTE_NAME))
@@ -103,9 +99,6 @@ def test_microsoft_sso_disabled(settings, client):
 
 
 def test_missing_code(client):
-    # Arrange
-    importlib.reload(conf)
-
     # Act
     response = client.get(reverse(ROUTE_NAME))
 
@@ -120,7 +113,6 @@ def test_missing_code(client):
 @pytest.mark.parametrize("querystring", ["?code=1234", "?code=1234&state=bad_dog"])
 def test_bad_state(client, querystring):
     # Arrange
-    importlib.reload(conf)
     session = client.session
     session.update({"sso_state": "good_dog"})
     session.save()
@@ -139,10 +131,7 @@ def test_bad_state(client, querystring):
 
 def test_invalid_email(client_with_session, settings, callback_url, microsoft_response):
     # Arrange
-    from django_microsoft_sso import conf
-
     settings.MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["foobar.com"]
-    importlib.reload(conf)
 
     # Act
     response = client_with_session.get(callback_url)
@@ -181,7 +170,6 @@ def test_new_user_login(client_with_session, callback_url, settings, mocker):
     User.objects.all().delete()
     assert User.objects.count() == 0
     settings.MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["dailyplanet.com"]
-    importlib.reload(conf)
 
     # Act
     response = client_with_session.get(callback_url)
@@ -197,8 +185,6 @@ def test_existing_user_login(
     client_with_session, settings, microsoft_response, callback_url, mocker
 ):
     # Arrange
-    from django_microsoft_sso import conf
-
     flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
     flow_mock.acquire_token_by_auth_code_flow.return_value = {"access_token": "foo"}
 
@@ -210,7 +196,6 @@ def test_existing_user_login(
 
     settings.MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["dailyplanet.com"]
     settings.MICROSOFT_SSO_AUTO_CREATE_USERS = False
-    importlib.reload(conf)
 
     # Act
     response = client_with_session.get(callback_url)
@@ -225,10 +210,8 @@ def test_existing_user_login(
 
 def test_missing_user_login(client_with_session, settings, callback_url):
     # Arrange
-    from django_microsoft_sso import conf
-
     settings.MICROSOFT_SSO_AUTO_CREATE_USERS = False
-    importlib.reload(conf)
+    settings.MICROSOFT_SSO_LOGIN_FAILED_URL = "admin:login"
 
     # Act
     response = client_with_session.get(callback_url)
@@ -236,5 +219,5 @@ def test_missing_user_login(client_with_session, settings, callback_url):
     # Assert
     assert response.status_code == 302
     assert User.objects.count() == 0
-    assert response.url == "/admin/"
+    assert response.url == "/admin/login/"
     assert response.wsgi_request.user.is_authenticated is False

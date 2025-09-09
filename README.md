@@ -39,6 +39,12 @@ and [django-admin-sso](https://github.com/matthiask/django-admin-sso/)
 $ pip install django-microsoft-sso
 ```
 
+> **Compatibility**
+> - Python 3.11, 3.12, 3.13
+> - Django 4.2, 5.0, 5.1, 5.2
+>
+> Older python/django versions are not supported.
+
 ### Configure
 
 1. Add the following to your `settings.py` `INSTALLED_APPS`:
@@ -104,6 +110,12 @@ Microsoft SSO button.
 </p>
 
 ---
+
+## Example project
+
+A minimal Django project using this library is included in this repository under `example_microsoft_app/`.
+- Read the step-by-step instructions in example_microsoft_app/README.md
+- Use it as a reference to configure your own project settings and URLs
 
 ## License
 

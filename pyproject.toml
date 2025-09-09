@@ -54,6 +54,7 @@ classifiers = [
     "Framework :: Django :: 4.2",
     "Framework :: Django :: 5.0",
     "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
     "Intended Audience :: Developers",
     "Development Status :: 4 - Beta",
     "Environment :: Plugins"
@@ -72,12 +73,14 @@ arrow = "*"
 black = {version = "*", allow-prereleases = true}
 Faker = "*"
 pre-commit = "*"
+pytest-asyncio = "*"
 pytest-coverage = "*"
 pytest-django = "*"
 pytest-mock = "*"
 twine = "*"
 python-dotenv = "*"
 mkdocs-material = "*"
+mkdocs-mermaid2-plugin = "*"
 django-grappelli = "*"
 django-jazzmin = "*"
 django-admin-interface = "*"
@@ -95,7 +98,6 @@ httpx = "*"
 environment_variable_name = "STELA_ENV"
 evaluate_data = true
 show_logs = false
-dotenv_overwrites_memory = true
 env_file = ".env"
 config_file_path = "./example_microsoft_app"
 

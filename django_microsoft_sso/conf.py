@@ -1,90 +1,233 @@
+from typing import Any, Callable
+
 from django.conf import settings
+from django.http import HttpRequest
 from loguru import logger
 
-MICROSOFT_SSO_APPLICATION_ID = getattr(settings, "MICROSOFT_SSO_APPLICATION_ID", None)
-MICROSOFT_SSO_CLIENT_SECRET = getattr(settings, "MICROSOFT_SSO_CLIENT_SECRET", None)
-MICROSOFT_SSO_SCOPES = getattr(
-    settings,
-    "MICROSOFT_SSO_SCOPES",
-    ["User.ReadBasic.All"],
-)
-MICROSOFT_SSO_TIMEOUT = getattr(settings, "MICROSOFT_SSO_TIMEOUT", 10)
 
-MICROSOFT_SSO_ALLOWABLE_DOMAINS = getattr(settings, "MICROSOFT_SSO_ALLOWABLE_DOMAINS", [])
-MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = getattr(
-    settings, "MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER", False
-)
-MICROSOFT_SSO_SESSION_COOKIE_AGE = getattr(
-    settings, "MICROSOFT_SSO_SESSION_COOKIE_AGE", 3600
-)
-MICROSOFT_SSO_ENABLED = getattr(settings, "MICROSOFT_SSO_ENABLED", True)
-MICROSOFT_SSO_SUPERUSER_LIST = getattr(settings, "MICROSOFT_SSO_SUPERUSER_LIST", [])
-MICROSOFT_SSO_STAFF_LIST = getattr(settings, "MICROSOFT_SSO_STAFF_LIST", [])
-MICROSOFT_SSO_CALLBACK_DOMAIN = getattr(settings, "MICROSOFT_SSO_CALLBACK_DOMAIN", None)
-MICROSOFT_SSO_AUTO_CREATE_USERS = getattr(settings, "MICROSOFT_SSO_AUTO_CREATE_USERS", True)
+class MicrosoftSSOSettings:
+    """
+    Settings class for Microsoft SSO.
 
-MICROSOFT_SSO_AUTHENTICATION_BACKEND = getattr(
-    settings, "MICROSOFT_SSO_AUTHENTICATION_BACKEND", None
-)
+    This class implements properties for all Microsoft SSO settings.
+    Some settings accept callable values that will be called with the current request.
+    """
 
-MICROSOFT_SSO_PRE_VALIDATE_CALLBACK = getattr(
-    settings,
-    "MICROSOFT_SSO_PRE_VALIDATE_CALLBACK",
-    "django_microsoft_sso.hooks.pre_validate_user",
-)
+    def _get_setting(
+        self, name: str, default: Any = None, accept_callable: bool = True
+    ) -> Any:
+        """Get a setting from Django settings."""
+        value = getattr(settings, name, default)
+        if not accept_callable and callable(value):
+            raise TypeError(f"The setting {name} cannot be a callable.")
+        return value
 
-MICROSOFT_SSO_PRE_CREATE_CALLBACK = getattr(
-    settings,
-    "MICROSOFT_SSO_PRE_CREATE_CALLBACK",
-    "django_microsoft_sso.hooks.pre_create_user",
-)
+    # Configurations without callable
+    @property
+    def MICROSOFT_SSO_ENABLED(self) -> bool:
+        return self._get_setting("MICROSOFT_SSO_ENABLED", True, accept_callable=False)
 
-MICROSOFT_SSO_PRE_LOGIN_CALLBACK = getattr(
-    settings,
-    "MICROSOFT_SSO_PRE_LOGIN_CALLBACK",
-    "django_microsoft_sso.hooks.pre_login_user",
-)
+    @property
+    def MICROSOFT_SSO_ENABLE_LOGS(self) -> bool:
+        value = self._get_setting("MICROSOFT_SSO_ENABLE_LOGS", True, accept_callable=False)
+        if value:
+            logger.enable("django_microsoft_sso")
+        else:
+            logger.disable("django_microsoft_sso")
+        return value
 
-MICROSOFT_SSO_LOGO_URL = getattr(
-    settings,
-    "MICROSOFT_SSO_LOGO_URL",
-    "https://purepng.com/public/uploads/large/purepng.com-"
-    "microsoft-logo-iconlogobrand-logoiconslogos-251519939091wmudn.png",
-)
+    @property
+    def SSO_USE_ALTERNATE_W003(self) -> bool:
+        return self._get_setting("SSO_USE_ALTERNATE_W003", False, accept_callable=False)
 
-MICROSOFT_SSO_TEXT = getattr(settings, "MICROSOFT_SSO_TEXT", "Sign in with Microsoft")
-MICROSOFT_SSO_NEXT_URL = getattr(settings, "MICROSOFT_SSO_NEXT_URL", "admin:index")
-MICROSOFT_SSO_LOGIN_FAILED_URL = getattr(
-    settings, "MICROSOFT_SSO_LOGIN_FAILED_URL", "admin:index"
-)
-MICROSOFT_SSO_SAVE_ACCESS_TOKEN = getattr(
-    settings, "MICROSOFT_SSO_SAVE_ACCESS_TOKEN", False
-)
-MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA = getattr(
-    settings, "MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA", False
-)
-MICROSOFT_SSO_LOGOUT_REDIRECT_PATH = getattr(
-    settings, "MICROSOFT_SSO_LOGOUT_REDIRECT_PATH", "admin:index"
-)
-MICROSOFT_SLO_ENABLED = getattr(settings, "MICROSOFT_SLO_ENABLED", False)
-SSO_USE_ALTERNATE_W003 = getattr(settings, "SSO_USE_ALTERNATE_W003", False)
+    # Configurations with optional callable
 
-if SSO_USE_ALTERNATE_W003:
+    @property
+    def MICROSOFT_SSO_LOGO_URL(self) -> str | Callable[[HttpRequest], str]:
+        return self._get_setting(
+            "MICROSOFT_SSO_LOGO_URL",
+            "https://purepng.com/public/uploads/large/purepng.com-"
+            "microsoft-logo-iconlogobrand-logoiconslogos-251519939091wmudn.png",
+        )
+
+    @property
+    def MICROSOFT_SSO_TEXT(self) -> str | Callable[[HttpRequest], str]:
+        return self._get_setting("MICROSOFT_SSO_TEXT", "Sign in with Microsoft")
+
+    @property
+    def MICROSOFT_SSO_ADMIN_ENABLED(self) -> bool | Callable[[HttpRequest], str] | None:
+        return self._get_setting("MICROSOFT_SSO_ADMIN_ENABLED", None)
+
+    @property
+    def MICROSOFT_SSO_PAGES_ENABLED(self) -> bool | Callable[[HttpRequest], str] | None:
+        return self._get_setting("MICROSOFT_SSO_PAGES_ENABLED", None)
+
+    @property
+    def MICROSOFT_SSO_APPLICATION_ID(self) -> str | Callable[[HttpRequest], str] | None:
+        return self._get_setting("MICROSOFT_SSO_APPLICATION_ID", None)
+
+    @property
+    def MICROSOFT_SSO_CLIENT_SECRET(self) -> str | Callable[[HttpRequest], str] | None:
+        return self._get_setting("MICROSOFT_SSO_CLIENT_SECRET", None)
+
+    @property
+    def MICROSOFT_SSO_SCOPES(self) -> list[str] | Callable[[HttpRequest], list[str]]:
+        return self._get_setting("MICROSOFT_SSO_SCOPES", ["User.ReadBasic.All"])
+
+    @property
+    def MICROSOFT_SSO_TIMEOUT(self) -> int | Callable[[HttpRequest], int]:
+        return self._get_setting("MICROSOFT_SSO_TIMEOUT", 10)
+
+    @property
+    def MICROSOFT_SSO_ALLOWABLE_DOMAINS(
+        self,
+    ) -> list[str] | Callable[[HttpRequest], list[str]]:
+        return self._get_setting("MICROSOFT_SSO_ALLOWABLE_DOMAINS", [])
+
+    @property
+    def MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER(
+        self,
+    ) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER", False)
+
+    @property
+    def MICROSOFT_SSO_SESSION_COOKIE_AGE(self) -> int | Callable[[HttpRequest], int]:
+        return self._get_setting("MICROSOFT_SSO_SESSION_COOKIE_AGE", 3600)
+
+    @property
+    def MICROSOFT_SSO_SUPERUSER_LIST(
+        self,
+    ) -> list[str] | Callable[[HttpRequest], list[str]]:
+        return self._get_setting("MICROSOFT_SSO_SUPERUSER_LIST", [])
+
+    @property
+    def MICROSOFT_SSO_STAFF_LIST(self) -> list[str] | Callable[[HttpRequest], list[str]]:
+        return self._get_setting("MICROSOFT_SSO_STAFF_LIST", [])
+
+    @property
+    def MICROSOFT_SSO_CALLBACK_DOMAIN(self) -> str | Callable[[HttpRequest], str] | None:
+        return self._get_setting("MICROSOFT_SSO_CALLBACK_DOMAIN", None)
+
+    @property
+    def MICROSOFT_SSO_AUTO_CREATE_USERS(self) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SSO_AUTO_CREATE_USERS", True)
+
+    @property
+    def MICROSOFT_SSO_AUTHENTICATION_BACKEND(
+        self,
+    ) -> str | Callable[[HttpRequest], str] | None:
+        return self._get_setting("MICROSOFT_SSO_AUTHENTICATION_BACKEND", None)
+
+    @property
+    def MICROSOFT_SSO_PRE_VALIDATE_CALLBACK(self) -> str | Callable[[HttpRequest], str]:
+        return self._get_setting(
+            "MICROSOFT_SSO_PRE_VALIDATE_CALLBACK",
+            "django_microsoft_sso.hooks.pre_validate_user",
+        )
+
+    @property
+    def MICROSOFT_SSO_PRE_CREATE_CALLBACK(self) -> str | Callable[[HttpRequest], str]:
+        return self._get_setting(
+            "MICROSOFT_SSO_PRE_CREATE_CALLBACK",
+            "django_microsoft_sso.hooks.pre_create_user",
+        )
+
+    @property
+    def MICROSOFT_SSO_PRE_LOGIN_CALLBACK(self) -> str | Callable[[HttpRequest], str]:
+        return self._get_setting(
+            "MICROSOFT_SSO_PRE_LOGIN_CALLBACK",
+            "django_microsoft_sso.hooks.pre_login_user",
+        )
+
+    @property
+    def MICROSOFT_SSO_NEXT_URL(self) -> str | Callable[[HttpRequest], str]:
+        return self._get_setting("MICROSOFT_SSO_NEXT_URL", "admin:index")
+
+    @property
+    def MICROSOFT_SSO_LOGIN_FAILED_URL(self) -> str | Callable[[HttpRequest], str]:
+        return self._get_setting("MICROSOFT_SSO_LOGIN_FAILED_URL", "admin:login")
+
+    @property
+    def MICROSOFT_SSO_SAVE_ACCESS_TOKEN(self) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SSO_SAVE_ACCESS_TOKEN", False)
+
+    @property
+    def MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA(self) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA", False)
+
+    @property
+    def MICROSOFT_SSO_LOGOUT_REDIRECT_PATH(self) -> str | Callable[[HttpRequest], str]:
+        return self._get_setting("MICROSOFT_SSO_LOGOUT_REDIRECT_PATH", "admin:index")
+
+    @property
+    def MICROSOFT_SLO_ENABLED(self) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SLO_ENABLED", False)
+
+    @property
+    def MICROSOFT_SSO_AUTHORITY(self) -> Any | Callable[[HttpRequest], Any]:
+        return self._get_setting("MICROSOFT_SSO_AUTHORITY", None)
+
+    @property
+    def MICROSOFT_SSO_UNIQUE_EMAIL(self) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SSO_UNIQUE_EMAIL", False)
+
+    @property
+    def MICROSOFT_SSO_ENABLE_MESSAGES(self) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SSO_ENABLE_MESSAGES", True)
+
+    @property
+    def MICROSOFT_SSO_SAVE_BASIC_MICROSOFT_INFO(
+        self,
+    ) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SSO_SAVE_BASIC_MICROSOFT_INFO", True)
+
+    @property
+    def MICROSOFT_SSO_SHOW_FAILED_LOGIN_MESSAGE(
+        self,
+    ) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SSO_SHOW_FAILED_LOGIN_MESSAGE", False)
+
+    @property
+    def MICROSOFT_SSO_SLO_ENABLED(
+        self,
+    ) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SSO_SLO_ENABLED", False)
+
+    @property
+    def MICROSOFT_SSO_GRAPH_TIMEOUT(self) -> int | Callable[[HttpRequest], int]:
+        return self._get_setting("MICROSOFT_SSO_GRAPH_TIMEOUT", 10)
+
+    @property
+    def SSO_ADMIN_ROUTE(
+        self,
+    ) -> str | Callable[[HttpRequest], str]:
+        return self._get_setting("SSO_ADMIN_ROUTE", "admin:index")
+
+    @property
+    def SSO_SHOW_FORM_ON_ADMIN_PAGE(
+        self,
+    ) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("SSO_SHOW_FORM_ON_ADMIN_PAGE", True)
+
+
+# Create a single instance of the settings class
+_ms_sso_settings = MicrosoftSSOSettings()
+
+
+def __getattr__(name: str) -> Any:
+    """
+    Implement PEP 562 __getattr__ to lazily load settings.
+
+    This function is called when an attribute is not found in the module's
+    global namespace. It delegates to the _ms_sso_settings instance.
+    """
+    return getattr(_ms_sso_settings, name)
+
+
+if _ms_sso_settings.SSO_USE_ALTERNATE_W003:
     from django_microsoft_sso.checks.warnings import register_sso_check  # noqa
 
-MICROSOFT_SSO_AUTHORITY = getattr(settings, "MICROSOFT_SSO_AUTHORITY", None)
-MICROSOFT_SSO_UNIQUE_EMAIL = getattr(settings, "MICROSOFT_SSO_UNIQUE_EMAIL", False)
-MICROSOFT_SSO_ENABLE_LOGS = getattr(settings, "MICROSOFT_SSO_ENABLE_LOGS", True)
-MICROSOFT_SSO_ENABLE_MESSAGES = getattr(settings, "MICROSOFT_SSO_ENABLE_MESSAGES", True)
-MICROSOFT_SSO_SAVE_BASIC_MICROSOFT_INFO = getattr(
-    settings, "MICROSOFT_SSO_SAVE_BASIC_MICROSOFT_INFO", True
-)
-MICROSOFT_SSO_SHOW_FAILED_LOGIN_MESSAGE = getattr(
-    settings, "MICROSOFT_SSO_SHOW_FAILED_LOGIN_MESSAGE", False
-)
-MICROSOFT_SSO_GRAPH_TIMEOUT = getattr(settings, "MICROSOFT_SSO_GRAPH_TIMEOUT", 10)
-
-if MICROSOFT_SSO_ENABLE_LOGS:
+if _ms_sso_settings.MICROSOFT_SSO_ENABLE_LOGS:
     logger.enable("django_microsoft_sso")
 else:
     logger.disable("django_microsoft_sso")

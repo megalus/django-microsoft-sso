@@ -8,12 +8,9 @@ from loguru import logger
 class MyBackend(ModelBackend):
     """Simple test for custom authentication backend"""
 
-    def authenticate(self, request, username=None, password=None, **kwargs):
-        return super().authenticate(request, username, password, **kwargs)
-
 
 def pre_login_callback(user, request):
-    """Callback function called before user is logged in."""
+    """Callback function called before the user is logged in."""
 
     # Example 1: Add SuperUser status to user
     messages.info(request, f"Running Pre-Login callback for user: {user}.")

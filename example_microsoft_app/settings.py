@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+# flake8: noqa: E731
+
 from pathlib import Path
 
+from loguru import logger
 from stela import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -53,12 +56,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",  # Need for Auth messages
     "django.contrib.staticfiles",
     "django.contrib.sites",  # Optional: Add Sites framework
-    "django_microsoft_sso",  # Add django_microsoft_sso
     "django_google_sso",  # Optional: Add django_google_sso
+    "django_microsoft_sso",  # Add django_microsoft_sso
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sites.middleware.CurrentSiteMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -72,7 +76,9 @@ ROOT_URLCONF = "example_microsoft_app.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "example_microsoft_app" / "templates",
+        ],
         "NAME": "default",
         "APP_DIRS": True,
         "OPTIONS": {
@@ -163,7 +169,10 @@ STATICFILES_DIRS = [BASE_DIR / "example_microsoft_app" / "static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTHENTICATION_BACKENDS = ["example_microsoft_app.backend.MyBackend"]
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "example_microsoft_app.backend.MyBackend",
+]
 
 
 SITE_ID = 1
@@ -178,16 +187,97 @@ SITE_ID = 1
 # Or comment both and use domain retrieved from accounts/login/ request
 MICROSOFT_SSO_CALLBACK_DOMAIN = env.MICROSOFT_SSO_CALLBACK_DOMAIN
 
-MICROSOFT_SSO_APPLICATION_ID = env.MICROSOFT_SSO_APPLICATION_ID
-MICROSOFT_SSO_CLIENT_SECRET = env.MICROSOFT_SSO_CLIENT_SECRET
+#####################
+# Callback Examples #
+#####################
 
-MICROSOFT_SSO_ALLOWABLE_DOMAINS = env.get_or_default("MICROSOFT_SSO_ALLOWABLE_DOMAINS", [])
-MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = (
-    False  # Mark as True, to create superuser on first eligible user login
-)
-MICROSOFT_SSO_STAFF_LIST = env.get_or_default("MICROSOFT_SSO_STAFF_LIST", [])
 
-MICROSOFT_SSO_SUPERUSER_LIST = env.get_or_default("MICROSOFT_SSO_SUPERUSER_LIST", [])
+def get_application_id(request):
+    return env.MICROSOFT_SSO_APPLICATION_ID
+
+
+MICROSOFT_SSO_APPLICATION_ID = get_application_id  # Dynamic
+MICROSOFT_SSO_CLIENT_SECRET = env.MICROSOFT_SSO_CLIENT_SECRET  # Static
+
+###########################
+# Admin and Page Examples #
+###########################
+
+# --8<-- [start:sso_config]
+# settings.py
+from django_microsoft_sso.helpers import is_admin_path
+
+
+def get_sso_config(request):
+    config = {
+        "admin": {
+            "allowable_domains": env.get_or_default("MICROSOFT_SSO_ALLOWABLE_DOMAINS", []),
+            "login_failed_url": "admin:login",
+            "next_url": "admin:index",
+            "session_cookie_age": 3600,  # 1 hour - default
+            "staff_list": env.get_or_default("MICROSOFT_SSO_STAFF_LIST", []),
+            "superuser_list": env.get_or_default("MICROSOFT_SSO_SUPERUSER_LIST", []),
+            "auto_create_first_superuser": True,  # Create superuser on first eligible user login
+        },
+        "pages": {
+            "allowable_domains": ["*"],  # Allow all domains
+            "login_failed_url": "index",
+            "next_url": "secret",
+            "session_cookie_age": 86400,  # 24 hours
+            "staff_list": [],
+            "superuser_list": [],
+            "auto_create_first_superuser": False,
+        },
+    }
+    if is_admin_path(request):
+        logger.debug("Returning Admin SSO configuration")
+        return config["admin"]
+    else:
+        logger.debug("Returning Pages SSO configuration")
+        return config["pages"]
+
+
+# Configure settings as callables
+MICROSOFT_SSO_ALLOWABLE_DOMAINS = lambda request: get_sso_config(request)[
+    "allowable_domains"
+]
+MICROSOFT_SSO_AUTO_CREATE_FIRST_SUPERUSER = lambda request: get_sso_config(request)[
+    "auto_create_first_superuser"
+]
+MICROSOFT_SSO_STAFF_LIST = lambda request: get_sso_config(request)["staff_list"]
+MICROSOFT_SSO_SUPERUSER_LIST = lambda request: get_sso_config(request)["superuser_list"]
+MICROSOFT_SSO_NEXT_URL = lambda request: get_sso_config(request)["next_url"]
+MICROSOFT_SSO_SESSION_COOKIE_AGE = lambda request: get_sso_config(request)[
+    "session_cookie_age"
+]
+MICROSOFT_SSO_LOGIN_FAILED_URL = lambda request: get_sso_config(request)["login_failed_url"]
+# --8<-- [end:sso_config]
+
+#########################################
+# Split SSO between Admin/Page Examples #
+#########################################
+
+# --8<-- [start:sso_split]
+# settings.py
+
+# Control globally - both Admin and Pages (default: True)
+MICROSOFT_SSO_ENABLED = True
+GOOGLE_SSO_ENABLED = True
+
+# Use Google SSO for Pages only
+# Always define both Admin and Pages settings
+GOOGLE_SSO_PAGES_ENABLED = True
+GOOGLE_SSO_ADMIN_ENABLED = False
+
+# Explicitly configure Google Settings
+# to make sure they cannot have Admin privileges
+GOOGLE_SSO_ALLOWABLE_DOMAINS = ["*"]
+GOOGLE_SSO_AUTO_CREATE_FIRST_SUPERUSER = False
+GOOGLE_SSO_STAFF_LIST = []
+GOOGLE_SSO_SUPERUSER_LIST = []
+GOOGLE_SSO_FAILED_URL = "index"
+GOOGLE_SSO_NEXT_URL = "secret"
+# --8<-- [end:sso_split]
 
 # Optional: You can save access token to session
 MICROSOFT_SSO_SAVE_ACCESS_TOKEN = True
@@ -200,7 +290,7 @@ MICROSOFT_SSO_SAVE_ACCESS_TOKEN = True
 # MICROSOFT_SSO_SHOW_FAILED_LOGIN_MESSAGE = False
 
 # Optional: Add if you want to use custom authentication backend
-# MICROSOFT_SSO_AUTHENTICATION_BACKEND = "backend.MyBackend"
+MICROSOFT_SSO_AUTHENTICATION_BACKEND = "example_microsoft_app.backend.MyBackend"
 
 # Optional: Change Scopes
 MICROSOFT_SSO_SCOPES = [
@@ -244,12 +334,6 @@ GOOGLE_SSO_CLIENT_ID = env.GOOGLE_SSO_CLIENT_ID
 GOOGLE_SSO_PROJECT_ID = env.GOOGLE_SSO_PROJECT_ID
 GOOGLE_SSO_CLIENT_SECRET = env.GOOGLE_SSO_CLIENT_SECRET
 
-GOOGLE_SSO_ALLOWABLE_DOMAINS = env.get_or_default("GOOGLE_SSO_ALLOWABLE_DOMAINS", [])
-GOOGLE_SSO_AUTO_CREATE_FIRST_SUPERUSER = (
-    False  # Mark as True, to create superuser on first eligible user login
-)
-GOOGLE_SSO_STAFF_LIST = env.get_or_default("GOOGLE_SSO_STAFF_LIST", [])
-GOOGLE_SSO_SUPERUSER_LIST = env.get_or_default("GOOGLE_SSO_SUPERUSER_LIST", [])
 GOOGLE_SSO_TIMEOUT = 10  # default value
 GOOGLE_SSO_SCOPES = [  # default values
     "openid",
@@ -259,16 +343,13 @@ GOOGLE_SSO_SCOPES = [  # default values
 ]
 
 # Optional: Add if you want to use custom authentication backend
-GOOGLE_SSO_AUTHENTICATION_BACKEND = "backend.MyBackend"
+GOOGLE_SSO_AUTHENTICATION_BACKEND = "example_microsoft_app.backend.MyBackend"
 
 # Optional: You can save access token to session
 # GOOGLE_SSO_SAVE_ACCESS_TOKEN = True
 
 # Optional: Add pre-login logic
 # GOOGLE_SSO_PRE_LOGIN_CALLBACK = "backend.pre_login_callback"
-
-# Uncomment to disable SSO login
-# GOOGLE_SSO_ENABLED = False  # default: True
 
 GOOGLE_SSO_LOGO_URL = (
     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/"

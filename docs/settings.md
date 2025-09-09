@@ -2,6 +2,7 @@
 
 | Setting                                     | Description                                                                                                                                                                           |
 |---------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `MICROSOFT_SSO_ADMIN_ENABLED`               | Enable SSO only when allowed on Admin pages. Default: `None`                                                                                                                          |
 | `MICROSOFT_SSO_ALLOWABLE_DOMAINS`           | List of domains that will be allowed to create users. Default: `[]`                                                                                                                   |
 | `MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA`     | If true, update default user info from Microsoft data at every login. This will also make their password unusable. Otherwise, all of this happens only on create. Default: `False`    |
 | `MICROSOFT_SSO_AUTHENTICATION_BACKEND`      | The authentication backend to use.  Default: `None`                                                                                                                                   |
@@ -18,6 +19,7 @@
 | `MICROSOFT_SSO_LOGIN_FAILED_URL`            | The named url path that the user will be redirected to if an authentication error is encountered. Default: `admin:index`                                                              |
 | `MICROSOFT_SSO_LOGO_URL`                    | The URL of the logo to be used on the login button. Default: `https://purepng.com/public/uploads/large/purepng.com-microsoft-logo-iconlogobrand-logoiconslogos-251519939091wmudn.png` |
 | `MICROSOFT_SSO_NEXT_URL`                    | The named url path that the user will be redirected if there is no next url after successful authentication. Default: `admin:index`                                                   |
+| `MICROSOFT_SSO_PAGES_ENABLED`               | Enable SSO button injection on non-admin pages. Default: `None`                                                                                                                       |
 | `MICROSOFT_SSO_PRE_CREATE_CALLBACK`         | Callable for processing pre-create logic. Default: `django_microsoft_sso.hooks.pre_create_user`                                                                                       |
 | `MICROSOFT_SSO_PRE_LOGIN_CALLBACK`          | Callable for processing pre-login logic. Default: `django_microsoft_sso.hooks.pre_login_user`                                                                                         |
 | `MICROSOFT_SSO_PRE_VALIDATE_CALLBACK`       | Callable for processing pre-validate logic. Default: `django_microsoft_sso.hooks.pre_validate_user`                                                                                   |
@@ -32,5 +34,6 @@
 | `MICROSOFT_SSO_TEXT`                        | The text to be used on the login button. Default: `Sign in with Microsoft`                                                                                                            |
 | `MICROSOFT_SSO_TIMEOUT`                     | The timeout in seconds for the Microsoft SSO authentication returns info, in minutes. Default: `10`                                                                                   |
 | `MICROSOFT_SSO_UNIQUE_EMAIL`                | When get or create a new user, check if the email already exists. Default: `False`                                                                                                    |
+| `SSO_ADMIN_ROUTE`                           | The admin index page route. Default: `admin:index`                                                                                                                                    |
 | `SSO_SHOW_FORM_ON_ADMIN_PAGE`               | Show the form on the admin page. Default: `True`                                                                                                                                      |
 | `SSO_USE_ALTERNATE_W003`                    | Use alternate W003 warning. You need to silence original templates.E003 warning. Default: `False`                                                                                     |
