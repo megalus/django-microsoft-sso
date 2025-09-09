@@ -34,8 +34,8 @@ class MicrosoftAuth:
         """Get SSO value from request or settings.
 
         Both configurations are valid:
-        MICROSOFT_SSO_CLIENT_ID = "your-client-id" # string value
-        MICROSOFT_SSO_CLIENT_ID = get_client_id # callable function
+        MICROSOFT_SSO_APPLICATION_ID = "your-client-id" # string value
+        MICROSOFT_SSO_APPLICATION_ID = get_client_id # callable function
 
         When the value is a callable,
         it will be called with the request as an argument:
@@ -47,7 +47,7 @@ class MicrosoftAuth:
             }
             return client_ids.get(request.site.domain, None)
 
-        MICROSOFT_SSO_CLIENT_ID = get_client_id
+        MICROSOFT_SSO_APPLICATION_ID = get_client_id
 
         :param key: The key to retrieve from the settings.
         :return: The value associated with the key.

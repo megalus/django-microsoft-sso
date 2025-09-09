@@ -4,6 +4,8 @@ Test runner is `pytest`. To run can use command `make tests` to run all or `make
 
 Always check code for the `django` versions defined in pyproject.toml.
 
+Use latest version of `msal` package.
+
 Always use type hints in the code. Always use TypeDicts for dictionaries.
 
 Always use dataclasses for objects.
@@ -20,17 +22,17 @@ This is a public python library hosted in PyPI. All configuration is inside `pyp
 
 Use semantic versioning for commit messages. Create a one-line commit. Do not use "`".
 
-Use `feat:` if commit creates new code in both ./django_google_sso and unit tests.
+Use `feat:` if commit creates new code in both ./django_microsoft_sso and unit tests.
 
-Use `fix:` if commit only changes the code inside ./django_google_sso.
+Use `fix:` if commit only changes the code inside ./django_microsoft_sso.
 
-Use `chore:` if commit changes files outside ./django_google_sso.
+Use `chore:` if commit changes files outside ./django_microsoft_sso.
 
 Use `ci:` if commit changes files only in pyproject.toml.
 
 Use `docs:` if commit changes files only in ./docs or the README.
 
-Use `refactor:` if commit changes files in ./django_google_sso but not in unit tests.
+Use `refactor:` if commit changes files in ./django_microsoft_sso but not in unit tests.
 
 Use `BREAKING CHANGE:` if commit changes the minimum version of Python or Django in pyproject.toml.
 
@@ -46,7 +48,7 @@ Always use English on code, comments, docstrings and documentation.
 
 The README always contains the minimal configuration for the library to work.
 
-Always write the README for developers with no or low experience with Django, Google APIs and OAuth2, but be pragmatic and short. The README should be a quick start guide for developers to use the library.
+Always write the README for developers with no or low experience with Django, Microsoft 365 Graph and OAuth2, but be pragmatic and short. The README should be a quick start guide for developers to use the library.
 
 The ./docs folder contains detailed instructions of how to use the library, including examples and diagrams. Reading order for the markdown files is located in mkdocs.yml at `nav` key. On these docs you can be very didactic.
 
