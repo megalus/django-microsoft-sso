@@ -37,20 +37,24 @@
 
 {# Django Unfold Admin Block #}
 {% block base %}
+    <style>
+        .microsoft-login-btn, .google-login-btn, .github-login-btn {
+            height: 100%;
+        }
+    </style>
     {{ block.super }}  {# Process HTML login elements from Django Unfold #}
-    {% include 'microsoft_sso/login_sso.html' %} {# Add Microsoft SSO HTML elements #}
     <script>
         {% with show_admin_form|default:None as show_form %}
             {% if show_form is None %}
                 {% define_show_form as show_form %}
             {% endif %}
             {% if show_form %}
-                $(document).ready(function() {
+                $(document).ready(function () {
                     $(".login-box").insertAfter("#login-form");
                 });
             {% else %}
                 $("#login-form").remove();
-                $(document).ready(function() {
+                $(document).ready(function () {
                     $(".login-box").insertAfter(".font-semibold.mb-10");
                 });
             {% endif %}
