@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v6.0.1 (2025-09-15)
+
+### Fixes
+
+* fix: update code for django unfold ([`39f2014`](https://github.com/megalus/django-microsoft-sso/commit/39f201465b3965dc2d7dbd6937e8d3f320d369ef))
+
+
 ## v6.0.0 (2025-09-09)
 
 ### Breaking
