@@ -85,3 +85,22 @@ def test_custom_authorities(
             ms.get_authority()
     else:
         assert ms.get_authority() == data
+
+
+def test_get_redirect_uri_from_multiple_reverse_proxies(rf, query_string, monkeypatch):
+    # Arrange
+    expected_scheme = "https"
+    monkeypatch.setattr(conf, "MICROSOFT_SSO_CALLBACK_DOMAIN", None)
+    current_site_domain = Site.objects.get_current().domain
+    request = rf.get(
+        f"/microsoft_sso/callback/?{query_string}", HTTP_X_FORWARDED_PROTO="https, https"
+    )
+
+    # Act
+    ms = MicrosoftAuth(request)
+
+    # Assert
+    assert (
+        ms.get_redirect_uri()
+        == f"{expected_scheme}://{current_site_domain}/microsoft_sso/callback/"
+    )

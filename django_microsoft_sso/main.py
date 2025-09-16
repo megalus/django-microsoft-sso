@@ -80,7 +80,10 @@ class MicrosoftAuth:
 
     def get_redirect_uri(self) -> str:
         if "HTTP_X_FORWARDED_PROTO" in self.request.META:
-            scheme = self.request.META["HTTP_X_FORWARDED_PROTO"]
+            raw_scheme = self.request.META["HTTP_X_FORWARDED_PROTO"]
+            # Some reverse proxies may send a comma-separated list like "https,https".
+            # Always use the first value and strip whitespace to build a valid URI.
+            scheme = raw_scheme.split(",")[0].strip() if raw_scheme else self.request.scheme
         else:
             scheme = self.request.scheme
         netloc = self.get_netloc()
