@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v6.0.2 (2025-09-16)
+
+### Fixes
+
+* fix: handle multiple reverse proxies in redirect URI generation ([`beb3f53`](https://github.com/megalus/django-microsoft-sso/commit/beb3f536acc254513c37c9ccbfd871211fd4520a))
+
+
 ## v6.0.1 (2025-09-15)
 
 ### Fixes
