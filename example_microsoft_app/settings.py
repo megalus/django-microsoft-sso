@@ -111,8 +111,7 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation."
-        "UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -177,6 +176,14 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
+# Cache configuration is needed when MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = True
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+    }
+}
+
 ###############################
 #                             #
 # Test Microsoft              #
@@ -205,7 +212,7 @@ MICROSOFT_SSO_CLIENT_SECRET = env.MICROSOFT_SSO_CLIENT_SECRET  # Static
 
 # --8<-- [start:sso_config]
 # settings.py
-from django_microsoft_sso.helpers import is_admin_path
+from django_microsoft_sso.helpers import is_admin_path  # noqa: E402
 
 
 def get_sso_config(request):
@@ -310,6 +317,10 @@ MICROSOFT_SSO_PRE_CREATE_CALLBACK = "backend.pre_create_callback"
 # Optional: Always update user data
 MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA = True
 
+# Optional: Require secure callback for form_post response mode
+# You must set the CACHES setting to use this feature.
+MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = True  # False=GET, True=POST
+
 # Optional: Customize Button Text
 # MICROSOFT_SSO_TEXT = "Login using Microsoft 365 Account"
 
@@ -369,3 +380,6 @@ GOOGLE_SSO_LOGO_URL = (
 # which filters SSO templates, uncomment both options:
 SILENCED_SYSTEM_CHECKS = ["templates.W003"]
 SSO_USE_ALTERNATE_W003 = True  # default: False
+
+# Optional: silence secure callback cache warning when expected in your setup
+# SILENCED_SYSTEM_CHECKS += ["sso.W001"]

@@ -8,4 +8,5 @@ class DjangoMicrosoftSsoConfig(AppConfig):
     verbose_name = _("Microsoft SSO User")
 
     def ready(self):
+        import django_microsoft_sso.checks.warnings
         import django_microsoft_sso.templatetags  # noqa

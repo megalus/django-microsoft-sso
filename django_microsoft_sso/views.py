@@ -8,6 +8,7 @@ from django.http import HttpRequest, HttpResponseBase, HttpResponseRedirect
 from django.shortcuts import resolve_url
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from loguru import logger
 
@@ -34,29 +35,76 @@ def start_login(request: HttpRequest) -> HttpResponseRedirect:
     ms_auth = MicrosoftAuth(request)
     ms_auth.initiate()
 
-    # Save data on Session
-    if not request.session.session_key:
-        request.session.create()
     timeout = auth.get_sso_value("TIMEOUT")
-    request.session.set_expiry(timeout * 60)
-    request.session["msal_graph_info"] = ms_auth.result
-    request.session["sso_next_url"] = next_path
-    request.session.save()
+    require_secure_callback = auth.get_sso_value("REQUIRE_SECURE_CALLBACK")
+    if require_secure_callback:
+        # Save data on Cache
+        cache = ms_auth.get_cache_backend()
+        key = ms_auth.result.get("state")
+        payload = {
+            "msal_graph_info": ms_auth.result,
+            "sso_next_url": next_path,
+        }
+        cache.set(
+            key=key,
+            value=payload,
+            timeout=timeout * 60,
+        )
+    else:
+        # Save data on Session
+        if not request.session.session_key:
+            request.session.create()
+        request.session.set_expiry(timeout * 60)
+        request.session["msal_graph_info"] = ms_auth.result
+        request.session["sso_next_url"] = next_path
+        request.session.save()
 
     # Redirect User
     return HttpResponseRedirect(ms_auth.get_auth_uri())
 
 
-@require_http_methods(["GET"])
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
 def callback(request: HttpRequest) -> HttpResponseRedirect:
     microsoft = MicrosoftAuth(request)
     login_failed_url = reverse(microsoft.get_sso_value("LOGIN_FAILED_URL"))
-    code = request.GET.get("code")
-    state = request.GET.get("state")
+    require_secure_callback = microsoft.get_sso_value("REQUIRE_SECURE_CALLBACK")
 
-    next_url_from_session = request.session.get("sso_next_url")
+    # Get data from Request (POST or GET)
+    request_data = request.POST if request.method == "POST" else request.GET
+    auth_response = {
+        key: value for key in request_data if (value := request_data.get(key)) is not None
+    }
+    code = auth_response.get("code")
+    state = auth_response.get("state")
+
+    # If secure callback is not enabled and request is a POST, stop and warn user
+    if require_secure_callback is False and request.method == "POST":
+        message = _(
+            "Request Secure Callback must be enabled to "
+            "receive POST requests in callback view."
+        )
+        send_message(request, message)
+        return HttpResponseRedirect(login_failed_url)
+
+    # Get Graph Info, Next URL from Session or Cache
     next_url_from_conf = reverse(microsoft.get_sso_value("NEXT_URL"))
-    next_url = next_url_from_session if next_url_from_session else next_url_from_conf
+    if require_secure_callback:
+        cache = microsoft.get_cache_backend()
+        cache_data = cache.get(state, {}) if state else {}
+        graph_info = cache_data.get("msal_graph_info")
+        saved_next_url = cache_data.get("sso_next_url")
+        state_is_valid = bool(graph_info)
+        # Clear cache after retrieving data
+        if state:
+            cache.delete(state)
+    else:
+        saved_next_url = request.session.get("sso_next_url")
+        graph_info = request.session.get("msal_graph_info", {})
+        request_state = graph_info.get("state")
+        state_is_valid = bool(state and request_state and state == request_state)
+
+    next_url = saved_next_url if saved_next_url else next_url_from_conf
     logger.debug(f"Next URL after login: {next_url}")
 
     # Check if Microsoft SSO is enabled
@@ -71,20 +119,19 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
         return HttpResponseRedirect(login_failed_url)
 
     # Then, check the state.
-    request_state = request.session.get("msal_graph_info", {}).get("state")
-
-    if not request_state or state != request_state:
+    if not state_is_valid:
         send_message(request, _("State Mismatch. Time expired?"))
         return HttpResponseRedirect(login_failed_url)
 
     # Get Access Token from Microsoft Graph
-    auth_result = microsoft.get_user_token()
+    auth_result = microsoft.get_user_token(graph_info)
     if not auth_result:
         send_message(request, _("Access Token not received from SSO."))
         return HttpResponseRedirect(login_failed_url)
     if "error" in auth_result:
         send_message(
-            request, _(f"Authorization Error received from SSO: {auth_result['error']}.")
+            request,
+            _(f"Authorization Error received from SSO: {auth_result['error']}."),
         )
         if auth_result["error"] == "invalid_client":
             send_message(
@@ -92,12 +139,8 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
             )
             application_id = microsoft.get_sso_value("APPLICATION_ID")
             client_secret = microsoft.get_sso_value("CLIENT_SECRET")
-            logger.debug(
-                f"MICROSOFT_SSO_APPLICATION_ID: " f"{show_credential(application_id)}"
-            )
-            logger.debug(
-                f"MICROSOFT_SSO_CLIENT_SECRET: " f"{show_credential(client_secret)}"
-            )
+            logger.debug(f"MICROSOFT_SSO_APPLICATION_ID: {show_credential(application_id)}")
+            logger.debug(f"MICROSOFT_SSO_CLIENT_SECRET: {show_credential(client_secret)}")
         return HttpResponseRedirect(login_failed_url)
 
     try:

@@ -101,12 +101,26 @@ class MicrosoftSSOSettings:
         return self._get_setting("MICROSOFT_SSO_SUPERUSER_LIST", [])
 
     @property
-    def MICROSOFT_SSO_STAFF_LIST(self) -> list[str] | Callable[[HttpRequest], list[str]]:
+    def MICROSOFT_SSO_STAFF_LIST(
+        self,
+    ) -> list[str] | Callable[[HttpRequest], list[str]]:
         return self._get_setting("MICROSOFT_SSO_STAFF_LIST", [])
 
     @property
-    def MICROSOFT_SSO_CALLBACK_DOMAIN(self) -> str | Callable[[HttpRequest], str] | None:
+    def MICROSOFT_SSO_CALLBACK_DOMAIN(
+        self,
+    ) -> str | Callable[[HttpRequest], str] | None:
         return self._get_setting("MICROSOFT_SSO_CALLBACK_DOMAIN", None)
+
+    @property
+    def MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK(
+        self,
+    ) -> bool | Callable[[HttpRequest], bool]:
+        return self._get_setting("MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK", False)
+
+    @property
+    def MICROSOFT_SSO_CACHE_NAME(self) -> str | Callable[[HttpRequest], str]:
+        return self._get_setting("MICROSOFT_SSO_CACHE_NAME", "default")
 
     @property
     def MICROSOFT_SSO_AUTO_CREATE_USERS(self) -> bool | Callable[[HttpRequest], bool]:
@@ -152,7 +166,9 @@ class MicrosoftSSOSettings:
         return self._get_setting("MICROSOFT_SSO_SAVE_ACCESS_TOKEN", False)
 
     @property
-    def MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA(self) -> bool | Callable[[HttpRequest], bool]:
+    def MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA(
+        self,
+    ) -> bool | Callable[[HttpRequest], bool]:
         return self._get_setting("MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA", False)
 
     @property
@@ -223,9 +239,6 @@ def __getattr__(name: str) -> Any:
     """
     return getattr(_ms_sso_settings, name)
 
-
-if _ms_sso_settings.SSO_USE_ALTERNATE_W003:
-    from django_microsoft_sso.checks.warnings import register_sso_check  # noqa
 
 if _ms_sso_settings.MICROSOFT_SSO_ENABLE_LOGS:
     logger.enable("django_microsoft_sso")

@@ -93,7 +93,8 @@ def test_get_redirect_uri_from_multiple_reverse_proxies(rf, query_string, monkey
     monkeypatch.setattr(conf, "MICROSOFT_SSO_CALLBACK_DOMAIN", None)
     current_site_domain = Site.objects.get_current().domain
     request = rf.get(
-        f"/microsoft_sso/callback/?{query_string}", HTTP_X_FORWARDED_PROTO="https, https"
+        f"/microsoft_sso/callback/?{query_string}",
+        HTTP_X_FORWARDED_PROTO="https, https",
     )
 
     # Act
@@ -104,3 +105,48 @@ def test_get_redirect_uri_from_multiple_reverse_proxies(rf, query_string, monkey
         ms.get_redirect_uri()
         == f"{expected_scheme}://{current_site_domain}/microsoft_sso/callback/"
     )
+
+
+def test_initiate_uses_get_by_default(callback_request, settings, mocker):
+    # Arrange
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = False
+    flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
+    flow_mock.initiate_auth_code_flow.return_value = {
+        "state": "foo",
+        "auth_uri": "https://foo/bar",
+    }
+    ms = MicrosoftAuth(callback_request)
+
+    # Act
+    ms.initiate()
+
+    # Assert
+    flow_mock.initiate_auth_code_flow.assert_called_once()
+    call_kwargs = flow_mock.initiate_auth_code_flow.call_args.kwargs
+    assert call_kwargs["response_mode"] == "query"
+
+
+def test_initiate_secure_uses_post_when_caches_is_configured(
+    callback_request, settings, mocker
+):
+    # Arrange
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = True
+    settings.CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
+    flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
+    flow_mock.initiate_auth_code_flow.return_value = {
+        "state": "foo",
+        "auth_uri": "https://foo/bar",
+    }
+    ms = MicrosoftAuth(callback_request)
+
+    # Act
+    ms.initiate()
+
+    # Assert
+    flow_mock.initiate_auth_code_flow.assert_called_once()
+    call_kwargs = flow_mock.initiate_auth_code_flow.call_args.kwargs
+    assert call_kwargs["response_mode"] == "form_post"

@@ -13,9 +13,9 @@ MICROSOFT_SSO_CLIENT_SECRET=<your client secret>
 Then run the following commands:
 
 ```shell
-poetry install
-poetry run python manage.py migrate
-poetry run python manage.py runserver
+uv sync --dev
+uv run python manage.py migrate
+uv run python manage.py runserver
 ```
 
 Open browser in `http://localhost:8000/admin`

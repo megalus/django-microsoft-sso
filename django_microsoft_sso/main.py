@@ -1,6 +1,6 @@
 import uuid
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal
 from urllib.parse import urlparse
 
 import httpx
@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.cache import BaseCache, caches
 from django.db.models import Field, Q
 from django.http import HttpRequest
 from django.urls import reverse
@@ -150,10 +151,17 @@ class MicrosoftAuth:
     def get_auth_uri(self):
         return self.result["auth_uri"]
 
-    def get_user_token(self):
-        request_params: dict[str, str] = {k: v for k, v in self.request.GET.items()}
+    def get_user_token(self, graph_info: dict[Any, Any]):
+        request_data = (
+            self.request.POST if self.request.method.upper() == "POST" else self.request.GET
+        )
+        request_params = {
+            key: value
+            for key in request_data
+            if (value := request_data.get(key)) is not None
+        }
         self.token_info = self.auth.acquire_token_by_auth_code_flow(
-            auth_code_flow=self.request.session["msal_graph_info"],
+            auth_code_flow=graph_info,
             auth_response=request_params,
         )
         if "error_description" in self.token_info:
@@ -161,13 +169,29 @@ class MicrosoftAuth:
             logger.error(f"Error acquiring token: {error}")
         return self.token_info
 
+    def get_response_mode(self) -> Literal["query", "form_post"] | None:
+        require_secure = self.get_sso_value("REQUIRE_SECURE_CALLBACK")
+        if not require_secure:
+            logger.debug(
+                "MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK=False. Callback mode set to query."
+            )
+            return "query"
+
+        logger.debug(
+            "MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK=True. Callback mode set to form_post."
+        )
+        return "form_post"
+
     def initiate(
-        self, custom_scopes: list[str] | None = None, redirect_uri: str | None = None
+        self,
+        custom_scopes: list[str] | None = None,
+        redirect_uri: str | None = None,
     ) -> dict:
         self.result = self.auth.initiate_auth_code_flow(
             scopes=custom_scopes or self.get_sso_value("SCOPES"),
             redirect_uri=redirect_uri or self.get_redirect_uri(),
             state=STATE,
+            response_mode=self.get_response_mode(),
         )
         return self.result
 
@@ -199,6 +223,13 @@ class MicrosoftAuth:
             logger.debug(f"SSO Enable Check failed: {response[1]}")
 
         return response
+
+    def get_cache_backend(self) -> BaseCache:
+        cache_name = self.get_sso_value("CACHE_NAME")
+        cache = caches[cache_name]
+        if not cache:
+            raise ValueError(f"Cache not found: {cache_name}.")
+        return cache
 
 
 @dataclass

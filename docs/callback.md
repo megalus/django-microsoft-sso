@@ -88,4 +88,47 @@ you can optionally add Django logout URL in the Web Platform configurations. But
 
 ---
 
+## Callback response and Browser history
+
+As stated in [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.3.1), when a browser navigates to
+`client.example/redirection_endpoint?code=abcd` as a result of a redirect from a provider's authorization endpoint,
+the URL including the authorization code may end up in the browser's history, which can be read by the client.
+
+To avoid this, MSAL after version 1.35.0 add the `form_post` response mode. This means that instead of redirecting
+the browser to the callback URL with query parameters, MSAL can submit a POST request to the callback URL with the
+authorization code in the request body.
+
+By default, **Django-Microsoft-SSO** uses the **query** response mode, when the redirection is done using the `GET`
+request. This is because when we receive the redirection from a `POST` request, the django session is not available
+in the callback view, and the `next_url` and `state` parameters are not available, unless Django Cache is configured.
+
+To enable the secure `POST` callback mode, first configure [Django Cache Framework](https://docs.djangoproject.com/en/6.0//topics/cache/)
+and then, set the following setting:
+
+```python
+MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = True
+```
+
+When secure callback is enabled, you must explicitly configure Django `CACHES`.
+This is validated by Django system checks with code `sso.E001`.
+
+!!! tip "Cache backend matters!"
+    The library accepts all Django cache backends. But if you use secure callback with
+    `LocMemCache` or `DummyCache`, Django emits warning `sso.W001` because those
+    backends can fail in multi-worker environments.
+
+    If these cache backends are expected in your setup, you can silence whe warning using Django's native framework:
+
+    ```python
+    SILENCED_SYSTEM_CHECKS = ["sso.W001"]
+    ```
+    Also, if you need to specify a different cache backend for the callback view,
+    you can use the `MICROSOFT_SSO_CALLBACK_CACHE_NAME` setting:
+
+    ```python
+    MICROSOFT_SSO_CALLBACK_CACHE_NAME = "other_cache_backend"  # Default is "default"
+    ```
+
+---
+
 In the next step, we will configure **Django-Microsoft-SSO** to auto create the Users.
