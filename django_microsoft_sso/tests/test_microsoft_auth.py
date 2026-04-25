@@ -93,7 +93,8 @@ def test_get_redirect_uri_from_multiple_reverse_proxies(rf, query_string, monkey
     monkeypatch.setattr(conf, "MICROSOFT_SSO_CALLBACK_DOMAIN", None)
     current_site_domain = Site.objects.get_current().domain
     request = rf.get(
-        f"/microsoft_sso/callback/?{query_string}", HTTP_X_FORWARDED_PROTO="https, https"
+        f"/microsoft_sso/callback/?{query_string}",
+        HTTP_X_FORWARDED_PROTO="https, https",
     )
 
     # Act

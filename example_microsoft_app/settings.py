@@ -111,8 +111,7 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation."
-        "UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -213,7 +212,7 @@ MICROSOFT_SSO_CLIENT_SECRET = env.MICROSOFT_SSO_CLIENT_SECRET  # Static
 
 # --8<-- [start:sso_config]
 # settings.py
-from django_microsoft_sso.helpers import is_admin_path
+from django_microsoft_sso.helpers import is_admin_path  # noqa: E402
 
 
 def get_sso_config(request):

@@ -5,7 +5,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    name: Run Pre-Commit
+    name: Run Ruff
 
     steps:
       - name: Checkout Branch
@@ -16,12 +16,16 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - name: Setup Poetry
-        uses: abatilo/actions-poetry@v4
-      - name: Run Pre-Commit
-        uses: pre-commit/action@v3.0.1
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+      - name: Install Project
+        run: uv sync --dev
+      - name: Run Ruff check
+        run: uv run ruff check .
+      - name: Run Ruff format check
+        run: uv run ruff format --check .
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     needs: [lint]
     strategy:
       matrix:
@@ -34,14 +38,15 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Update tools
-        run: python -m pip install --upgrade pip setuptools wheel
-      - name: Setup Poetry
-        uses: abatilo/actions-poetry@v4
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
       - name: Install Project
         run: |
-          poetry install
-          poetry add django==${{ matrix.django-version }}
+          uv sync --dev
+          uv run python -m pip install django==${{ matrix.django-version }}
       - name: Run CI Tests
+        env:
+          PYTHONPATH: .
+          STELA_ENV: test
         run: |
-          make tests
+          uv run pytest -v -x -p no:warnings --cov-report term-missing --cov=.

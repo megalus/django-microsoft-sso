@@ -7,7 +7,6 @@ pytestmark = pytest.mark.django_db
 
 
 def test_tags(client_with_session, settings, callback_request):
-
     # Arrange
     def custom_view(request):
         from django.shortcuts import render
@@ -35,7 +34,6 @@ def test_tags(client_with_session, settings, callback_request):
 
 
 async def test_async_view(aclient_with_session, callback_request):
-
     # Arrange
     async def custom_view(request):
         from django.shortcuts import render

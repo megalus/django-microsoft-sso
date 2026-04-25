@@ -130,7 +130,8 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
         return HttpResponseRedirect(login_failed_url)
     if "error" in auth_result:
         send_message(
-            request, _(f"Authorization Error received from SSO: {auth_result['error']}.")
+            request,
+            _(f"Authorization Error received from SSO: {auth_result['error']}."),
         )
         if auth_result["error"] == "invalid_client":
             send_message(
@@ -138,12 +139,8 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
             )
             application_id = microsoft.get_sso_value("APPLICATION_ID")
             client_secret = microsoft.get_sso_value("CLIENT_SECRET")
-            logger.debug(
-                f"MICROSOFT_SSO_APPLICATION_ID: " f"{show_credential(application_id)}"
-            )
-            logger.debug(
-                f"MICROSOFT_SSO_CLIENT_SECRET: " f"{show_credential(client_secret)}"
-            )
+            logger.debug(f"MICROSOFT_SSO_APPLICATION_ID: {show_credential(application_id)}")
+            logger.debug(f"MICROSOFT_SSO_CLIENT_SECRET: {show_credential(client_secret)}")
         return HttpResponseRedirect(login_failed_url)
 
     try:

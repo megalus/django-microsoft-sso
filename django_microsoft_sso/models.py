@@ -19,8 +19,7 @@ class MicrosoftSSOUser(models.Model):
     def picture(self):
         if self.picture_raw:
             return mark_safe(
-                '<img src = "data: image/png; base64, {}"'
-                ' width="75" height="75">'.format(
+                '<img src = "data: image/png; base64, {}" width="75" height="75">'.format(
                     b64encode(self.picture_raw).decode("utf8")
                 )
             )

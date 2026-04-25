@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('django_microsoft_sso', '0001_initial'),
+        ("django_microsoft_sso", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='microsoftssouser',
-            name='user_principal_name',
+            model_name="microsoftssouser",
+            name="user_principal_name",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

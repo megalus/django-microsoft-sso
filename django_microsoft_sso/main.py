@@ -187,7 +187,6 @@ class MicrosoftAuth:
         custom_scopes: list[str] | None = None,
         redirect_uri: str | None = None,
     ) -> dict:
-
         self.result = self.auth.initiate_auth_code_flow(
             scopes=custom_scopes or self.get_sso_value("SCOPES"),
             redirect_uri=redirect_uri or self.get_redirect_uri(),

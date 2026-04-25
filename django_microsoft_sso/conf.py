@@ -101,11 +101,15 @@ class MicrosoftSSOSettings:
         return self._get_setting("MICROSOFT_SSO_SUPERUSER_LIST", [])
 
     @property
-    def MICROSOFT_SSO_STAFF_LIST(self) -> list[str] | Callable[[HttpRequest], list[str]]:
+    def MICROSOFT_SSO_STAFF_LIST(
+        self,
+    ) -> list[str] | Callable[[HttpRequest], list[str]]:
         return self._get_setting("MICROSOFT_SSO_STAFF_LIST", [])
 
     @property
-    def MICROSOFT_SSO_CALLBACK_DOMAIN(self) -> str | Callable[[HttpRequest], str] | None:
+    def MICROSOFT_SSO_CALLBACK_DOMAIN(
+        self,
+    ) -> str | Callable[[HttpRequest], str] | None:
         return self._get_setting("MICROSOFT_SSO_CALLBACK_DOMAIN", None)
 
     @property
@@ -162,7 +166,9 @@ class MicrosoftSSOSettings:
         return self._get_setting("MICROSOFT_SSO_SAVE_ACCESS_TOKEN", False)
 
     @property
-    def MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA(self) -> bool | Callable[[HttpRequest], bool]:
+    def MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA(
+        self,
+    ) -> bool | Callable[[HttpRequest], bool]:
         return self._get_setting("MICROSOFT_SSO_ALWAYS_UPDATE_USER_DATA", False)
 
     @property
