@@ -2,6 +2,7 @@ import pytest
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
+from django.core.cache import cache
 from django.urls import reverse
 
 from django_microsoft_sso import conf
@@ -21,8 +22,9 @@ class MyBackend(ModelBackend):
         return super().authenticate(request, username, password, **kwargs)
 
 
-def test_start_login(client, mocker):
+def test_start_login(client, mocker, settings):
     # Arrange
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = False
     flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
     flow_mock.initiate_auth_code_flow.return_value = {
         "state": "foo",
@@ -40,6 +42,7 @@ def test_start_login(client, mocker):
 
 def test_start_login_none_next_param(client, mocker, settings):
     # Arrange
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = False
     settings.MICROSOFT_SSO_NEXT_URL = "admin:login"
     flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
     flow_mock.initiate_auth_code_flow.return_value = {
@@ -66,8 +69,9 @@ def test_start_login_none_next_param(client, mocker, settings):
         "https://malicious.example.com/secret/",
     ],
 )
-def test_exploit_redirect(client, mocker, test_parameter):
+def test_exploit_redirect(client, mocker, test_parameter, settings):
     # Arrange
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = False
     flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
     flow_mock.initiate_auth_code_flow.return_value = {
         "state": "foo",
@@ -131,6 +135,7 @@ def test_bad_state(client, querystring):
 
 def test_invalid_email(client_with_session, settings, callback_url, microsoft_response):
     # Arrange
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = False
     settings.MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["foobar.com"]
 
     # Act
@@ -165,6 +170,7 @@ def test_inactive_user(client_with_session, callback_url, microsoft_response):
 
 def test_new_user_login(client_with_session, callback_url, settings, mocker):
     # Arrange
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = False
     flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
     flow_mock.acquire_token_by_auth_code_flow.return_value = {"access_token": "foo"}
     User.objects.all().delete()
@@ -185,6 +191,7 @@ def test_existing_user_login(
     client_with_session, settings, microsoft_response, callback_url, mocker
 ):
     # Arrange
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = False
     flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
     flow_mock.acquire_token_by_auth_code_flow.return_value = {"access_token": "foo"}
 
@@ -221,3 +228,104 @@ def test_missing_user_login(client_with_session, settings, callback_url):
     assert User.objects.count() == 0
     assert response.url == "/admin/login/"
     assert response.wsgi_request.user.is_authenticated is False
+
+
+def test_post_callback_and_secure_disabled(client_with_session, settings):
+    # Arrange
+    settings.MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["dailyplanet.com"]
+    settings.MICROSOFT_SSO_SAVE_ACCESS_TOKEN = False
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = False
+    callback_path = reverse(ROUTE_NAME)
+    payload = {
+        "code": "12345",
+        "state": "foo",
+        "scope": " ".join(conf.MICROSOFT_SSO_SCOPES),
+    }
+
+    # Act
+    response = client_with_session.post(callback_path, data=payload)
+
+    # Assert
+    assert response.status_code == 302
+    assert response.url == "/"
+    assert response.wsgi_request.user.is_authenticated is False
+    assert (
+        "Request Secure Callback must be enabled to receive POST requests in callback view."
+        in [m.message for m in get_messages(response.wsgi_request)]
+    )
+
+
+def test_stateless_callback_without_session(client, settings, mocker, microsoft_response):
+    # Arrange
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = True
+    settings.CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
+    settings.MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["dailyplanet.com"]
+    settings.MICROSOFT_SSO_PRE_LOGIN_CALLBACK = "django_microsoft_sso.hooks.pre_login_user"
+    settings.MICROSOFT_SSO_PRE_CREATE_CALLBACK = (
+        "django_microsoft_sso.hooks.pre_create_user"
+    )
+    settings.MICROSOFT_SSO_PRE_VALIDATE_CALLBACK = (
+        "django_microsoft_sso.hooks.pre_validate_user"
+    )
+    settings.MICROSOFT_SSO_SAVE_ACCESS_TOKEN = False
+
+    cache.set("foo", {"msal_graph_info": {"state": "foo"}}, timeout=600)
+
+    flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
+    flow_mock.acquire_token_by_auth_code_flow.return_value = {"access_token": "foo"}
+    mocker.patch.object(MicrosoftAuth, "get_user_info", return_value=microsoft_response)
+
+    # Act
+    response = client.post(
+        reverse(ROUTE_NAME),
+        data={"code": "12345", "state": "foo"},
+    )
+
+    # Assert
+    assert response.status_code == 302
+    assert response.url == SECRET_PATH
+    assert response.wsgi_request.user.is_authenticated is True
+
+
+def test_stateless_callback_blocks_state_replay(
+    client, settings, mocker, microsoft_response
+):
+    # Arrange
+    settings.MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK = True
+    settings.CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
+    settings.MICROSOFT_SSO_ALLOWABLE_DOMAINS = ["dailyplanet.com"]
+    settings.MICROSOFT_SSO_PRE_LOGIN_CALLBACK = "django_microsoft_sso.hooks.pre_login_user"
+    settings.MICROSOFT_SSO_PRE_CREATE_CALLBACK = (
+        "django_microsoft_sso.hooks.pre_create_user"
+    )
+    settings.MICROSOFT_SSO_PRE_VALIDATE_CALLBACK = (
+        "django_microsoft_sso.hooks.pre_validate_user"
+    )
+    settings.MICROSOFT_SSO_SAVE_ACCESS_TOKEN = False
+
+    cache.set("foo", {"msal_graph_info": {"state": "foo"}}, timeout=600)
+
+    flow_mock = mocker.patch.object(MicrosoftAuth, "auth")
+    flow_mock.acquire_token_by_auth_code_flow.return_value = {"access_token": "foo"}
+    mocker.patch.object(MicrosoftAuth, "get_user_info", return_value=microsoft_response)
+
+    payload = {"code": "12345", "state": "foo"}
+
+    # Act
+    first_response = client.post(reverse(ROUTE_NAME), data=payload)
+    second_response = client.post(reverse(ROUTE_NAME), data=payload)
+
+    # Assert
+    assert first_response.status_code == 302
+    assert second_response.status_code == 302
+    assert "State Mismatch. Time expired?" in [
+        m.message for m in get_messages(second_response.wsgi_request)
+    ]

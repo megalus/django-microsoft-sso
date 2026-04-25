@@ -51,10 +51,10 @@ keywords = ["microsoft", "django", "sso"]
 license = "MIT"
 classifiers = [
     "Framework :: Django",
-    "Framework :: Django :: 4.2",
     "Framework :: Django :: 5.0",
     "Framework :: Django :: 5.1",
     "Framework :: Django :: 5.2",
+    "Framework :: Django :: 6.0",
     "Intended Audience :: Developers",
     "Development Status :: 4 - Beta",
     "Environment :: Plugins"
@@ -62,9 +62,9 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.11, <4.0"
-django = ">=4.2"
+django = ">=5.0"
 loguru = "*"
-msal = "*"
+msal = ">=4.82.0"
 httpx = "*"
 
 [tool.poetry.group.dev.dependencies]
