@@ -2,14 +2,14 @@ update:
 	@uv lock --upgrade && uv run pre-commit autoupdate
 
 install:
-	@uv sync --dev
-	@uv run pre-commit install -f
+	@uv sync --active --dev
+	@uv run --active pre-commit install -f
 
 lint:
-	@uv run pre-commit run --all
+	@uv run --active pre-commit run --all
 
 tests:
-	@PYTHONPATH=. STELA_ENV=test uv run pytest -v -x -p no:warnings --cov-report term-missing --cov=.
+	@PYTHONPATH=. STELA_ENV=test uv run --active pytest -v -x -p no:warnings --cov-report term-missing --cov=.
 
 test:
 	@if [ "$(filter-out $@,$(MAKECMDGOALS))" = "" ]; then \
@@ -17,7 +17,7 @@ test:
 		exit 1; \
 	fi
 	@echo "${BLUE}Running test: $(filter-out $@,$(MAKECMDGOALS))...${NC}"
-	@PYTHONPATH=. STELA_ENV=test uv run pytest -v -x -p no:warnings --cov-report term-missing --cov=. $(filter-out $@,$(MAKECMDGOALS))
+	@PYTHONPATH=. STELA_ENV=test uv run --active pytest -v -x -p no:warnings --cov-report term-missing --cov=. $(filter-out $@,$(MAKECMDGOALS))
 	@echo "${GREEN}Test completed.${NC}"
 
 # Prevent make from treating the argument as a target

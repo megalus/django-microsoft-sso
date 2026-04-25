@@ -38,6 +38,13 @@ jobs:
           push: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Publish | Checkout released tag
+        if: steps.release.outputs.released == 'true'
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.release.outputs.tag }}
+          fetch-depth: 0
+
       - name: Publish | Build package artifacts
         if: steps.release.outputs.released == 'true'
         run: uv build
