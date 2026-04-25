@@ -21,7 +21,7 @@ jobs:
         run: |
           git checkout -B ${{ github.ref_name }} ${{ github.sha }}
 
-      - name: Setup | Install Python 3.12
+      - name: Setup | Install Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.13"
@@ -33,7 +33,7 @@ jobs:
         id: release
         uses: python-semantic-release/python-semantic-release@v9.10.0
         with:
-          build: true
+          build: false
           commit: true
           push: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
