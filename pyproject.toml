@@ -64,7 +64,7 @@ classifiers = [
 python = ">=3.11, <4.0"
 django = ">=5.0"
 loguru = "*"
-msal = ">=4.82.0"
+msal = ">=1.35.0"
 httpx = "*"
 
 [tool.poetry.group.dev.dependencies]

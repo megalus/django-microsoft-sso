@@ -94,7 +94,7 @@ As stated in [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.3.
 `client.example/redirection_endpoint?code=abcd` as a result of a redirect from a provider's authorization endpoint,
 the URL including the authorization code may end up in the browser's history, which can be read by the client.
 
-To avoid this, MSAL after version 4.82.0 add the `form_post` response mode. This means that instead of redirecting
+To avoid this, MSAL after version 1.35.0 add the `form_post` response mode. This means that instead of redirecting
 the browser to the callback URL with query parameters, MSAL can submit a POST request to the callback URL with the
 authorization code in the request body.
 
