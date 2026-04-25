@@ -1,6 +1,21 @@
 # CHANGELOG
 
 
+## v7.0.1 (2026-04-25)
+
+### Continuous Integration
+
+* ci: add missing environment name in actions ([`5177dd6`](https://github.com/megalus/django-microsoft-sso/commit/5177dd69b52b521258ebef5509995d6b92fb816a))
+
+### Fixes
+
+* fix: configure dynamic versioning and wheel build settings in pyproject.toml ([`6e4b7a9`](https://github.com/megalus/django-microsoft-sso/commit/6e4b7a9cdbe3290f0a90af408a590cbc9ec38376))
+
+### Unknown
+
+* Merge remote-tracking branch 'origin/main' ([`d24006c`](https://github.com/megalus/django-microsoft-sso/commit/d24006ce16be87fc2acf5c45b719bf80c023334a))
+
+
 ## v7.0.0 (2026-04-25)
 
 ### Breaking
@@ -15,6 +30,10 @@
 ### Chores
 
 * chore: move from poetry/black to uv/ruff ([`d675f2a`](https://github.com/megalus/django-microsoft-sso/commit/d675f2a6f4030a13dc906c2ce9df0a5e9ad691a8))
+
+### Continuous Integration
+
+* ci: update publish workflow to checkout released tag and improve pre-commit commands ([`552bff2`](https://github.com/megalus/django-microsoft-sso/commit/552bff2002af177734f38c1817805721667a4e3d))
 
 ### Features
 
