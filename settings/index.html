@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -807,6 +807,10 @@
 <td>If true, update default user info from Microsoft data at every login. This will also make their password unusable. Otherwise, all of this happens only on create. Default: <code>False</code></td>
 </tr>
 <tr>
+<td><code>MICROSOFT_SSO_APPLICATION_ID</code></td>
+<td>The Microsoft OAuth 2.0 Web Application Client ID. Default: <code>None</code></td>
+</tr>
+<tr>
 <td><code>MICROSOFT_SSO_AUTHENTICATION_BACKEND</code></td>
 <td>The authentication backend to use.  Default: <code>None</code></td>
 </tr>
@@ -823,12 +827,12 @@
 <td>Enable or disable the auto-create users feature. Default: <code>True</code></td>
 </tr>
 <tr>
-<td><code>MICROSOFT_SSO_CALLBACK_DOMAIN</code></td>
-<td>The netloc to be used on Callback URI. Default: <code>None</code></td>
+<td><code>MICROSOFT_SSO_CACHE_NAME</code></td>
+<td>The name of the Django cache to use for storing tokens. Default: <code>default</code></td>
 </tr>
 <tr>
-<td><code>MICROSOFT_SSO_APPLICATION_ID</code></td>
-<td>The Microsoft OAuth 2.0 Web Application Client ID. Default: <code>None</code></td>
+<td><code>MICROSOFT_SSO_CALLBACK_DOMAIN</code></td>
+<td>The netloc to be used on Callback URI. Default: <code>None</code></td>
 </tr>
 <tr>
 <td><code>MICROSOFT_SSO_CLIENT_SECRET</code></td>
@@ -881,6 +885,10 @@
 <tr>
 <td><code>MICROSOFT_SSO_PROJECT_ID</code></td>
 <td>The Microsoft OAuth 2.0 Project ID. Default: <code>None</code></td>
+</tr>
+<tr>
+<td><code>MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK</code></td>
+<td>If <code>True</code>, callback uses secure <code>POST</code> (<code>form_post</code>) and requires explicit Django <code>CACHES</code> config. If <code>False</code>, callback uses legacy <code>GET</code> query-string mode. Default: <code>False</code></td>
 </tr>
 <tr>
 <td><code>MICROSOFT_SSO_SAVE_ACCESS_TOKEN</code></td>

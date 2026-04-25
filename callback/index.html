@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -473,6 +473,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#callback-response-and-browser-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Callback response and Browser history
+      
+    </span>
+  </a>
   
 </li>
       
@@ -966,6 +977,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#callback-response-and-browser-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Callback response and Browser history
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1055,6 +1077,36 @@ you can optionally add Django logout URL in the Web Platform configurations. But
 <div class="admonition tip">
 <p class="admonition-title">During development, use an instant ingress tunnel service for this</p>
 <p><a href="https://ngrok.com/">Ngrok</a> is an excellent service to redirect a https connection to your local development server.</p>
+</div>
+<hr />
+<h2 id="callback-response-and-browser-history">Callback response and Browser history<a class="headerlink" href="#callback-response-and-browser-history" title="Permanent link">&para;</a></h2>
+<p>As stated in <a href="https://www.rfc-editor.org/rfc/rfc9700.html#section-4.3.1">RFC 9700</a>, when a browser navigates to
+<code>client.example/redirection_endpoint?code=abcd</code> as a result of a redirect from a provider's authorization endpoint,
+the URL including the authorization code may end up in the browser's history, which can be read by the client.</p>
+<p>To avoid this, MSAL after version 1.35.0 add the <code>form_post</code> response mode. This means that instead of redirecting
+the browser to the callback URL with query parameters, MSAL can submit a POST request to the callback URL with the
+authorization code in the request body.</p>
+<p>By default, <strong>Django-Microsoft-SSO</strong> uses the <strong>query</strong> response mode, when the redirection is done using the <code>GET</code>
+request. This is because when we receive the redirection from a <code>POST</code> request, the django session is not available
+in the callback view, and the <code>next_url</code> and <code>state</code> parameters are not available, unless Django Cache is configured.</p>
+<p>To enable the secure <code>POST</code> callback mode, first configure <a href="https://docs.djangoproject.com/en/6.0//topics/cache/">Django Cache Framework</a>
+and then, set the following setting:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">MICROSOFT_SSO_REQUIRE_SECURE_CALLBACK</span> <span class="o">=</span> <span class="kc">True</span>
+</span></code></pre></div>
+<p>When secure callback is enabled, you must explicitly configure Django <code>CACHES</code>.
+This is validated by Django system checks with code <code>sso.E001</code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Cache backend matters!</p>
+<p>The library accepts all Django cache backends. But if you use secure callback with
+<code>LocMemCache</code> or <code>DummyCache</code>, Django emits warning <code>sso.W001</code> because those
+backends can fail in multi-worker environments.</p>
+<p>If these cache backends are expected in your setup, you can silence whe warning using Django's native framework:</p>
+<p><div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">SILENCED_SYSTEM_CHECKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sso.W001&quot;</span><span class="p">]</span>
+</span></code></pre></div>
+Also, if you need to specify a different cache backend for the callback view,
+you can use the <code>MICROSOFT_SSO_CALLBACK_CACHE_NAME</code> setting:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">MICROSOFT_SSO_CALLBACK_CACHE_NAME</span> <span class="o">=</span> <span class="s2">&quot;other_cache_backend&quot;</span>  <span class="c1"># Default is &quot;default&quot;</span>
+</span></code></pre></div>
 </div>
 <hr />
 <p>In the next step, we will configure <strong>Django-Microsoft-SSO</strong> to auto create the Users.</p>
