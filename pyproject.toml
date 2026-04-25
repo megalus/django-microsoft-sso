@@ -2,9 +2,15 @@
 requires = ["hatchling>=1.27.0"]
 build-backend = "hatchling.build"
 
+[tool.hatch.version]
+path = "django_microsoft_sso/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["django_microsoft_sso"]
+
 [project]
 name = "django-microsoft-sso"
-version = "6.0.2"
+dynamic = ["version"]
 description = "Easily add Microsoft Authentication to your Django Projects"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
@@ -62,7 +68,6 @@ dev = [
 [tool.semantic_release]
 version_variables = [
     "django_microsoft_sso/__init__.py:__version__",
-    "pyproject.toml:project.version"
 ]
 branch = "main"
 upload_to_pypi = false
