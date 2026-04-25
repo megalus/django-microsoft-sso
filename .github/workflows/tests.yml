@@ -30,7 +30,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        include:
+        py_django:
           - python-version: "3.11"
             django-version: "5.0"
           - python-version: "3.11"
@@ -55,16 +55,16 @@ jobs:
             django-version: "6.0"
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.py_django.python-version }}
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.py_django.python-version }}
       - name: Setup uv
         uses: astral-sh/setup-uv@v6
       - name: Install Project
         run: |
           uv sync --dev
-          uv pip install "django==${{ matrix.django-version }}"
+          uv pip install "django==${{ matrix.py_django.django-version }}"
       - name: Run CI Tests
         env:
           PYTHONPATH: .
