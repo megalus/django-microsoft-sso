@@ -1,6 +1,46 @@
 # CHANGELOG
 
 
+## v7.0.0 (2026-04-25)
+
+### Breaking
+
+* feat!: implement secure callback mode with cache validation for Microsoft SSO. This is a BREAKING CHANGE commit:
+
+* Remove Django 4.2 support
+* Add Django 6.0 support
+* Add Python 3.14 support
+* Minimal MSAL version: 4.82.0 ([`df56880`](https://github.com/megalus/django-microsoft-sso/commit/df56880bb6d19deb294d1261e46178e8738ed329))
+
+### Chores
+
+* chore: move from poetry/black to uv/ruff ([`d675f2a`](https://github.com/megalus/django-microsoft-sso/commit/d675f2a6f4030a13dc906c2ce9df0a5e9ad691a8))
+
+### Features
+
+* feat: update CI workflow to use matrix for Python and Django versions ([`de701ac`](https://github.com/megalus/django-microsoft-sso/commit/de701ac36ebdde27687877bb666bff6313c2f5ff))
+
+* feat: expand CI matrix to include Python 3.14 and Django 6.0 ([`5421570`](https://github.com/megalus/django-microsoft-sso/commit/542157085f96fb448fb3a39a97ae688260fd3ee4))
+
+### Fixes
+
+* fix: update Python version in CI setup and disable build step ([`a13dd62`](https://github.com/megalus/django-microsoft-sso/commit/a13dd6277e17df7cfc98bd56824801215b30cb80))
+
+* fix: update installation command for Django in CI workflow ([`826b051`](https://github.com/megalus/django-microsoft-sso/commit/826b0510466bdbe3fb984928779722a8e4c590ba))
+
+* fix: msal min version (python instead dotnet) ([`e7fa343`](https://github.com/megalus/django-microsoft-sso/commit/e7fa3438cc1d677c5f0b2dc8584715aa9ef91ea3))
+
+### Unknown
+
+* Merge pull request #24 from megalus/feat/dual-callback-response-mode
+
+New Version: 7 ([`897de10`](https://github.com/megalus/django-microsoft-sso/commit/897de10d2d7db18b00e2e0430e46a3ae30e8980a))
+
+* doc: update settings.md
+
+thanks @mauvray ([`37f7c3d`](https://github.com/megalus/django-microsoft-sso/commit/37f7c3d08c703b67da9d171d516348e02297093e))
+
+
 ## v6.0.2 (2025-09-16)
 
 ### Fixes
