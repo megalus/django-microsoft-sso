@@ -57,6 +57,11 @@ jobs:
         with:
           packages-dir: dist/
 
+      - name: Setup | Restore branch context from released tag
+        if: steps.release.outputs.released == 'true'
+        run: |
+          git checkout -B ${{ github.ref_name }} ${{ steps.release.outputs.tag }}
+
       - name: Release | Upload to GitHub Release Assets
         uses: python-semantic-release/publish-action@v10.3.1
         if: steps.release.outputs.released == 'true'
