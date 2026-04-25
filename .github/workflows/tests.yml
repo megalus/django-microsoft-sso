@@ -43,7 +43,7 @@ jobs:
       - name: Install Project
         run: |
           uv sync --dev
-          uv run python -m pip install django==${{ matrix.django-version }}
+          uv pip install "django==${{ matrix.django-version }}"
       - name: Run CI Tests
         env:
           PYTHONPATH: .
