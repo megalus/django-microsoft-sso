@@ -200,6 +200,58 @@ def test_different_null_values(microsoft_response, callback_request, monkeypatch
     assert user_two.username == microsoft_response_key_none["userPrincipalName"]
 
 
+def test_get_or_create_user_with_full_args_uses_dict_directly(
+    microsoft_response, callback_request, settings, mocker
+):
+    # Arrange
+    settings.MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS = True
+    importlib.reload(conf)
+
+    helper = UserHelper(microsoft_response, callback_request)
+    extra_args = {
+        "username__iexact": "custom_lookup_value",
+        "defaults": {
+            "username": "custom_username",
+            "email": "custom@email.com",
+        },
+    }
+    mock_get_or_create = mocker.patch.object(helper.user_model.objects, "get_or_create")
+    mock_user = mocker.MagicMock(spec=User)
+    mock_get_or_create.return_value = (mock_user, True)
+    mocker.patch("django_microsoft_sso.models.MicrosoftSSOUser.objects.update_or_create")
+
+    # Act
+    helper.get_or_create_user(extra_args)
+
+    # Assert
+    mock_get_or_create.assert_called_once_with(**extra_args)
+
+
+def test_get_or_create_user_with_full_args_still_processes_user(
+    microsoft_response, callback_request, settings
+):
+    # Arrange
+    settings.MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS = True
+    importlib.reload(conf)
+
+    helper = UserHelper(microsoft_response, callback_request)
+    extra_args = {
+        "username__iexact": microsoft_response["userPrincipalName"],
+        "defaults": {
+            "username": microsoft_response["userPrincipalName"],
+            "email": microsoft_response["mail"],
+        },
+    }
+
+    # Act
+    user = helper.get_or_create_user(extra_args)
+
+    # Assert
+    assert user.first_name == microsoft_response["givenName"]
+    assert user.last_name == microsoft_response["surname"]
+    assert user.email == microsoft_response["mail"]
+
+
 def test_duplicated_emails(microsoft_response, callback_request, settings):
     # Arrange
     User.objects.create(

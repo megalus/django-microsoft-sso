@@ -35,7 +35,7 @@ pip install django-microsoft-sso
 ```
 
 !!! info "Currently this project supports:"
-    * Python 3.11, 3.12 and 3.13
-    * Django 4.2, 5.0, 5.1 and 5.2
+    * Python 3.11, 3.12, 3.13 and 3.14
+    * Django 5.0, 5.1, 5.2 and 6.0
 
     Older python/django versions are not supported.

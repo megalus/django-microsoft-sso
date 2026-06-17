@@ -13,7 +13,7 @@ tests:
 
 test:
 	@if [ "$(filter-out $@,$(MAKECMDGOALS))" = "" ]; then \
-		echo "Usage: make test <path_to_test>. Example: make test megalus/tests.py::test_health_check"; \
+		echo "Usage: make test <path_to_test>. Example: make test django_microsoft_sso/tests/test_conf.py::test_conf_from_settings"; \
 		exit 1; \
 	fi
 	@echo "${BLUE}Running test: $(filter-out $@,$(MAKECMDGOALS))...${NC}"

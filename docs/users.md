@@ -111,6 +111,36 @@ def pre_create_callback(ms_info, request) -> dict | None:
     }
 ```
 
+## Full control over get_or_create arguments
+
+By default, the dict returned by `pre_create_user` is used as the `defaults` argument of
+`User.objects.get_or_create()`. If you need full control over all `get_or_create` keyword arguments
+(including lookup fields), enable `MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS`:
+
+```python
+# settings.py
+MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS = True
+```
+
+When enabled, the dict returned by your `pre_create_callback` will be unpacked directly as kwargs
+to `User.objects.get_or_create(**returned_dict)`. This lets you define both the lookup condition and
+the defaults:
+
+```python
+def pre_create_callback(ms_info, request) -> dict:
+    return {
+        "email__iexact": ms_info["mail"],
+        "defaults": {
+            "username": ms_info["userPrincipalName"],
+            "is_active": True,
+        },
+    }
+```
+
+!!! warning
+    When this setting is `True`, you are responsible for providing a complete `get_or_create` kwargs dict.
+    Incorrect arguments may cause unexpected database errors.
+
 ## Fine-tuning users before login
 
 If you need to do some processing _after_ user is created or retrieved,
