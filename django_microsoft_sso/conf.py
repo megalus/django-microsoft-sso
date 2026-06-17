@@ -147,6 +147,14 @@ class MicrosoftSSOSettings:
         )
 
     @property
+    def MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS(self) -> bool:
+        return self._get_setting(
+            "MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS",
+            False,
+            accept_callable=False,
+        )
+
+    @property
     def MICROSOFT_SSO_PRE_LOGIN_CALLBACK(self) -> str | Callable[[HttpRequest], str]:
         return self._get_setting(
             "MICROSOFT_SSO_PRE_LOGIN_CALLBACK",

@@ -274,45 +274,49 @@ class UserHelper:
         return valid_domain
 
     def get_or_create_user(self, extra_users_args: dict | None = None):
-        user_defaults = extra_users_args or {}
-
         auth = MicrosoftAuth(self.request)
-        if auth.get_sso_value("UNIQUE_EMAIL"):
-            if not self.user_info_email:
-                raise ValueError("User email not found in Tenant data.")
-            if self.username_field.name not in user_defaults:
-                user_defaults[self.username_field.name] = self.user_principal_name
 
-            user, created = self.user_model.objects.get_or_create(
-                **{
-                    f"{self.email_field_name}__iexact": self.user_info_email,
-                    "defaults": user_defaults,
-                }
-            )
+        if extra_users_args and auth.get_sso_value("PRE_CREATE_USER_RETURN_FULL_ARGS"):
+            user, created = self.user_model.objects.get_or_create(**extra_users_args)
         else:
-            user_defaults[self.email_field_name] = self.user_info_email
+            user_defaults = extra_users_args or {}
 
-            # Find searching User Principal Name in MicrosoftSSOUser
-            # For existing databases prior to this version, this field can be empty
-            query = self.user_model.objects.filter(
-                microsoftssouser__user_principal_name__iexact=self.user_principal_name
-            )
-            if query.exists():
-                user = query.get()
-                created = False
-            else:
-                username = user_defaults.pop(
-                    self.username_field.name, self.user_principal_name
+            if auth.get_sso_value("UNIQUE_EMAIL"):
+                if not self.user_info_email:
+                    raise ValueError("User email not found in Tenant data.")
+                if self.username_field.name not in user_defaults:
+                    user_defaults[self.username_field.name] = self.user_principal_name
+
+                user, created = self.user_model.objects.get_or_create(
+                    **{
+                        f"{self.email_field_name}__iexact": self.user_info_email,
+                        "defaults": user_defaults,
+                    }
                 )
-                if self.email_field_name not in user_defaults:
-                    user_defaults[self.email_field_name] = self.user_info_email
-                if self.username_field.attname not in user_defaults:
-                    user_defaults[self.username_field.attname] = username
-                query = {
-                    f"{self.username_field.attname}__iexact": username,
-                    "defaults": user_defaults,
-                }
-                user, created = self.user_model.objects.get_or_create(**query)
+            else:
+                user_defaults[self.email_field_name] = self.user_info_email
+
+                # Find searching User Principal Name in MicrosoftSSOUser
+                # For existing databases prior to this version, this field can be empty
+                query = self.user_model.objects.filter(
+                    microsoftssouser__user_principal_name__iexact=self.user_principal_name
+                )
+                if query.exists():
+                    user = query.get()
+                    created = False
+                else:
+                    username = user_defaults.pop(
+                        self.username_field.name, self.user_principal_name
+                    )
+                    if self.email_field_name not in user_defaults:
+                        user_defaults[self.email_field_name] = self.user_info_email
+                    if self.username_field.attname not in user_defaults:
+                        user_defaults[self.username_field.attname] = username
+                    query = {
+                        f"{self.username_field.attname}__iexact": username,
+                        "defaults": user_defaults,
+                    }
+                    user, created = self.user_model.objects.get_or_create(**query)
 
         self.check_first_super_user(user)
         self.check_for_update(created, user)
