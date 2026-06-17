@@ -875,6 +875,10 @@
 <td>Callable for processing pre-create logic. Default: <code>django_microsoft_sso.hooks.pre_create_user</code></td>
 </tr>
 <tr>
+<td><code>MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS</code></td>
+<td>When <code>True</code>, the dict returned by <code>pre_create_callback</code> is used as the full kwargs for <code>User.objects.get_or_create()</code>, not just <code>defaults</code>. Default: <code>False</code></td>
+</tr>
+<tr>
 <td><code>MICROSOFT_SSO_PRE_LOGIN_CALLBACK</code></td>
 <td>Callable for processing pre-login logic. Default: <code>django_microsoft_sso.hooks.pre_login_user</code></td>
 </tr>

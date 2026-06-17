@@ -470,6 +470,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#full-control-over-get_or_create-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full control over get_or_create arguments
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fine-tuning-users-before-login" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -910,6 +921,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#full-control-over-get_or_create-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full control over get_or_create arguments
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fine-tuning-users-before-login" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1019,18 +1041,42 @@ always passed to <code>User.objects.create()</code> with the values from Graph A
 </span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>        <span class="s2">&quot;date_joined&quot;</span><span class="p">:</span> <span class="n">arrow</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">days</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
 </span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>    <span class="p">}</span>
 </span></code></pre></div>
+<h2 id="full-control-over-get_or_create-arguments">Full control over get_or_create arguments<a class="headerlink" href="#full-control-over-get_or_create-arguments" title="Permanent link">&para;</a></h2>
+<p>By default, the dict returned by <code>pre_create_user</code> is used as the <code>defaults</code> argument of
+<code>User.objects.get_or_create()</code>. If you need full control over all <code>get_or_create</code> keyword arguments
+(including lookup fields), enable <code>MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># settings.py</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS</span> <span class="o">=</span> <span class="kc">True</span>
+</span></code></pre></div>
+<p>When enabled, the dict returned by your <code>pre_create_callback</code> will be unpacked directly as kwargs
+to <code>User.objects.get_or_create(**returned_dict)</code>. This lets you define both the lookup condition and
+the defaults:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">def</span> <span class="nf">pre_create_callback</span><span class="p">(</span><span class="n">ms_info</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="k">return</span> <span class="p">{</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>        <span class="s2">&quot;email__iexact&quot;</span><span class="p">:</span> <span class="n">ms_info</span><span class="p">[</span><span class="s2">&quot;mail&quot;</span><span class="p">],</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>        <span class="s2">&quot;defaults&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">ms_info</span><span class="p">[</span><span class="s2">&quot;userPrincipalName&quot;</span><span class="p">],</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>            <span class="s2">&quot;is_active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>        <span class="p">},</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="p">}</span>
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When this setting is <code>True</code>, you are responsible for providing a complete <code>get_or_create</code> kwargs dict.
+Incorrect arguments may cause unexpected database errors.</p>
+</div>
 <h2 id="fine-tuning-users-before-login">Fine-tuning users before login<a class="headerlink" href="#fine-tuning-users-before-login" title="Permanent link">&para;</a></h2>
 <p>If you need to do some processing <em>after</em> user is created or retrieved,
 but <em>before</em> the user is logged in, you can set the
 <code>MICROSOFT_SSO_PRE_LOGIN_CALLBACK</code> setting to import a custom function that will be called before the user is logged in.
 This function will receive two arguments: the <code>user</code> and <code>request</code> objects.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># myapp/hooks.py</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">def</span> <span class="nf">pre_login_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="c1"># Do something with the user</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="k">pass</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># settings.py</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">MICROSOFT_SSO_PRE_LOGIN_CALLBACK</span> <span class="o">=</span> <span class="s2">&quot;myapp.hooks.pre_login_user&quot;</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># myapp/hooks.py</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">def</span> <span class="nf">pre_login_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="c1"># Do something with the user</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="k">pass</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="c1"># settings.py</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="n">MICROSOFT_SSO_PRE_LOGIN_CALLBACK</span> <span class="o">=</span> <span class="s2">&quot;myapp.hooks.pre_login_user&quot;</span>
 </span></code></pre></div>
 <p>Please remember this function will be invoked only if a user exists, and if it is active.
 In other words, if the user is eligible for login.</p>
