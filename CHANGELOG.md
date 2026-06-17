@@ -1,9 +1,36 @@
 # CHANGELOG
 
 
+## v7.1.0 (2026-06-17)
+
+### Documentation
+
+* docs: Update versions ([`5f23216`](https://github.com/megalus/django-microsoft-sso/commit/5f2321661482bae700f2b19012b51c17408763d8))
+
+### Features
+
+* feat: Add full control over `get_or_create` arguments in user creation
+
+- Introduced the `MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS` setting to enable using the full kwargs returned by the `pre_create_callback` for `User.objects.get_or_create`.
+- Updated `get_or_create_user` logic to support both default and custom user creation workflows.
+- Added new test cases to ensure compatibility and correctness.
+- Updated documentation to reflect changes in settings and usage examples.
+- Removed outdated `.github/copilot-instructions.md`. ([`fb05693`](https://github.com/megalus/django-microsoft-sso/commit/fb05693d3f704d414f7ac9740dc37afdd0d70d0f))
+
+### Unknown
+
+* Merge pull request #25 from megalus/develop
+
+Add option `MICROSOFT_SSO_PRE_CREATE_USER_RETURN_FULL_ARGS` ([`c789b11`](https://github.com/megalus/django-microsoft-sso/commit/c789b118cc7365fbede3564535a5cadd295bb8ab))
+
+* Merge remote-tracking branch 'origin/main' ([`367e73f`](https://github.com/megalus/django-microsoft-sso/commit/367e73ffbdd020c8fad806c845edc841c7b0d726))
+
+
 ## v7.0.1 (2026-04-25)
 
 ### Continuous Integration
+
+* ci: add step to restore branch context from released tag in publish workflow ([`d612c6f`](https://github.com/megalus/django-microsoft-sso/commit/d612c6f8c0e9975da7fa663653b99583bff98dcf))
 
 * ci: add missing environment name in actions ([`5177dd6`](https://github.com/megalus/django-microsoft-sso/commit/5177dd69b52b521258ebef5509995d6b92fb816a))
 
