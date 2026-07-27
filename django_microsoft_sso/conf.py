@@ -2,6 +2,7 @@ from typing import Any, Callable
 
 from django.conf import settings
 from django.http import HttpRequest
+from django.templatetags.static import static
 from loguru import logger
 
 
@@ -46,8 +47,7 @@ class MicrosoftSSOSettings:
     def MICROSOFT_SSO_LOGO_URL(self) -> str | Callable[[HttpRequest], str]:
         return self._get_setting(
             "MICROSOFT_SSO_LOGO_URL",
-            "https://purepng.com/public/uploads/large/purepng.com-"
-            "microsoft-logo-iconlogobrand-logoiconslogos-251519939091wmudn.png",
+            static("django_microsoft_sso/microsoft-logo-png-2395.png"),
         )
 
     @property

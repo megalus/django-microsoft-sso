@@ -20,11 +20,17 @@ the style, you can override the css file.
 
 ### The button logo
 
-To change the logo, use the `MICROSOFT_SSO_BUTTON_LOGO` setting.
+By default, the button uses a bundled local logo file. To use a different logo, set `MICROSOFT_SSO_LOGO_URL` to a URL or a static file path:
 
 ```python
 # settings.py
+
+# Use an external URL:
 MICROSOFT_SSO_LOGO_URL = "https://example.com/logo.png"
+
+# Or reference your own static file:
+from django.templatetags.static import static
+MICROSOFT_SSO_LOGO_URL = static("myapp/my-custom-logo.png")
 ```
 
 ### The button text
