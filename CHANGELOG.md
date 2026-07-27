@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v7.1.1 (2026-07-27)
+
+### Fixes
+
+* fix: missing image in default button configuration ([`93f0d90`](https://github.com/megalus/django-microsoft-sso/commit/93f0d906d7fae755912e98e01e0b18daedb7b616))
+
+
 ## v7.1.0 (2026-06-17)
 
 ### Documentation
