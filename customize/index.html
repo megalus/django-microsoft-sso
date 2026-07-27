@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1000,9 +1000,15 @@ the <code>SSO_SHOW_FORM_ON_ADMIN_PAGE</code> setting.</p>
 values. For
 the style, you can override the css file.</p>
 <h3 id="the-button-logo">The button logo<a class="headerlink" href="#the-button-logo" title="Permanent link">&para;</a></h3>
-<p>To change the logo, use the <code>MICROSOFT_SSO_BUTTON_LOGO</code> setting.</p>
+<p>By default, the button uses a bundled local logo file. To use a different logo, set <code>MICROSOFT_SSO_LOGO_URL</code> to a URL or a static file path:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># settings.py</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">MICROSOFT_SSO_LOGO_URL</span> <span class="o">=</span> <span class="s2">&quot;https://example.com/logo.png&quot;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Use an external URL:</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">MICROSOFT_SSO_LOGO_URL</span> <span class="o">=</span> <span class="s2">&quot;https://example.com/logo.png&quot;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># Or reference your own static file:</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="kn">from</span> <span class="nn">django.templatetags.static</span> <span class="kn">import</span> <span class="n">static</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">MICROSOFT_SSO_LOGO_URL</span> <span class="o">=</span> <span class="n">static</span><span class="p">(</span><span class="s2">&quot;myapp/my-custom-logo.png&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="the-button-text">The button text<a class="headerlink" href="#the-button-text" title="Permanent link">&para;</a></h3>
 <p>To change the text, use the <code>MICROSOFT_SSO_BUTTON_TEXT</code> setting.</p>
@@ -1145,7 +1151,7 @@ the style, you can override the css file.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
